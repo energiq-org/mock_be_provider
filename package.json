@@ -1,9 +1,9 @@
 {
-  "name": "api-example",
+  "name": "be_user",
   "version": "0.0.1",
-  "description": "Backend API Example",
+  "description": "Backend User Service",
   "main": "src/app.ts",
-  "repository": "https://github.com/EnergiQ-org/devops_testing",
+  "repository": "https://github.com/EnergiQ-org/be_user",
   "author": "EnergiQ Team",
   "license": "MIT",
   "scripts": {
