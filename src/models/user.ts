@@ -2,7 +2,7 @@ import { Model, InferAttributes, InferCreationAttributes, CreationOptional ,Data
 import sequelize from '../config/dbConnection';
 import Token from './token';
 
-class User extends Model<InferAttributes<User, { omit: 'tokens' }>, InferCreationAttributes<User, { omit: 'tokens' }>>{
+export class User extends Model<InferAttributes<User, { omit: 'tokens' }>, InferCreationAttributes<User, { omit: 'tokens' }>>{
     declare id: CreationOptional<number>;
     declare first_name: string;
     declare last_name: string;
@@ -29,12 +29,12 @@ User.init(
         },
         createdAt: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
             defaultValue: DataTypes.NOW
         },
         updatedAt: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
             defaultValue: DataTypes.NOW
         }
     },

@@ -2,7 +2,7 @@ import { Model, CreationOptional ,DataTypes } from 'sequelize';
 import sequelize from '../config/dbConnection';
 
 
-class Token extends Model{
+export class Token extends Model{
     declare id: CreationOptional<number>;
     declare user_id: string;
     declare refresh_token: string;

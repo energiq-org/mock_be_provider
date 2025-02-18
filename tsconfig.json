@@ -7,6 +7,14 @@
     "esModuleInterop": true,
     "allowJs": true,
   },
-  "include": ["src/**/*.*", "eslint.config.mjs"],
-  "exclude": ["node_modules", "dist", "**/*.js"]
+  "include": [
+    "src/**/*.*",
+    "eslint.config.mjs"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.js",
+    "**/*.test.ts"
+  ]
 }
