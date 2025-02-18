@@ -1,0 +1,52 @@
+import { Request, Response } from 'express';
+import { generateAccessToken , generateRefreshToken , parseExpiration} from '../utils/token';
+import User from '../models/user';
+import Token from '../models/token';
+import config from '../config/env';
+import bcrypt from 'bcrypt';
+
+
+
+const loginController =  async(req: Request, res: Response) => {
+
+    try{
+        const { email, password } = req.body as { email: string, password: string };
+        const user = await User.findOne({ where: { email: email } });
+
+        if(!user){
+            return res.status(401).json({ msg: 'User not found' });
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.dataValues.password);
+
+        if (!isPasswordValid) {
+            return res.status(401).json({ msg: 'Invalid Password' });
+        }
+
+        const accessToken = generateAccessToken({ email: email  , userId: user.dataValues.id });
+
+        const refreshToken = generateRefreshToken();
+        const {value} = parseExpiration(config.REFRESH_TOKEN_LIFETIME);
+        const expiresAt = new Date(new Date().setDate(new Date().getDate() + value));
+
+        res.header('Authorization', `Bearer ${accessToken}`);
+
+        await Token.create({refresh_token: refreshToken, user_id: user.dataValues.id , expires_at: expiresAt });
+
+        return res.status(200).json(
+            {
+                accessToken,
+                accessTokenExpiresIn: config.ACCESS_TOKEN_LIFETIME,
+                refreshToken,
+                refreshTokenExpiresIn: config.REFRESH_TOKEN_LIFETIME
+            });
+
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            return res.status(500).json({ msg: error.message });
+        }
+    }
+} 
+
+export default loginController;

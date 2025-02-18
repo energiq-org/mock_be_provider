@@ -7,7 +7,7 @@ import morganBody from "morgan-body";
 import { summarise } from "swagger-routes-express";
 import YAML from "yamljs";
 import config from "./config/env";
-import { helloRouter } from "./routers/greeting";
+import  authRoutes  from "./routers/auth";
 import logger from "./utils/logging";
 
 function createServer(): Express {
@@ -35,7 +35,7 @@ function createServer(): Express {
 
   server.use(OpenApiValidator.middleware(validatorOptions));
 
-  server.use("/api/v1", helloRouter);
+  server.use("/api/auth", authRoutes);
 
   // error customization, if request is invalid
   server.use((err: object, _req: express.Request, res: express.Response, next: express.NextFunction) => {
