@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { validationResult } from 'express-validator';
+import { body , validationResult } from 'express-validator';
 
 const validateRequest = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
@@ -10,5 +10,20 @@ const validateRequest = (req: Request, res: Response, next: NextFunction) => {
     next();
 };
 
+
+
+export const validateRefreshToken = [
+    body("token")
+      .isString().withMessage("Token must be a string")
+        .notEmpty().withMessage("Token is required"),
+    
+    (req: Request, res: Response, next: NextFunction) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+      next();
+    },
+  ];
 
 export default validateRequest;

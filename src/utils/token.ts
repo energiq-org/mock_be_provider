@@ -3,7 +3,8 @@ import config from '../config/env';
 import {StringValue} from 'ms'
 import crypto from 'crypto';
 
-const generateAccessToken = (payload: jwt.JwtPayload): string => {
+
+const generateAccessToken = (payload: jwt.JwtPayload | { userId: number; email: string }): string => {
     try {
         const options: jwt.SignOptions = {
             expiresIn: config.ACCESS_TOKEN_LIFETIME as StringValue ,

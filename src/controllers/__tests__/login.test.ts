@@ -5,6 +5,7 @@ import Token from '../../models/token';
 import bcrypt from 'bcrypt';
 import sequelize from '../../config/dbConnection';
 
+
 describe('Login Controller', () => {
     const app = createServer();
     

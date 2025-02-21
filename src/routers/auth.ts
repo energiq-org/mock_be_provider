@@ -2,6 +2,8 @@ import { Router } from 'express'
 import { body } from 'express-validator';
 import loginController from '../controllers/login';
 import validateRequest from '../middlewares/validator';
+import  validateRefreshToken  from "../middlewares/validator";
+import refreshTokenController  from "../controllers/refresh";
 
 const router: Router = Router()
 
@@ -18,5 +20,6 @@ router.post('/login', [
     loginController);
 
 
+router.post("/refresh", validateRefreshToken, refreshTokenController);
 
 export default router;
