@@ -17,13 +17,13 @@ const loginController =  async(req: Request, res: Response) => {
             return res.status(401).json({ msg: 'User not found' });
         }
 
-        const isPasswordValid = await bcrypt.compare(password, user.dataValues.password);
+        const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
             return res.status(401).json({ msg: 'Invalid Password' });
         }
 
-        const accessToken = generateAccessToken({ email: email  , userId: user.dataValues.id });
+        const accessToken = generateAccessToken({ email: email  , userId: user.id });
 
         const refreshToken = generateRefreshToken();
         const {value} = parseExpiration(config.REFRESH_TOKEN_LIFETIME);
@@ -31,7 +31,7 @@ const loginController =  async(req: Request, res: Response) => {
 
         res.header('Authorization', `Bearer ${accessToken}`);
 
-        await Token.create({refresh_token: refreshToken, user_id: user.dataValues.id , expires_at: expiresAt });
+        await Token.create({refresh_token: refreshToken, user_id: user.id , expires_at: expiresAt });
 
         return res.status(200).json(
             {
