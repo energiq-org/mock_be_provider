@@ -8,8 +8,8 @@ class User extends Model<InferAttributes<User, { omit: 'tokens' }>, InferCreatio
     declare last_name: string;
     declare password: string;
     declare email: string;
-    declare createdAt: Date;
-    declare updatedAt: Date;
+    declare createdAt: CreationOptional<Date>;
+    declare updatedAt: CreationOptional<Date>;
     declare tokens?: NonAttribute<Token[]>;
 }
 
