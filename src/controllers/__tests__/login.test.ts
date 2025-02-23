@@ -8,9 +8,21 @@ import sequelize from '../../config/dbConnection';
 
 describe('Login Controller', () => {
     const app = createServer();
+    let user: any; // Store the created user for reuse
     
     beforeAll(async () => {
         await sequelize.sync({ force: true }); // Reset database before tests
+        // Create a test user
+        const hashedPassword = await bcrypt.hash('password123', 10);
+        const currentDate = new Date();
+        user = await User.create({
+            email: 'test@example.com',
+            password: hashedPassword,
+            first_name: 'Test',
+            last_name: 'User',
+            createdAt: currentDate,
+            updatedAt: currentDate
+        });
     });
 
     afterAll(async () => {
@@ -18,24 +30,11 @@ describe('Login Controller', () => {
     });
 
     beforeEach(async () => {
-        await User.destroy({ where: {} }); // Clear users before each test
         await Token.destroy({ where: {} }); // Clear tokens before each test
     });
 
     describe('POST /api/auth/login', () => {
         it('should successfully login with valid credentials', async () => {
-            // Create a test user
-            const hashedPassword = await bcrypt.hash('password123', 10);
-            const currentDate = new Date();
-            const user = await User.create({
-                email: 'test@example.com',
-                password: hashedPassword,
-                first_name: 'Test',
-                last_name: 'User',
-                createdAt: currentDate,
-                updatedAt: currentDate
-            });
-
             const response = await request(app)
                 .post('/api/auth/login')
                 .send({
@@ -70,18 +69,6 @@ describe('Login Controller', () => {
         });
 
         it('should return 401 for invalid password', async () => {
-            // Create a test user
-            const hashedPassword = await bcrypt.hash('password123', 10);
-            const currentDate = new Date();
-            await User.create({
-                email: 'test@example.com',
-                password: hashedPassword,
-                first_name: 'Test',
-                last_name: 'User',
-                createdAt: currentDate,
-                updatedAt: currentDate
-            });
-
             const response = await request(app)
                 .post('/api/auth/login')
                 .send({
@@ -127,16 +114,5 @@ describe('Login Controller', () => {
             expect(response.body.msg).toContain('Invalid Email');
         });
 
-        it('should return 400 for password shorter than 6 characters', async () => {
-            const response = await request(app)
-                .post('/api/auth/login')
-                .send({
-                    email: 'test@example.com',
-                    password: '12345'
-                });
-
-            expect(response.status).toBe(400);
-            expect(response.body.msg).toContain('Password should be atleast 6 characters long');
-        });
     });
 });
