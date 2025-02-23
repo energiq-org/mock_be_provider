@@ -28,8 +28,6 @@ async function loginController(req: Request, res: Response) {
 
     const expiresAt = new Date(new Date().setDate(new Date().getDate() + Number(value)));
 
-    res.header("Authorization", `Bearer ${accessToken}`);
-
     await Token.create({ refresh_token: refreshToken, user_id: user.id, expires_at: expiresAt });
 
     return res.status(200).json({
