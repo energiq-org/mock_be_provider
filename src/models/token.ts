@@ -7,6 +7,7 @@ class Token extends Model {
   declare refresh_token: string;
   declare expires_at: Date;
   declare revoked_at: Date;
+
 }
 
 Token.init(

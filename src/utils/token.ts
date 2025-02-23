@@ -3,7 +3,7 @@ import config from "../config/env";
 import { StringValue } from "ms";
 import crypto from "crypto";
 
-function generateAccessToken(payload: jwt.JwtPayload): string {
+function generateAccessToken(payload: jwt.JwtPayload | { userId: number; email: string }): string {
   const options: jwt.SignOptions = {
     expiresIn: config.ACCESS_TOKEN_LIFETIME as StringValue,
     algorithm: "HS256",
