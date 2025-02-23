@@ -1,18 +1,18 @@
 import { createServer } from "./app";
 import config from "./config/env";
 import logger from "./utils/logging";
-import sequelize from "./config/dbConnection";
+import { sequelize } from "./config/dbConnection";
 
 const startServer = async () => {
-    const server = createServer();
-    server.listen(config.LISTEN_PORT);
-    logger.info(`Listening on http://localhost:${config.LISTEN_PORT}`);
+  const server = createServer();
+  server.listen(config.LISTEN_PORT);
+  logger.info(`Listening on http://localhost:${config.LISTEN_PORT}`);
 
-    await sequelize.authenticate();
-    logger.info("Database connection has been established successfully.");
+  await sequelize.authenticate();
+  logger.info("Database connection has been established successfully.");
 
-    await sequelize.sync({ alter: true });    
-}
+  await sequelize.sync({ alter: true });
+};
 
 startServer().catch((err) => {
   logger.error(`Error Occurred: ${err instanceof Error ? err.message : JSON.stringify(err)}`);
