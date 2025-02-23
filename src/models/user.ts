@@ -2,7 +2,6 @@ import { Model, InferAttributes, InferCreationAttributes, CreationOptional, Data
 import { sequelize } from "../config/dbConnection";
 import { Token } from "./token";
 
-
 class User extends Model<InferAttributes<User, { omit: "tokens" }>, InferCreationAttributes<User, { omit: "tokens" }>> {
   declare id: CreationOptional<number>;
   declare first_name: string;
@@ -12,7 +11,6 @@ class User extends Model<InferAttributes<User, { omit: "tokens" }>, InferCreatio
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
   declare tokens?: NonAttribute<Token[]>;
-
 }
 
 User.init(
