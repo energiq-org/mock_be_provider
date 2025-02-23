@@ -7,7 +7,7 @@ import morganBody from "morgan-body";
 import { summarise } from "swagger-routes-express";
 import YAML from "yamljs";
 import config from "./config/env";
-import { helloRouter } from "./routers/greeting";
+import { authRouter } from "./routers/auth";
 import logger from "./utils/logging";
 
 function createServer(): Express {
@@ -27,15 +27,15 @@ function createServer(): Express {
   }
 
   // setup API validator
-  const validatorOptions = {
-    apiSpec: yamlSpecFile,
-    validateRequests: config.SPEC_REQUEST_VALIDATION,
-    validateResponses: config.SPEC_RESPONSE_VALIDATION,
-  };
+  // const validatorOptions = {
+  //   apiSpec: yamlSpecFile,
+  //   validateRequests: config.SPEC_REQUEST_VALIDATION,
+  //   validateResponses: config.SPEC_RESPONSE_VALIDATION,
+  // };
 
-  server.use(OpenApiValidator.middleware(validatorOptions));
+  // server.use(OpenApiValidator.middleware(validatorOptions));
 
-  server.use("/api/v1", helloRouter);
+  server.use("/api/v1/auth", authRouter);
 
   // error customization, if request is invalid
   server.use((err: object, _req: express.Request, res: express.Response, next: express.NextFunction) => {

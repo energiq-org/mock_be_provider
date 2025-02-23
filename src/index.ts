@@ -1,13 +1,19 @@
-// import db from "@src/utils/db";
 import { createServer } from "./app";
 import config from "./config/env";
 import logger from "./utils/logging";
+import { sequelize } from "./config/dbConnection";
 
-try {
+const startServer = async () => {
   const server = createServer();
   server.listen(config.LISTEN_PORT);
   logger.info(`Listening on http://localhost:${config.LISTEN_PORT}`);
-} catch (err) {
-  logger.error(`Failed to start server: ${JSON.stringify(err)}`);
-  process.exit(1);
-}
+
+  await sequelize.authenticate();
+  logger.info("Database connection has been established successfully.");
+
+  await sequelize.sync({ alter: true });
+};
+
+startServer().catch((err) => {
+  logger.error(`Error Occurred: ${err instanceof Error ? err.message : JSON.stringify(err)}`);
+});
