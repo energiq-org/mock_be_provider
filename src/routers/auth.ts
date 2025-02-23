@@ -1,9 +1,9 @@
-import { Router } from 'express'
-import { body } from 'express-validator';
-import loginController from '../controllers/login';
-import validateRequest from '../middlewares/validator';
-import refreshTokenController  from "../controllers/refresh";
-
+import { Router } from "express";
+import { body } from "express-validator";
+import { loginController } from "../controllers/login";
+import { logoutController } from "../controllers/logout";
+import {refreshTokenController}  from "../controllers/refresh";
+import { validateRequest } from "../middlewares/validator";
 
 const authRouter: Router = Router();
 
@@ -25,4 +25,14 @@ authRouter.post(
 
 authRouter.post("/refresh", [body("refreshToken").notEmpty().withMessage("Token is required").isString().withMessage("Invalid Token").trim()], refreshTokenController);
 
+
+
+authRouter.post(
+  "/logout",
+  [body("refreshToken").notEmpty().withMessage("Token is required").isString().withMessage("Invalid Token").trim()],
+  validateRequest,
+  logoutController
+);
+
 export { authRouter };
+
