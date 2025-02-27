@@ -1,7 +1,7 @@
 import { Token } from "../models/token";
 import { Request, Response } from "express";
 
-async function logoutController(req: Request, res: Response) {
+export async function logoutController(req: Request, res: Response) {
   try {
     const { refreshToken } = req.body as { refreshToken: string };
 
@@ -19,5 +19,3 @@ async function logoutController(req: Request, res: Response) {
     }
   }
 }
-
-export { logoutController };

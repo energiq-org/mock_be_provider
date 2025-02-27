@@ -2,26 +2,27 @@ import { Model, CreationOptional, DataTypes } from "sequelize";
 import { sequelize } from "../config/dbConnection";
 import { UUID } from "crypto";
 
-class Token extends Model {
+class VerificationCode extends Model {
   declare id: CreationOptional<UUID>;
   declare user_id: UUID;
-  declare refresh_token: string;
+  declare email: string;
+  declare code: string;
+  declare used: boolean;
   declare expires_at: Date;
-  declare revoked_at: Date;
 }
 
-Token.init(
+VerificationCode.init(
   {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    user_id: {
-      type: DataTypes.UUID,
+    email: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
-    refresh_token: {
+    code: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -29,14 +30,15 @@ Token.init(
       type: DataTypes.DATE,
       allowNull: false,
     },
-    revoked_at: {
-      type: DataTypes.DATE,
+    used: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
   },
   {
-    tableName: "tokens",
+    tableName: "verification_codes",
     sequelize,
   }
 );
 
-export { Token };
+export { VerificationCode };

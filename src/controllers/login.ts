@@ -4,8 +4,11 @@ import { User } from "../models/user";
 import { Token } from "../models/token";
 import config from "../config/env";
 import bcrypt from "bcrypt";
+import { generateVerificationCode } from "../utils/verification_code";
+import { VerificationCode } from "../models/verification_code";
+import { sendVerificationEmail } from "../services/mail";
 
-async function loginController(req: Request, res: Response) {
+export async function loginController(req: Request, res: Response) {
   try {
     const { email, password } = req.body as { email: string; password: string };
     const user = await User.findOne({ where: { email: email } });
@@ -20,11 +23,20 @@ async function loginController(req: Request, res: Response) {
       return res.status(401).json({ msg: "invalid Password" });
     }
 
+    const isUserVerified = user.email_verified;
+
+    if (!isUserVerified) {
+      const verificationCode = generateVerificationCode();
+      const expires_at = new Date(new Date().setMinutes(new Date().getMinutes() + config.VERIFICARTION_TOKEN_LIFETIME));
+      await VerificationCode.create({ user_id: user.id, email, code: verificationCode, expires_at });
+      await sendVerificationEmail(email, verificationCode);
+      return res.status(401).json({ msg: "user is not verified and verification code has been sent" });
+    }
+
     const accessToken = generateAccessToken({ email: email, userId: user.id });
 
     const refreshToken = generateRefreshToken();
     const value = config.REFRESH_TOKEN_LIFETIME.split("d")[0];
-    console.log(value);
 
     const expiresAt = new Date(new Date().setDate(new Date().getDate() + Number(value)));
 
@@ -42,5 +54,3 @@ async function loginController(req: Request, res: Response) {
     }
   }
 }
-
-export { loginController };

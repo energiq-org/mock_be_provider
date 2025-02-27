@@ -3,7 +3,7 @@ import { User } from "../models/user";
 import { Token } from "../models/token";
 import { generateAccessToken } from "../utils/token";
 
-const refreshTokenController = async (req: Request, res: Response) => {
+export async function refreshTokenController(req: Request, res: Response) {
   console.log("Refresh token request received");
   try {
     const { token } = req.body as { token: string };
@@ -56,6 +56,4 @@ const refreshTokenController = async (req: Request, res: Response) => {
     console.error("Error refreshing token:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
-};
-
-export { refreshTokenController };
+}

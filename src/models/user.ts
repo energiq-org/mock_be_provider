@@ -1,13 +1,16 @@
 import { Model, InferAttributes, InferCreationAttributes, CreationOptional, DataTypes, NonAttribute } from "sequelize";
 import { sequelize } from "../config/dbConnection";
 import { Token } from "./token";
+import { VerificationCode } from "./verification_code";
+import { UUID } from "crypto";
 
 class User extends Model<InferAttributes<User, { omit: "tokens" }>, InferCreationAttributes<User, { omit: "tokens" }>> {
-  declare id: CreationOptional<number>;
+  declare id: CreationOptional<UUID>;
   declare first_name: string;
   declare last_name: string;
   declare password: string;
   declare email: string;
+  declare email_verified: CreationOptional<boolean>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
   declare tokens?: NonAttribute<Token[]>;
@@ -26,6 +29,10 @@ User.init(
     email: {
       type: DataTypes.STRING,
       unique: true,
+    },
+    email_verified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -54,6 +61,12 @@ User.hasMany(Token, {
   sourceKey: "id",
   foreignKey: "user_id",
   as: "tokens",
+});
+
+User.hasMany(VerificationCode, {
+  sourceKey: "id",
+  foreignKey: "user_id",
+  as: "verification_codes",
 });
 
 export { User };

@@ -19,6 +19,8 @@ export default cleanEnv(process.env, {
   DB_USERNAME: str(),
   DB_PASSWORD: str(),
   DB_NAME: str(),
+  VERIFICARTION_TOKEN_LIFETIME: num({ default: 10 }),
+  SENDGRID_API_KEY: str(),
   JWT_SECRET: str(),
   REFRESH_TOKEN_LIFETIME: tokenLifetimeValidator(str({ default: "30d" })),
   ACCESS_TOKEN_LIFETIME: tokenLifetimeValidator(str({ default: "6h" })),
