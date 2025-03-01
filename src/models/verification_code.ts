@@ -1,6 +1,6 @@
-import { Model, CreationOptional, DataTypes } from "sequelize";
-import { sequelize } from "../config/dbConnection";
 import { UUID } from "crypto";
+import { CreationOptional, DataTypes, Model } from "sequelize";
+import { sequelize } from "../config/dbConnection";
 
 class VerificationCode extends Model {
   declare id: CreationOptional<UUID>;
@@ -9,6 +9,7 @@ class VerificationCode extends Model {
   declare code: string;
   declare used: boolean;
   declare expires_at: Date;
+  declare created_at: CreationOptional<Date>;
 }
 
 VerificationCode.init(
@@ -34,9 +35,15 @@ VerificationCode.init(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
   },
   {
     tableName: "verification_codes",
+    timestamps: false,
     sequelize,
   }
 );
