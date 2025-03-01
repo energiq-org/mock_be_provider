@@ -14,7 +14,7 @@ async function sendEmail(options: { to: string; subject: string; html: string; t
   await sgMail.send(mailOptions);
 }
 
-async function sendVerificationEmail(email: string, code: string | number): Promise<void> {
+async function sendVerificationEmail(email: string, code: string): Promise<void> {
   const subject = "Verify Your Email Address";
 
   const html = `

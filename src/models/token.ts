@@ -9,6 +9,7 @@ class Token extends Model {
   declare expires_at: Date;
   declare revoked_at: Date;
   declare created_at: CreationOptional<Date>;
+  declare updated_at: CreationOptional<Date>;
 }
 
 Token.init(
@@ -37,11 +38,22 @@ Token.init(
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
-    }
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
   },
   {
     tableName: "tokens",
+    timestamps: false,
     sequelize,
+    hooks: {
+      beforeUpdate: (token: Token) => {
+        token.updated_at = new Date();
+      },
+    },
   }
 );
 

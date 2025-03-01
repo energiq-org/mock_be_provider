@@ -43,13 +43,19 @@ VerificationCode.init(
     },
     updated_at: {
       type: DataTypes.DATE,
-      allowNull: true,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
     },
   },
   {
     tableName: "verification_codes",
     timestamps: false,
     sequelize,
+    hooks: {
+      beforeUpdate: (code: VerificationCode) => {
+        code.updated_at = new Date();
+      },
+    },
   }
 );
 
