@@ -10,6 +10,7 @@ class VerificationCode extends Model {
   declare used: boolean;
   declare expires_at: Date;
   declare created_at: CreationOptional<Date>;
+  declare updated_at: CreationOptional<Date>;
 }
 
 VerificationCode.init(
@@ -39,6 +40,10 @@ VerificationCode.init(
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   },
   {

@@ -1,19 +1,23 @@
-import { Model, InferAttributes, InferCreationAttributes, CreationOptional, DataTypes, NonAttribute } from "sequelize";
+import { UUID } from "crypto";
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute } from "sequelize";
 import { sequelize } from "../config/dbConnection";
 import { Token } from "./token";
 import { VerificationCode } from "./verification_code";
-import { UUID } from "crypto";
 
-class User extends Model<InferAttributes<User, { omit: "tokens" }>, InferCreationAttributes<User, { omit: "tokens" }>> {
+class User extends Model<
+  InferAttributes<User, { omit: "tokens" | "verification_codes" }>,
+  InferCreationAttributes<User, { omit: "tokens" | "verification_codes" }>
+> {
   declare id: CreationOptional<UUID>;
   declare first_name: string;
   declare last_name: string;
   declare password: string;
   declare email: string;
   declare email_verified: CreationOptional<boolean>;
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
+  declare created_at: CreationOptional<Date>;
+  declare updated_at: CreationOptional<Date>;
   declare tokens?: NonAttribute<Token[]>;
+  declare verification_codes?: NonAttribute<VerificationCode[]>;
 }
 
 User.init(
@@ -34,12 +38,12 @@ User.init(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    createdAt: {
+    created_at: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
     },
-    updatedAt: {
+    updated_at: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
@@ -48,10 +52,10 @@ User.init(
   {
     tableName: "users",
     sequelize,
-    timestamps: true,
+    timestamps: false,
     hooks: {
       beforeUpdate: (user: User) => {
-        user.updatedAt = new Date();
+        user.updated_at = new Date();
       },
     },
   }

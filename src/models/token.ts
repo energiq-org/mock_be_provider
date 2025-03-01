@@ -1,6 +1,6 @@
-import { Model, CreationOptional, DataTypes } from "sequelize";
-import { sequelize } from "../config/dbConnection";
 import { UUID } from "crypto";
+import { CreationOptional, DataTypes, Model } from "sequelize";
+import { sequelize } from "../config/dbConnection";
 
 class Token extends Model {
   declare id: CreationOptional<UUID>;
@@ -8,6 +8,7 @@ class Token extends Model {
   declare refresh_token: string;
   declare expires_at: Date;
   declare revoked_at: Date;
+  declare created_at: CreationOptional<Date>;
 }
 
 Token.init(
@@ -32,6 +33,11 @@ Token.init(
     revoked_at: {
       type: DataTypes.DATE,
     },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    }
   },
   {
     tableName: "tokens",
