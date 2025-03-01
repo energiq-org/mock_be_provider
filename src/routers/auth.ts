@@ -44,7 +44,7 @@ authRouter.post(
       .notEmpty()
       .withMessage("Password is required")
       .isLength({ min: 6 })
-      .withMessage("Password should be atleast 6 characters long"),
+      .withMessage("Password should be at least 6 characters long"),
   ],
   validateRequest,
   signupController
