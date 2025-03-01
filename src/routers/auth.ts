@@ -5,7 +5,6 @@ import { body } from "express-validator";
 import { loginController } from "../controllers/auth/login";
 import { logoutController } from "../controllers/auth/logout";
 import { refreshTokenController } from "../controllers/auth/refresh";
-import { signupController } from "../controllers/signup";
 import { validateRequest } from "../middlewares/validator";
 
 const authRouter: Router = Router();
@@ -18,36 +17,10 @@ authRouter.post(
       .notEmpty()
       .withMessage("Password is required")
       .isLength({ min: 6 })
-      .withMessage("Password should be atleast 6 characters long"),
+      .withMessage("Password should be at least 6 characters long"),
   ],
   validateRequest,
   loginController
-);
-
-authRouter.post(
-  "/signup",
-  [
-    body("first_name")
-      .notEmpty()
-      .withMessage("First name is required")
-      .isString()
-      .withMessage("Invalid First Name")
-      .trim(),
-    body("last_name")
-      .notEmpty()
-      .withMessage("Last name is required")
-      .isString()
-      .withMessage("Invalid Last Name")
-      .trim(),
-    body("email").notEmpty().withMessage("Email is required").isEmail().withMessage("Invalid Emaild").trim(),
-    body("password")
-      .notEmpty()
-      .withMessage("Password is required")
-      .isLength({ min: 6 })
-      .withMessage("Password should be atleast 6 characters long"),
-  ],
-  validateRequest,
-  signupController
 );
 
 authRouter.post(

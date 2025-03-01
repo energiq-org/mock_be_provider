@@ -2,37 +2,22 @@ import { UUID } from "crypto";
 import { CreationOptional, DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/dbConnection";
 
-class Token extends Model {
+class UserVehicle extends Model {
   declare id: CreationOptional<UUID>;
+  declare vehicle_id: number;
   declare user_id: UUID;
-  declare refresh_token: string;
-  declare expires_at: Date;
-  declare revoked_at: Date;
   declare created_at: CreationOptional<Date>;
 }
 
-Token.init(
+UserVehicle.init(
   {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    user_id: {
-      type: DataTypes.UUID,
-      allowNull: false,
-    },
-    refresh_token: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    expires_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-    revoked_at: {
-      type: DataTypes.DATE,
-    },
+    user_id: DataTypes.UUID,
+    vehicle_id: DataTypes.INTEGER,
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -40,10 +25,10 @@ Token.init(
     },
   },
   {
-    tableName: "tokens",
-    timestamps: false,
+    tableName: "user_vehicles",
     sequelize,
+    timestamps: false,
   }
 );
 
-export { Token };
+export { UserVehicle };
