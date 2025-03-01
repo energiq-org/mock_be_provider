@@ -1,24 +1,19 @@
 import { Request, Response } from "express";
-import { fuzzySearcher } from "../utils/vehiclesStore";
+import { fuzzySearcher, Vehicle } from "../utils/vehiclesStore";
 
 function getVehicleController(req: Request, res: Response) {
   const { id, model } = req.query as { id?: string; model?: string };
 
+  let response: Vehicle[] | Vehicle | null = null;
+
   if (id !== undefined) {
-    const vehicle = fuzzySearcher.findById(parseInt(id));
-    if (vehicle) {
-      return res.json(vehicle);
-    }
-    return res.status(404).json({ message: "vehicle not found" });
+    response = fuzzySearcher.findById(parseInt(id));
+  } else if (model !== undefined) {
+    response = fuzzySearcher.find({ model });
+  } else {
+    response = fuzzySearcher.list();
   }
-
-  if (model !== undefined) {
-    const vehicles = fuzzySearcher.find({ model });
-    return res.json(vehicles);
-  }
-
-  const vehicles = fuzzySearcher.list();
-  return res.json(vehicles);
+  return res.json(response);
 }
 
 export { getVehicleController };
