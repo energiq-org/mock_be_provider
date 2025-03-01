@@ -1,12 +1,14 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+
 import { Router } from "express";
 import { body } from "express-validator";
-import { loginController } from "../controllers/login";
-import { logoutController } from "../controllers/logout";
-import { refreshTokenController } from "../controllers/refresh";
-import { validateRequest } from "../middlewares/validator";
+import { loginController } from "../controllers/auth/login";
+import { logoutController } from "../controllers/auth/logout";
+import { refreshTokenController } from "../controllers/auth/refresh";
 import { signupController } from "../controllers/signup";
+import { validateRequest } from "../middlewares/validator";
 
-export const authRouter: Router = Router();
+const authRouter: Router = Router();
 
 authRouter.post(
   "/login",
@@ -56,7 +58,9 @@ authRouter.post(
 
 authRouter.post(
   "/logout",
-  [body("refreshToken").notEmpty().withMessage("Token is required").isString().withMessage("Invalid Token").trim()],
+  [body("refresh_token").notEmpty().withMessage("token is required").isString().withMessage("invalid Token").trim()],
   validateRequest,
   logoutController
 );
+
+export { authRouter };
