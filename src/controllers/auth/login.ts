@@ -1,14 +1,14 @@
-import { Request, Response } from "express";
-import { generateAccessToken, generateRefreshToken } from "../utils/token";
-import { User } from "../models/user";
-import { Token } from "../models/token";
-import config from "../config/env";
 import bcrypt from "bcrypt";
-import { generateVerificationCode } from "../utils/verification_code";
-import { VerificationCode } from "../models/verification_code";
-import { sendVerificationEmail } from "../services/mail";
+import { Request, Response } from "express";
+import config from "../../config/env";
+import { Token } from "../../models/token";
+import { User } from "../../models/user";
+import { VerificationCode } from "../../models/verification_code";
+import { sendVerificationEmail } from "../../services/mail";
+import { generateAccessToken, generateRefreshToken } from "../../utils/token";
+import { generateOTP } from "../../utils/verification_code";
 
-export async function loginController(req: Request, res: Response) {
+async function loginController(req: Request, res: Response) {
   try {
     const { email, password } = req.body as { email: string; password: string };
     const user = await User.findOne({ where: { email: email } });
@@ -26,10 +26,12 @@ export async function loginController(req: Request, res: Response) {
     const isUserVerified = user.email_verified;
 
     if (!isUserVerified) {
-      const verificationCode = generateVerificationCode();
-      const expires_at = new Date(new Date().setMinutes(new Date().getMinutes() + config.VERIFICARTION_TOKEN_LIFETIME));
+      const verificationCode = generateOTP();
+      const expires_at = new Date(new Date().setMinutes(new Date().getMinutes() + config.VERIFICATION_CODE_LIFETIME));
+
       await VerificationCode.create({ user_id: user.id, email, code: verificationCode, expires_at });
       await sendVerificationEmail(email, verificationCode);
+
       return res.status(401).json({ msg: "user is not verified and verification code has been sent" });
     }
 
@@ -49,8 +51,8 @@ export async function loginController(req: Request, res: Response) {
       refreshTokenExpiresIn: config.REFRESH_TOKEN_LIFETIME,
     });
   } catch (error) {
-    if (error instanceof Error) {
-      return res.status(500).json({ msg: error.message });
-    }
+    return res.status(500).json({ msg: (error as Error).message });
   }
 }
+
+export { loginController };
