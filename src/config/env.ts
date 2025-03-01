@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { bool, cleanEnv, num, str, makeValidator } from "envalid";
+import { bool, cleanEnv, makeValidator, num, str } from "envalid";
 
 const tokenLifetimeValidator = makeValidator((value: string) => {
   const match = value.match(/^(\d+)([dhm])$/);
@@ -19,6 +19,9 @@ export default cleanEnv(process.env, {
   DB_USERNAME: str(),
   DB_PASSWORD: str(),
   DB_NAME: str(),
+  VERIFICATION_CODE_LIFETIME: num({ default: 10 }),
+  SENDGRID_API_KEY: str(),
+  EMAIL_SENDER: str(),
   JWT_SECRET: str(),
   REFRESH_TOKEN_LIFETIME: tokenLifetimeValidator(str({ default: "30d" })),
   ACCESS_TOKEN_LIFETIME: tokenLifetimeValidator(str({ default: "6h" })),
