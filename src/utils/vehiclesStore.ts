@@ -19,7 +19,7 @@ type Vehicle = {
 /* eslint-disable no-unused-vars */
 // this is just interface method definitions, hence of course there will be unused vars
 interface VehiclesStore {
-  findById(id: number): Vehicle | undefined;
+  findById(id: number): Vehicle | null;
   list(): Vehicle[];
   find(query: { model: string }): Vehicle[];
 }
@@ -43,8 +43,8 @@ class VehiclesJsonLoader implements VehiclesStore {
   //     return VehiclesJsonLoader.instance;
   // }
 
-  findById(id: number): Vehicle | undefined {
-    return this.vehicles.find((vehicle) => vehicle.id === id);
+  findById(id: number): Vehicle | null {
+    return this.vehicles.find((vehicle) => vehicle.id === id) ?? null;
   }
 
   list(): Vehicle[] {
@@ -58,4 +58,4 @@ class VehiclesJsonLoader implements VehiclesStore {
 
 const fuzzySearcher = new VehiclesJsonLoader();
 
-export { fuzzySearcher };
+export { fuzzySearcher, Vehicle };
