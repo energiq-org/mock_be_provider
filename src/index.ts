@@ -1,7 +1,7 @@
 import { createServer } from "./app";
+import { sequelize } from "./config/dbConnection";
 import config from "./config/env";
 import logger from "./utils/logging";
-import { sequelize } from "./config/dbConnection";
 
 const startServer = async () => {
   const server = createServer();
@@ -11,7 +11,7 @@ const startServer = async () => {
   await sequelize.authenticate();
   logger.info("Database connection has been established successfully.");
 
-  await sequelize.sync({ alter: true });
+  await sequelize.sync({ [config.DB_SYNC_POLICY]: true });
 };
 
 startServer().catch((err) => {
