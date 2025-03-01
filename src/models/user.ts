@@ -19,6 +19,11 @@ class User extends Model<
   declare verification_codes?: NonAttribute<VerificationCode[]>;
 }
 
+/*
+  * We used to have updated_at column in the table because Samy likes keeping track of stuff
+  * but no body gives a shit about it hence it was nuked by me
+*/
+
 User.init(
   {
     id: {
