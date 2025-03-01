@@ -6,7 +6,7 @@ import { VerificationCode } from "../../models/verificationCode";
 import { sendVerificationEmail } from "../../services/mail";
 import { generateOTP } from "../../utils/verificationCode";
 
-async function signupController(req: Request, res: Response){
+async function signupController(req: Request, res: Response) {
   try {
     const { first_name, last_name, email, password } = req.body as {
       first_name: string;
@@ -18,7 +18,7 @@ async function signupController(req: Request, res: Response){
     const user = await User.findOne({ where: { email: email } });
     if (user) {
       res.status(409).json({ msg: "user with this email already exists" });
-      return
+      return;
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -30,10 +30,10 @@ async function signupController(req: Request, res: Response){
     await sendVerificationEmail(email, verificationCode);
 
     res.status(201).json({ msg: "user created successfully" });
-    return
+    return;
   } catch (error) {
     res.status(500).json({ msg: (error as Error).message });
-    return
+    return;
   }
 }
 
