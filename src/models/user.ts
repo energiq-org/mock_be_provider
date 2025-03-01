@@ -2,7 +2,7 @@ import { UUID } from "crypto";
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute } from "sequelize";
 import { sequelize } from "../config/dbConnection";
 import { Token } from "./token";
-import { VerificationCode } from "./verification_code";
+import { VerificationCode } from "./verificationCode";
 
 class User extends Model<
   InferAttributes<User, { omit: "tokens" | "verification_codes" }>,
@@ -15,7 +15,6 @@ class User extends Model<
   declare email: string;
   declare email_verified: CreationOptional<boolean>;
   declare created_at: CreationOptional<Date>;
-  declare updated_at: CreationOptional<Date>;
   declare tokens?: NonAttribute<Token[]>;
   declare verification_codes?: NonAttribute<VerificationCode[]>;
 }
@@ -43,21 +42,11 @@ User.init(
       allowNull: false,
       defaultValue: DataTypes.NOW,
     },
-    updated_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
   },
   {
     tableName: "users",
     sequelize,
     timestamps: false,
-    hooks: {
-      beforeUpdate: (user: User) => {
-        user.updated_at = new Date();
-      },
-    },
   }
 );
 

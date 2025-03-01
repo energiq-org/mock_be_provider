@@ -3,10 +3,10 @@ import { Request, Response } from "express";
 import config from "../../config/env";
 import { Token } from "../../models/token";
 import { User } from "../../models/user";
-import { VerificationCode } from "../../models/verification_code";
+import { VerificationCode } from "../../models/verificationCode";
 import { sendVerificationEmail } from "../../services/mail";
 import { generateAccessToken, generateRefreshToken } from "../../utils/token";
-import { generateOTP } from "../../utils/verification_code";
+import { generateOTP } from "../../utils/verificationCode";
 
 async function loginController(req: Request, res: Response) {
   try {

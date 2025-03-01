@@ -8,6 +8,7 @@ import { summarise } from "swagger-routes-express";
 import YAML from "yamljs";
 import config from "./config/env";
 import { authRouter } from "./routers/auth";
+import { usersRouter } from "./routers/users";
 import { vehiclesRouter } from "./routers/vehicles";
 import logger from "./utils/logging";
 
@@ -38,6 +39,7 @@ function createServer(): Express {
 
   server.use("/api/v1/auth", authRouter);
   server.use("/api/v1/vehicles", vehiclesRouter);
+  server.use("/api/v1/users", usersRouter);
 
   // error customization, if request is invalid
   server.use((err: object, _req: express.Request, res: express.Response, next: express.NextFunction) => {
