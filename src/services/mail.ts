@@ -3,37 +3,20 @@ import config from "../config/env";
 
 sgMail.setApiKey(config.SENDGRID_API_KEY);
 
-interface EmailOptions {
-  to: string;
-  subject: string;
-  html: string;
-  text: string;
+async function sendEmail(options: { to: string; subject: string; html: string; text: string }) {
+  const mailOptions = {
+    from: config.EMAIL_SENDER,
+    to: options.to,
+    subject: options.subject,
+    html: options.html,
+    text: options.text,
+  };
+  await sgMail.send(mailOptions);
 }
 
-async function sendEmail(options: EmailOptions): Promise<void> {
-  try {
-    const mailOptions = {
-      from: "mahmoudsamyzx11@gmail.com",
-      to: options.to,
-      subject: options.subject,
-      html: options.html,
-      text: options.text,
-    };
-
-    await sgMail.send(mailOptions);
-    console.log(`Email sent to ${options.to}`);
-  } catch (error) {
-    if (error instanceof Error) {
-      console.log(error);
-      throw new Error(error.message || "Failed to send email");
-    }
-  }
-}
-
-export async function sendVerificationEmail(email: string, code: string): Promise<void> {
+async function sendVerificationEmail(email: string, code: string | number): Promise<void> {
   const subject = "Verify Your Email Address";
 
-  // HTML version with some basic styling
   const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #333;">Email Verification</h2>
@@ -70,3 +53,5 @@ export async function sendVerificationEmail(email: string, code: string): Promis
     text,
   });
 }
+
+export { sendVerificationEmail };
