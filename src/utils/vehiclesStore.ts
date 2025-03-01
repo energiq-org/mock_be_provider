@@ -26,7 +26,7 @@ interface VehiclesStore {
 
 /*
  * The commented code is the singleton pattern implementation of Omar's style
- * but Samy does not like it so we will do at his way because he is the boss and I can't say shit.
+ * but Samy does not like it so we will do his way because he is the boss and I can't say shit.
  */
 class VehiclesJsonLoader implements VehiclesStore {
   // private static instance: VehiclesJsonLoader | null = null;
