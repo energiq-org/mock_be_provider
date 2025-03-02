@@ -1,10 +1,10 @@
 import bcrypt from "bcrypt";
+import { UUID } from "crypto";
 import { Request, Response } from "express";
 import path from "path";
 import config from "../../config/env.ts";
 import { User } from "../../models/user.ts";
 import { VerificationCode } from "../../models/verificationCode.ts";
-import { AuthorizedResponse } from "../../types/express.ts";
 import { sendVerificationEmail } from "../../utils/mail.ts";
 import { generateOTP } from "../../utils/verificationCode.ts";
 
@@ -45,8 +45,9 @@ async function updateUserController(
     unknown,
     { first_name: string; last_name: string; email: string; password: string; phone_number: string }
   >,
-  res: AuthorizedResponse
+  res: Response
 ) {
+  const userId = req["userId"] as UUID;
   try {
     const queryBody = {
       first_name: req.body.first_name,
@@ -58,7 +59,7 @@ async function updateUserController(
 
     if (req.file) {
       const ext = path.extname(req.file.originalname).toLowerCase();
-      const fileName = `${res.locals.userId}-${Date.now()}${ext}`;
+      const fileName = `${userId}-${Date.now()}${ext}`;
       // Upload the file to S3
       // const fileUrl = await uploadFileToS3(req.file.buffer, fileName);
       const fileUrl = `https://your-bucket-name.s3.your-region.amazonaws.com/${fileName}`;
@@ -67,7 +68,7 @@ async function updateUserController(
 
     await User.update(queryBody, {
       where: {
-        id: res.locals.userId,
+        id: userId,
       },
     });
     return res.status(200).json("User updated successfully");
@@ -78,4 +79,5 @@ async function updateUserController(
 
 export { updateUserController };
 
-export { signupController };
+  export { signupController };
+

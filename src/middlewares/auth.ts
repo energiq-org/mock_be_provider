@@ -22,7 +22,6 @@ function authMiddleware(req: Request, res: Response, next: NextFunction) {
   }
 
   req["userId"] = tokenPayload.userId;
-  res.locals.user = tokenPayload;
   next();
 }
 
