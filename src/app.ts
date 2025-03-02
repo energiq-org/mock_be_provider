@@ -6,11 +6,11 @@ import morgan from "morgan";
 import morganBody from "morgan-body";
 import { summarise } from "swagger-routes-express";
 import YAML from "yamljs";
-import config from "./config/env";
-import { authRouter } from "./routers/auth";
-import { usersRouter } from "./routers/users";
-import { vehiclesRouter } from "./routers/vehicles";
-import logger from "./utils/logging";
+import config from "./config/env.ts";
+import { authRouter } from "./routers/auth.ts";
+import { usersRouter } from "./routers/users.ts";
+import { vehiclesRouter } from "./routers/vehicles.ts";
+import logger from "./utils/logging.ts";
 
 function createServer(): Express {
   const yamlSpecFile = "./openapi.yml";

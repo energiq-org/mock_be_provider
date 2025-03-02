@@ -1,30 +1,29 @@
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
-import config from "../../config/env";
-import { Token } from "../../models/token";
-import { User } from "../../models/user";
-import { VerificationCode } from "../../models/verificationCode";
-import { sendVerificationEmail } from "../../services/mail";
-import { generateAccessToken, generateRefreshToken } from "../../utils/token";
-import { generateOTP } from "../../utils/verificationCode";
+import config from "../../config/env.ts";
+import { Token } from "../../models/token.ts";
+import { User } from "../../models/user.ts";
+import { VerificationCode } from "../../models/verificationCode.ts";
+import { loginSchema } from "../../schemas/auth.ts";
+import { sendVerificationEmail } from "../../utils/mail.ts";
+import { generateAccessToken, generateRefreshToken } from "../../utils/token.ts";
+import { generateOTP } from "../../utils/verificationCode.ts";
 
-async function loginController(req: Request, res: Response) {
+async function loginController(req: Request<unknown, unknown, typeof loginSchema.infer>, res: Response) {
   try {
-    const { email, password } = req.body as { email: string; password: string };
-    const user = await User.findOne({ where: { email: email } });
+    const { email, password } = req.body;
 
+    const user = await User.findOne({ where: { email: email } });
     if (!user) {
       return res.status(401).json({ msg: "user not found" });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-
     if (!isPasswordValid) {
       return res.status(401).json({ msg: "invalid Password" });
     }
 
     const isUserVerified = user.email_verified;
-
     if (!isUserVerified) {
       const verificationCode = generateOTP();
       const expires_at = new Date(new Date().setMinutes(new Date().getMinutes() + config.VERIFICATION_CODE_LIFETIME));

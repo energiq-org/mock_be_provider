@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { query } from "express-validator";
-import { getVehicleController } from "../controllers/vehicles/vehicles";
-import { validateRequest } from "../middlewares/validator";
+import { getVehicleController } from "../controllers/vehicles/index.ts";
+import { validateRequest } from "../middlewares/validator.ts";
 
 const vehiclesRouter = Router();
 

@@ -1,7 +1,7 @@
-import jwt from "jsonwebtoken";
-import config from "../config/env";
-import { StringValue } from "ms";
 import crypto from "crypto";
+import jwt from "jsonwebtoken";
+import { StringValue } from "ms";
+import config from "../config/env.ts";
 
 function generateAccessToken(payload: jwt.JwtPayload | { userId: number; email: string }): string {
   const options: jwt.SignOptions = {

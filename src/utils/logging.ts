@@ -1,6 +1,6 @@
 import winston from "winston";
 
-import config from "../config/env";
+import config from "../config/env.ts";
 
 // npm debug levels (winston default):
 // {

@@ -1,7 +1,7 @@
 import { UUID } from "crypto";
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import config from "../config/env";
+import config from "../config/env.ts";
 
 function authMiddleware(req: Request, res: Response, next: NextFunction) {
   const token = (req.headers["authorization"] as string)?.split(" ")[1];

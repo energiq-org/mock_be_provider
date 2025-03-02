@@ -1,7 +1,7 @@
 import { UUID } from "crypto";
 import { Request, Response } from "express";
-import { UserVehicle } from "../../models/userVehicles";
-import { fuzzySearcher } from "../../utils/vehiclesStore";
+import { UserVehicle } from "../../models/userVehicles.ts";
+import { fuzzySearcher } from "../../utils/vehiclesStore.ts";
 
 async function addUserVehicleController(req: Request, res: Response) {
   const userId = req["userId"] as UUID;

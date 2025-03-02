@@ -1,9 +1,9 @@
 import { UUID } from "crypto";
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute } from "sequelize";
-import { sequelize } from "../config/dbConnection";
-import { Token } from "./token";
-import { VerificationCode } from "./verificationCode";
-import { UserVehicle } from "./userVehicles";
+import { sequelize } from "../config/dbConnection.ts";
+import { Token } from "./token.ts";
+import { UserVehicle } from "./userVehicles.ts";
+import { VerificationCode } from "./verificationCode.ts";
 
 class User extends Model<
   InferAttributes<User, { omit: "tokens" | "verification_codes" | "user_vehicles" }>,

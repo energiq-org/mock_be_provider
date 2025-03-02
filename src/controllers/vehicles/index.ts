@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { fuzzySearcher, Vehicle } from "../../utils/vehiclesStore";
+import { fuzzySearcher, Vehicle } from "../../utils/vehiclesStore.ts";
 
 function getVehicleController(req: Request, res: Response) {
   const { id, model } = req.query as { id?: string; model?: string };

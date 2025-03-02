@@ -1,7 +1,7 @@
-import { createServer } from "./app";
-import { sequelize } from "./config/dbConnection";
-import config from "./config/env";
-import logger from "./utils/logging";
+import { createServer } from "./app.ts";
+import { sequelize } from "./config/dbConnection.ts";
+import config from "./config/env.ts";
+import logger from "./utils/logging.ts";
 
 const startServer = async () => {
   const server = createServer();
