@@ -41,10 +41,9 @@ async function signupController(req: Request, res: Response) {
 
 async function updateUserController(
   req: Request<
-    object,
-    object,
-    { first_name: string; last_name: string; email: string; password: string; phone_number: string },
-    { userId: string }
+    unknown,
+    unknown,
+    { first_name: string; last_name: string; email: string; password: string; phone_number: string }
   >,
   res: AuthorizedResponse
 ) {
@@ -68,7 +67,7 @@ async function updateUserController(
 
     await User.update(queryBody, {
       where: {
-        id: req.query.userId,
+        id: res.locals.userId,
       },
     });
     return res.status(200).json("User updated successfully");
