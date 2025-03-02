@@ -3,10 +3,11 @@ import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, 
 import { sequelize } from "../config/dbConnection";
 import { Token } from "./token";
 import { VerificationCode } from "./verificationCode";
+import { UserVehicle } from "./userVehicles";
 
 class User extends Model<
-  InferAttributes<User, { omit: "tokens" | "verification_codes" }>,
-  InferCreationAttributes<User, { omit: "tokens" | "verification_codes" }>
+  InferAttributes<User, { omit: "tokens" | "verification_codes" | "user_vehicles" }>,
+  InferCreationAttributes<User, { omit: "tokens" | "verification_codes" | "user_vehicles" }>
 > {
   declare id: CreationOptional<UUID>;
   declare first_name: string;
@@ -14,15 +15,18 @@ class User extends Model<
   declare password: string;
   declare email: string;
   declare email_verified: CreationOptional<boolean>;
+  declare phone_number: CreationOptional<string>;
+  declare profile_picture: CreationOptional<string>;
   declare created_at: CreationOptional<Date>;
   declare tokens?: NonAttribute<Token[]>;
   declare verification_codes?: NonAttribute<VerificationCode[]>;
+  declare user_vehicles?: NonAttribute<UserVehicle[]>;
 }
 
 /*
-  * We used to have updated_at column in the table because Samy likes keeping track of stuff
-  * but no body gives a shit about it hence it was nuked by me
-*/
+ * We used to have updated_at column in the table because Samy likes keeping track of stuff
+ * but no body gives a shit about it hence it was nuked by me
+ */
 
 User.init(
   {
@@ -42,6 +46,8 @@ User.init(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    phone_number: DataTypes.STRING,
+    profile_picture: DataTypes.STRING,
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -65,6 +71,12 @@ User.hasMany(VerificationCode, {
   sourceKey: "id",
   foreignKey: "user_id",
   as: "verification_codes",
+});
+
+User.hasMany(UserVehicle, {
+  sourceKey: "id",
+  foreignKey: "user_id",
+  as: "user_vehicles",
 });
 
 export { User };
