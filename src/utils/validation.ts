@@ -1,6 +1,6 @@
-import { type, Type } from "arktype";
+import { type } from "arktype";
 
-function validateArkTypeSchema(input: unknown, schema: Type): { isValid: boolean; message?: string } {
+function validateArkTypeSchema(input: unknown, schema: type): { isValid: boolean; message?: string } {
   const validationResult = schema(input);
   if (validationResult instanceof type.errors) {
     return { isValid: false, message: validationResult.summary };

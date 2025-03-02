@@ -9,6 +9,7 @@ import { sendVerificationEmail } from "../../utils/mail.ts";
 import { generateAccessToken, generateRefreshToken } from "../../utils/token.ts";
 import { generateOTP } from "../../utils/verificationCode.ts";
 
+
 async function loginController(req: Request<unknown, unknown, typeof loginSchema.infer>, res: Response) {
   try {
     const { email, password } = req.body;
