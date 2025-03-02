@@ -5,6 +5,8 @@ import { User } from "../../models/user";
 import { VerificationCode } from "../../models/verificationCode";
 import { sendVerificationEmail } from "../../services/mail";
 import { generateOTP } from "../../utils/verificationCode";
+import jdenticon from "jdenticon";
+import fs from "fs";
 
 async function signupController(req: Request, res: Response) {
   try {
@@ -25,6 +27,10 @@ async function signupController(req: Request, res: Response) {
     const newUser = await User.create({ first_name, last_name, email, password: hashedPassword });
     const verificationCode = generateOTP();
     const expires_at = Date.now() + config.VERIFICATION_CODE_LIFETIME * 60 * 1000;
+
+    const png = jdenticon.toPng(newUser.id, 400);
+    //will create a file named testicon.png in the root directory of the project for testing purposes , later we will upload it to s3
+    fs.writeFileSync("./testicon.png", png);
 
     await VerificationCode.create({ user_id: newUser.id, email, code: verificationCode, expires_at });
     await sendVerificationEmail(email, verificationCode);
