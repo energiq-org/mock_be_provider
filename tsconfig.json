@@ -24,5 +24,10 @@
     "dist",
     "**/*.js",
     "**/*.test.ts"
-  ]
+  ],
+  "ts-node": {
+    "experimentalSpecifierResolution": "node",
+    "transpileOnly": true,
+    "esm": true,
+  }
 }
