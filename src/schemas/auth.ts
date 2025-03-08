@@ -13,4 +13,28 @@ const refreshSchema = type({
 });
 const logoutSchema = tokenSchema.pick("refresh_token");
 
-export { accessTokenPayloadSchema, loginSchema, logoutSchema, refreshSchema };
+const accessTokenSchema = type({
+  access_token: "string",
+});
+
+// Response schemas
+const loginResponseSchema = type({
+  access_token: accessTokenSchema.get("access_token"),
+  refresh_token: tokenSchema.get("refresh_token"),
+});
+
+const refreshResponseSchema = type({
+  access_token: accessTokenSchema.get("access_token"),
+  refresh_token: tokenSchema.get("refresh_token"),
+  access_token_expires_in: "number",
+  refresh_token_expires_in: "number",
+});
+
+export {
+  accessTokenPayloadSchema,
+  loginResponseSchema,
+  loginSchema,
+  logoutSchema,
+  refreshResponseSchema,
+  refreshSchema,
+};
