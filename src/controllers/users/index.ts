@@ -2,12 +2,14 @@ import bcrypt from "bcrypt";
 import { UUID } from "crypto";
 import { Request, Response } from "express";
 import path from "path";
+import fs from "fs";
 import config from "../../config/env.ts";
 import { User } from "../../models/user.ts";
 import { VerificationCode } from "../../models/verificationCode.ts";
 import { sendVerificationEmail } from "../../utils/mail.ts";
 import { generateOTP } from "../../utils/verificationCode.ts";
 import { signupSchema, updateUserSchema } from "../../schemas/users.ts";
+import * as jdenticon from "jdenticon";
 
 async function signupController(req: Request<unknown, unknown, typeof signupSchema.infer>, res: Response) {
   try {
@@ -20,7 +22,10 @@ async function signupController(req: Request<unknown, unknown, typeof signupSche
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await User.create({ first_name, last_name, email, password: hashedPassword });
+    const userId = crypto.randomUUID();
+    const png = jdenticon.toPng(userId, 400);
+    fs.writeFileSync("./testicon.png", png);
+    const newUser = await User.create({ id:userId, first_name, last_name, email, password: hashedPassword });
     const verificationCode = generateOTP();
     const expires_at = Date.now() + config.VERIFICATION_CODE_LIFETIME * 60 * 1000;
 
