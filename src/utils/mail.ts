@@ -3,7 +3,6 @@ import config from "../config/env.ts";
 
 sgMail.setApiKey(config.SENDGRID_API_KEY);
 
-
 async function sendVerificationEmail(email: string, code: string): Promise<void> {
   const subject = "Verify Your Email Address";
 
@@ -21,12 +20,12 @@ async function sendVerificationEmail(email: string, code: string): Promise<void>
       </div>
     `;
 
-    await sgMail.send({
-      from: config.EMAIL_SENDER,
-      to: email,
-      subject,
-      html,
-    })
+  await sgMail.send({
+    from: config.EMAIL_SENDER,
+    to: email,
+    subject,
+    html,
+  });
 }
 
 const sendWelcomeEmail = async (email: string, name: string): Promise<void> => {
@@ -51,8 +50,7 @@ const sendWelcomeEmail = async (email: string, name: string): Promise<void> => {
     to: email,
     subject,
     html,
-  })
-  
+  });
 };
 
 export { sendVerificationEmail, sendWelcomeEmail };

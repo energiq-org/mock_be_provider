@@ -64,17 +64,12 @@ usersRouter.post(
   addUserVehicleController
 );
 
-usersRouter.post(
-  "/verify",
-  arktypeRequestValidator(verifyEmailSchema, "query"),
-  verifyEmailController
-);
+usersRouter.post("/verify", arktypeRequestValidator(verifyEmailSchema, "query"), verifyEmailController);
 
 usersRouter.post(
   "/send-verification-email",
   arktypeRequestValidator(sentVerificationEmailSchema, "body"),
   sendVerificationEmailController
 );
-
 
 export { usersRouter };

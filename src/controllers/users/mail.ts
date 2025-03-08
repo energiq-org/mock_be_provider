@@ -6,7 +6,6 @@ import { verifyEmailSchema, sentVerificationEmailSchema } from "../../schemas/us
 import { generateOTP } from "../../utils/verificationCode.ts";
 import config from "../../config/env.ts";
 
-
 async function verifyEmailController(
   req: Request<unknown, unknown, unknown, typeof verifyEmailSchema.infer>,
   res: Response
@@ -18,9 +17,9 @@ async function verifyEmailController(
     if (!userVerificationCode) {
       return res.status(404).json({ msg: "Invalid Code" });
     }
-    
-    if(userVerificationCode.email !== email){
-        return res.status(409).json({ msg: "Invalid Operatrion" });
+
+    if (userVerificationCode.email !== email) {
+      return res.status(409).json({ msg: "Invalid Operatrion" });
     }
 
     if (userVerificationCode.used) {
@@ -33,15 +32,14 @@ async function verifyEmailController(
 
     const user = await User.findOne({ where: { email } });
     if (!user) {
-        return res.status(404).json({ msg: "user not found" });
+      return res.status(404).json({ msg: "user not found" });
     }
 
-  
-    if(!user.email_verified){
-        await user.update({ email_verified: true } );
+    if (!user.email_verified) {
+      await user.update({ email_verified: true });
     }
     await userVerificationCode.update({ used: true });
-    
+
     await sendWelcomeEmail(email, user.first_name);
 
     return res.status(200).json({ msg: "Email verified successfully" });
