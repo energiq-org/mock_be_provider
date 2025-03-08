@@ -4,15 +4,66 @@ import { Router } from "express";
 import { loginController } from "../controllers/auth/login.ts";
 import { logoutController } from "../controllers/auth/logout.ts";
 import { refreshTokenController } from "../controllers/auth/refresh.ts";
+import { generateJSONRequestBody, generateJSONResponse, getErrorResponses } from "../docs/helpers.ts";
+import { docs } from "../docs/index.ts";
 import { arktypeRequestValidator } from "../middlewares/validator.ts";
-import { loginSchema, logoutSchema, refreshSchema } from "../schemas/auth.ts";
+import {
+  loginResponseSchema,
+  loginSchema,
+  logoutSchema,
+  refreshResponseSchema,
+  refreshSchema,
+} from "../schemas/auth.ts";
+import { successResponseSchema } from "../schemas/common-responses.ts";
 
 const authRouter: Router = Router();
 
-authRouter.post("/login", arktypeRequestValidator(loginSchema, "body"), loginController);
+authRouter.post(
+  "/login",
+  docs.path({
+    tags: ["auth"],
+    summary: "Login user",
+    description: "Authenticate user with email and password",
+    requestBody: generateJSONRequestBody(loginSchema, "Login request body"),
+    responses: {
+      "200": generateJSONResponse(loginResponseSchema, "Login successful"),
+      ...getErrorResponses(["400", "401", "404", "500"]),
+    },
+  }),
+  arktypeRequestValidator(loginSchema, "body"),
+  loginController
+);
 
-authRouter.post("/refresh", arktypeRequestValidator(refreshSchema, "body"), refreshTokenController);
+authRouter.post(
+  "/refresh",
+  docs.path({
+    tags: ["auth"],
+    summary: "Refresh token",
+    description: "Refresh token",
+    requestBody: generateJSONRequestBody(refreshSchema, "Refresh token request body"),
+    responses: {
+      "200": generateJSONResponse(refreshResponseSchema, "Refresh token successful"),
+      ...getErrorResponses(["400", "401", "404", "500"]),
+    },
+  }),
+  arktypeRequestValidator(refreshSchema, "body"),
+  refreshTokenController
+);
 
-authRouter.post("/logout", arktypeRequestValidator(logoutSchema, "body"), logoutController);
+authRouter.post(
+  "/logout",
+  docs.path({
+    tags: ["auth"],
+    summary: "Logout user",
+    description: "Logout user",
+    requestBody: generateJSONRequestBody(logoutSchema, "Logout request body"),
+    responses: {
+      "200": generateJSONResponse(successResponseSchema, "Logout successful"),
+      ...getErrorResponses(["400", "401", "404", "500"]),
+    },
+  }),
+  arktypeRequestValidator(logoutSchema, "body"),
+  logoutController
+);
 
 export { authRouter };

@@ -1,4 +1,21 @@
 /* eslint-disable no-unused-vars */
+type SecuritySchemeType = "apiKey" | "http" | "oauth2" | "openIdConnect";
+
+interface SecuritySchemeObject {
+  type: SecuritySchemeType;
+  description?: string;
+  name?: string;
+  in?: "query" | "header" | "cookie";
+  scheme?: string;
+  bearerFormat?: string;
+  flows?: {
+    implicit?: OAuth2FlowObject;
+    password?: OAuth2FlowObject;
+    clientCredentials?: OAuth2FlowObject;
+    authorizationCode?: OAuth2FlowObject;
+  };
+  openIdConnectUrl?: string;
+}
 
 type SchemaObject =
   | {
@@ -36,7 +53,7 @@ type RequestBodyObject = {
 };
 
 type ResponseObject = {
-  description: string;
+  description?: string;
   content: {
     [mediaType: string]: {
       schema: SchemaObject;
@@ -93,8 +110,14 @@ declare module "@wesleytodd/openapi" {
   }
 
   interface OpenAPI {
+    options: {
+      basePath: string;
+    };
+    document: object;
+    generateDocument(document: object, _router: Express.Router, basePath: string): OpenAPI;
     (req: import("express").Request, res: import("express").Response, next: import("express").NextFunction): void;
     path(config: PathMethodObject): import("express").RequestHandler;
+    securitySchemes(name: string, schemes: SecuritySchemeObject): void;
     swaggerui(): import("express").RequestHandler;
   }
 
