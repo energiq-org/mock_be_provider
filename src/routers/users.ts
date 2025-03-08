@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { sendVerificationEmailController, verifyEmailController } from "@src/controllers/users/mail.ts";
 import { Router } from "express";
 import { signupController, updateUserController } from "../controllers/users/index.ts";
+import { sendVerificationEmailController, verifyEmailController } from "../controllers/users/mail.ts";
 import { addUserVehicleController } from "../controllers/users/userVehicles.ts";
 import { generateJSONRequestBody, generateJSONResponse, getSecuritySchemes } from "../docs/helpers.ts";
 import { docs } from "../docs/index.ts";
