@@ -1,5 +1,5 @@
 import { type } from "arktype";
-
+import { codeSchema } from "./codes.ts";
 const userSchema = type({
   id: "string.uuid",
   first_name: type.string,
@@ -11,4 +11,11 @@ const userSchema = type({
   created_at: type.Date,
 });
 
-export { userSchema };
+const signupSchema = userSchema.pick("first_name", "last_name", "email", "password");
+const verifyEmailSchema = type({
+  email: userSchema.get("email"),
+  code: codeSchema.get("code"),
+});
+const updateUserSchema = userSchema.pick("first_name", "last_name", "email", "password", "phone_number");
+
+export { userSchema, signupSchema, verifyEmailSchema, updateUserSchema };

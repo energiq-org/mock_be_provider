@@ -7,15 +7,11 @@ import { User } from "../../models/user.ts";
 import { VerificationCode } from "../../models/verificationCode.ts";
 import { sendVerificationEmail } from "../../utils/mail.ts";
 import { generateOTP } from "../../utils/verificationCode.ts";
+import { signupSchema, updateUserSchema } from "../../schemas/users.ts";
 
-async function signupController(req: Request, res: Response) {
+async function signupController(req: Request<unknown, unknown, typeof signupSchema.infer>, res: Response) {
   try {
-    const { first_name, last_name, email, password } = req.body as {
-      first_name: string;
-      last_name: string;
-      email: string;
-      password: string;
-    };
+    const { first_name, last_name, email, password } = req.body;
 
     const user = await User.findOne({ where: { email: email } });
     if (user) {
@@ -39,14 +35,7 @@ async function signupController(req: Request, res: Response) {
   }
 }
 
-async function updateUserController(
-  req: Request<
-    unknown,
-    unknown,
-    { first_name: string; last_name: string; email: string; password: string; phone_number: string }
-  >,
-  res: Response
-) {
+async function updateUserController(req: Request<unknown, unknown, typeof updateUserSchema.infer>, res: Response) {
   const userId = req["userId"] as UUID;
   try {
     const queryBody = {
@@ -77,7 +66,4 @@ async function updateUserController(
   }
 }
 
-export { updateUserController };
-
-  export { signupController };
-
+export { signupController, updateUserController };

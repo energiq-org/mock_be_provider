@@ -28,7 +28,6 @@ class User extends Model<
  * but no body gives a shit about it hence it was nuked by me
  */
 
-
 User.init(
   {
     id: {
