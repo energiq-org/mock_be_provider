@@ -20,14 +20,16 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
+    "@scalar/express-api-reference": "^0.4.192",
     "@sendgrid/mail": "^8.1.4",
+    "@wesleytodd/openapi": "^1.1.0",
     "arktype": "^2.1.2",
     "bcrypt": "^5.1.1",
     "connect": "^3.7.0",
     "crypto": "^1.0.1",
     "envalid": "^8.0.0",
     "express": "^4.21.1",
-    "express-openapi-validator": "^5.3.9",
+    "express-openapi-validator": "^5.4.6",
     "express-validator": "^7.2.1",
     "fuzzy-search": "^3.2.1",
     "install": "^0.13.0",
@@ -41,6 +43,7 @@
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.5",
     "swagger-routes-express": "^3.3.2",
+    "swagger-ui-express": "^5.0.1",
     "tsconfig-paths": "^4.2.0",
     "winston": "^3.17.0",
     "yamljs": "^0.3.0"
@@ -57,6 +60,7 @@
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.10.1",
     "@types/supertest": "^2.0.16",
+    "@types/swagger-ui-express": "^4.1.8",
     "@types/yamljs": "^0.2.34",
     "@typescript-eslint/eslint-plugin": "^8.25.0",
     "@typescript-eslint/parser": "^8.25.0",
