@@ -1,6 +1,6 @@
 import { UUID } from "crypto";
 import { CreationOptional, DataTypes, Model } from "sequelize";
-import { sequelize } from "../config/dbConnection";
+import { sequelize } from "../config/dbConnection.ts";
 
 class Token extends Model {
   declare id: CreationOptional<UUID>;

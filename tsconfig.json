@@ -2,11 +2,18 @@
   "extends": "@tsconfig/node20/tsconfig.json"
 ,
   "compilerOptions": {
+    "paths": {
+      "@src/*": ["src/*"]
+    },
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "baseUrl": ".",
     "outDir": "dist",
     "noImplicitAny": false,
     "esModuleInterop": true,
-    "allowJs": true
+    "allowJs": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true
   },
   "include": [
     "src/**/*.*",
@@ -17,5 +24,10 @@
     "dist",
     "**/*.js",
     "**/*.test.ts"
-  ]
+  ],
+  "ts-node": {
+    "experimentalSpecifierResolution": "node",
+    "transpileOnly": true,
+    "esm": true,
+  }
 }

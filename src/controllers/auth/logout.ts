@@ -1,9 +1,10 @@
+import { logoutSchema } from "@src/schemas/auth.ts";
 import { Request, Response } from "express";
-import { Token } from "../../models/token";
+import { Token } from "../../models/token.ts";
 
-async function logoutController(req: Request, res: Response) {
+async function logoutController(req: Request<unknown, unknown, typeof logoutSchema.infer>, res: Response) {
   try {
-    const { refresh_token } = req.body as { refresh_token: string };
+    const { refresh_token } = req.body;
 
     const existingToken = await Token.findOne({ where: { refresh_token: refresh_token } });
     if (!existingToken) {

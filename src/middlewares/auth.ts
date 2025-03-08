@@ -1,7 +1,8 @@
-import { UUID } from "crypto";
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import config from "../config/env";
+import config from "../config/env.ts";
+import { accessTokenPayloadSchema } from "../schemas/auth.ts";
+import { validateArkTypeSchema } from "../utils/validation.ts";
 
 function authMiddleware(req: Request, res: Response, next: NextFunction) {
   const token = (req.headers["authorization"] as string)?.split(" ")[1];
@@ -9,18 +10,18 @@ function authMiddleware(req: Request, res: Response, next: NextFunction) {
     return res.status(401).json({ msg: "invalid token" });
   }
 
-  let tokenPayload: jwt.JwtPayload | string;
+  let tokenPayload: typeof accessTokenPayloadSchema.infer;
   try {
-    tokenPayload = jwt.verify(token, config.JWT_SECRET);
+    tokenPayload = jwt.verify(token, config.JWT_SECRET) as typeof accessTokenPayloadSchema.infer;
   } catch {
     return res.status(401).json({ msg: "unauthorized" });
   }
 
-  if (typeof tokenPayload === "string") {
-    return res.status(401).json({ msg: "invalid token payload" });
+  if (!validateArkTypeSchema(tokenPayload, accessTokenPayloadSchema).isValid) {
+    return res.status(401).json({ msg: "invalid token" });
   }
 
-  req["userId"] = tokenPayload.userId as UUID;
+  req["userId"] = tokenPayload.userId;
   next();
 }
 

@@ -1,11 +1,12 @@
+import { refreshSchema } from "@src/schemas/auth.ts";
 import { Request, Response } from "express";
-import { Token } from "../../models/token";
-import { User } from "../../models/user";
-import { generateAccessToken } from "../../utils/token";
+import { Token } from "../../models/token.ts";
+import { User } from "../../models/user.ts";
+import { generateAccessToken } from "../../utils/token.ts";
 
-async function refreshTokenController(req: Request, res: Response) {
+async function refreshTokenController(req: Request<unknown, unknown, typeof refreshSchema.infer>, res: Response) {
   try {
-    const { token } = req.body as { token: string };
+    const { token } = req.body;
 
     const storedToken = await Token.findOne({
       where: { refresh_token: token },

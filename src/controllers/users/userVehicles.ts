@@ -1,13 +1,13 @@
 import { UUID } from "crypto";
 import { Request, Response } from "express";
-import { UserVehicle } from "../../models/userVehicles";
-import { fuzzySearcher } from "../../utils/vehiclesStore";
+import { UserVehicle } from "../../models/userVehicles.ts";
+import { fuzzySearcher } from "../../utils/vehiclesStore.ts";
+import { addVehicleSchema } from "../../schemas/vehicles.ts";
 
-async function addUserVehicleController(req: Request, res: Response) {
-  const userId = req["userId"] as UUID;
-  const { vehicle_id } = req.body as { vehicle_id: number };
-
+async function addUserVehicleController(req: Request<unknown, unknown, typeof addVehicleSchema.infer>, res: Response) {
   try {
+    const userId = req["userId"] as UUID;
+    const { vehicle_id } = req.body;
     const vehicle = fuzzySearcher.findById(vehicle_id);
     if (!vehicle) {
       return res.status(400).json({ msg: "vehicle not found" });

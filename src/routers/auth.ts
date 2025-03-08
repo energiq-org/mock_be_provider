@@ -1,38 +1,68 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
 import { Router } from "express";
-import { body } from "express-validator";
-import { loginController } from "../controllers/auth/login";
-import { logoutController } from "../controllers/auth/logout";
-import { refreshTokenController } from "../controllers/auth/refresh";
-import { validateRequest } from "../middlewares/validator";
+import { loginController } from "../controllers/auth/login.ts";
+import { logoutController } from "../controllers/auth/logout.ts";
+import { refreshTokenController } from "../controllers/auth/refresh.ts";
+import { generateJSONRequestBody, generateJSONResponse, getErrorResponses } from "../docs/helpers.ts";
+import { docs } from "../docs/index.ts";
+import { arktypeRequestValidator } from "../middlewares/validator.ts";
+import {
+  loginResponseSchema,
+  loginSchema,
+  logoutSchema,
+  refreshResponseSchema,
+  refreshSchema,
+} from "../schemas/auth.ts";
+import { successResponseSchema } from "../schemas/common-responses.ts";
 
 const authRouter: Router = Router();
 
 authRouter.post(
   "/login",
-  [
-    body("email").notEmpty().withMessage("Email is required").isEmail().withMessage("Invalid Emaild").trim(),
-    body("password")
-      .notEmpty()
-      .withMessage("Password is required")
-      .isLength({ min: 6 })
-      .withMessage("Password should be at least 6 characters long"),
-  ],
-  validateRequest,
+  docs.path({
+    tags: ["auth"],
+    summary: "Login user",
+    description: "Authenticate user with email and password",
+    requestBody: generateJSONRequestBody(loginSchema, "Login request body"),
+    responses: {
+      "200": generateJSONResponse(loginResponseSchema, "Login successful"),
+      ...getErrorResponses(["400", "401", "404", "500"]),
+    },
+  }),
+  arktypeRequestValidator(loginSchema, "body"),
   loginController
 );
 
 authRouter.post(
   "/refresh",
-  [body("token").notEmpty().withMessage("Token is required").isString().withMessage("Invalid Token").trim()],
+  docs.path({
+    tags: ["auth"],
+    summary: "Refresh token",
+    description: "Refresh token",
+    requestBody: generateJSONRequestBody(refreshSchema, "Refresh token request body"),
+    responses: {
+      "200": generateJSONResponse(refreshResponseSchema, "Refresh token successful"),
+      ...getErrorResponses(["400", "401", "404", "500"]),
+    },
+  }),
+  arktypeRequestValidator(refreshSchema, "body"),
   refreshTokenController
 );
 
 authRouter.post(
   "/logout",
-  [body("refresh_token").notEmpty().withMessage("token is required").isString().withMessage("invalid Token").trim()],
-  validateRequest,
+  docs.path({
+    tags: ["auth"],
+    summary: "Logout user",
+    description: "Logout user",
+    requestBody: generateJSONRequestBody(logoutSchema, "Logout request body"),
+    responses: {
+      "200": generateJSONResponse(successResponseSchema, "Logout successful"),
+      ...getErrorResponses(["400", "401", "404", "500"]),
+    },
+  }),
+  arktypeRequestValidator(logoutSchema, "body"),
   logoutController
 );
 
