@@ -34,10 +34,16 @@ const conflictErrorSchema = type({
   error: "'CONFLICT_ERROR'",
 });
 
+const goneErrorSchema = type({
+  msg: type.string,
+  error: "'GONE_ERROR'",
+});
+
 export {
   badRequestErrorSchema,
   conflictErrorSchema,
   forbiddenErrorSchema,
+  goneErrorSchema,
   internalServerErrorSchema,
   notFoundErrorSchema,
   successResponseSchema,

@@ -8,8 +8,8 @@ const vehicleSchema = type({
 
 const addVehicleSchema = vehicleSchema.pick("vehicle_id");
 const getVehicleSchema = type({
-  id: type.string,
-  model: type.string,
+  "id?": "string",
+  "model?": "string",
 });
 
 export { vehicleSchema, addVehicleSchema, getVehicleSchema };

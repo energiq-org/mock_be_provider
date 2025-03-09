@@ -15,19 +15,19 @@ async function verifyEmailController(
     const userVerificationCode = await VerificationCode.findOne({ where: { code } });
 
     if (!userVerificationCode) {
-      return res.status(404).json({ msg: "Invalid Code" });
+      return res.status(404).json({ msg: "Code not found" });
     }
 
     if (userVerificationCode.email !== email) {
-      return res.status(409).json({ msg: "Invalid Operatrion" });
+      return res.status(400).json({ msg: "Invalid Operation" });
     }
 
     if (userVerificationCode.used) {
-      return res.status(409).json({ msg: "Code has already been used" });
+      return res.status(410).json({ msg: "Code has already been used" });
     }
 
     if (userVerificationCode.expires_at < new Date()) {
-      return res.status(409).json({ msg: "Code has expired" });
+      return res.status(410).json({ msg: "Code has expired" });
     }
 
     const user = await User.findOne({ where: { email } });

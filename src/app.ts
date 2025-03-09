@@ -17,6 +17,7 @@ function createServer() {
   const server = express();
 
   server.use(express.json());
+  // server.use(express.urlencoded({ extended: true }));
 
   if (config.HTTP_LOGGING) {
     server.use(morgan("dev"));
@@ -35,14 +36,14 @@ function createServer() {
   server.use(docs);
 
   server.use(
-    "/api/v1/docs/scalar",
+    "/docs/scalar",
     apiReference({
       spec: {
         content: openAPIDocs,
       },
     })
   );
-  server.use("/api/v1/docs/swagger", swaggerUi.serve, swaggerUi.setup(openAPIDocs));
+  server.use("/docs/swagger", swaggerUi.serve, swaggerUi.setup(openAPIDocs));
 
   // setup API validator
   // const validatorOptions: OpenApiValidatorOpts = {

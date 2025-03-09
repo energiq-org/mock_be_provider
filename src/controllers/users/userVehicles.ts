@@ -3,14 +3,19 @@ import { Request, Response } from "express";
 import { UserVehicle } from "../../models/userVehicles.ts";
 import { fuzzySearcher } from "../../utils/vehiclesStore.ts";
 import { addVehicleSchema } from "../../schemas/vehicles.ts";
+import { User } from "../../models/user.ts";
 
 async function addUserVehicleController(req: Request<unknown, unknown, typeof addVehicleSchema.infer>, res: Response) {
   try {
     const userId = req["userId"] as UUID;
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ msg: "user not found" });
+    }
     const { vehicle_id } = req.body;
     const vehicle = fuzzySearcher.findById(vehicle_id);
     if (!vehicle) {
-      return res.status(400).json({ msg: "vehicle not found" });
+      return res.status(404).json({ msg: "vehicle not found" });
     }
 
     await UserVehicle.create({

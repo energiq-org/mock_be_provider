@@ -23,6 +23,14 @@ const sentVerificationEmailSchema = type({
   email: userSchema.get("email"),
 });
 
-const updateUserSchema = userSchema.pick("first_name", "last_name", "email", "password", "phone_number");
+const updateUserSchema = type({
+  "first_name?": userSchema.get("first_name"),
+  "last_name?": userSchema.get("last_name"),
+  "email?": userSchema.get("email"),
+  "password?": userSchema.get("password"),
+  "phone_number?": userSchema.get("phone_number"),
+});
+
+console.log(updateUserSchema.toJsonSchema());
 
 export { userSchema, signupSchema, verifyEmailSchema, updateUserSchema, sentVerificationEmailSchema };

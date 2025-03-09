@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import multer from "multer";
 import path from "path";
-import logger from "../utils/logging.ts";
 
 function profilePictureMiddleware(req: Request, res: Response, next: NextFunction) {
   const upload = multer({
@@ -16,9 +15,7 @@ function profilePictureMiddleware(req: Request, res: Response, next: NextFunctio
       }
     },
   }).single("profile_picture");
-
-  if (req.headers["content-type"] !== undefined && req.headers["content-type"].includes("multipart/form-data.ts")) {
-    logger.info(req.headers);
+  if (req.headers["content-type"] !== undefined && req.headers["content-type"].includes("multipart/form-data")) {
     upload(req, res, (err) => {
       if (err instanceof multer.MulterError) {
         return res.status(400).json({ message: (err as Error).message });
