@@ -58,7 +58,7 @@ async function sendVerificationEmailController(
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
-      return res.status(404).json({ success: false, message: "user not found" });
+      return res.status(404).json({ message: "user not found" });
     }
 
     const verificationCode = generateOTP();
