@@ -12,4 +12,8 @@ const getVehicleSchema = type({
   "model?": "string",
 });
 
-export { vehicleSchema, addVehicleSchema, getVehicleSchema };
+const deleteUserVehicleSchema = type({
+  id: "string.numeric", 
+});
+
+export { vehicleSchema, addVehicleSchema, getVehicleSchema,deleteUserVehicleSchema };

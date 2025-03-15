@@ -29,4 +29,30 @@ async function addUserVehicleController(req: Request<unknown, unknown, typeof ad
   }
 }
 
-export { addUserVehicleController };
+async function deleteUserVehicleController(req: Request, res: Response) {
+  try {
+    const { id } = req.query;  
+    const vehicleId = parseInt(id as string); 
+
+    if (isNaN(vehicleId)) {
+      return res.status(400).json({ msg: "Invalid vehicle ID" });
+    }
+
+   
+    const vehicle = await UserVehicle.findOne({
+      where: { vehicle_id: vehicleId, user_id: req['userId'] },
+    });
+
+    if (!vehicle) {
+      return res.status(404).json({ msg: "Vehicle not found or not owned by the user" });
+    }
+
+    await vehicle.destroy();
+    return res.status(200).json({ msg: "Vehicle deleted successfully" });
+    
+  } catch (error) {
+    return res.status(500).json({ msg: (error as Error).message });
+  }
+}
+
+export { addUserVehicleController, deleteUserVehicleController };
