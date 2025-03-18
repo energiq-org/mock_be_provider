@@ -21,9 +21,9 @@ function generateJSONRequestBody(schema: type, description?: string) {
   };
 }
 
-function generateQueryRequestBody(schema: type) {
+function generateRequestParameters(schema: type, source: "query" | "path") {
   const parameters: Array<{
-    in: "query";
+    in: typeof source;
     name: string;
     schema: { type: string };
     required: boolean;
@@ -35,7 +35,7 @@ function generateQueryRequestBody(schema: type) {
   if (schemaObj?.properties) {
     for (const key of Object.keys(schemaObj.properties)) {
       parameters.push({
-        in: "query",
+        in: source,
         name: key,
         schema: { type: "string" },
         required: true,
@@ -50,6 +50,7 @@ function generateQueryRequestBody(schema: type) {
 function generateUpdateUserRequestBody() {
   return {
     required: true,
+    description: "The user data to update",
     content: {
       "multipart/form-data": {
         schema: {
@@ -122,9 +123,9 @@ function getSecuritySchemes() {
 
 export {
   generateJSONRequestBody,
-  generateQueryRequestBody,
   generateUpdateUserRequestBody,
   generateJSONResponse,
   getErrorResponses,
   getSecuritySchemes,
+  generateRequestParameters,
 };
