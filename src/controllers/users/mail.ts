@@ -61,6 +61,10 @@ async function sendVerificationEmailController(
       return res.status(404).json({ message: "user not found" });
     }
 
+    if (user?.email_verified) {
+      return res.status(400).json({ msg: "email already verified" });
+    }
+
     const verificationCode = generateOTP();
     const expires_at = Date.now() + config.VERIFICATION_CODE_LIFETIME * 60 * 1000;
     await VerificationCode.create({ user_id: user.id, email, code: verificationCode, expires_at });
