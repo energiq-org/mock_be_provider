@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { fuzzySearcher, Vehicle } from "../../utils/vehiclesStore.ts";
 import { getVehicleSchema } from "../../schemas/vehicles.ts";
-
+import { UserVehicle } from "@src/models/userVehicles.ts";
 function getVehicleController(req: Request<unknown, unknown, unknown, typeof getVehicleSchema.infer>, res: Response) {
   try {
     const { id, model } = req.query;

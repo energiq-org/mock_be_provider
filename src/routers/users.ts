@@ -2,7 +2,7 @@
 import { Router } from "express";
 import { signupController, updateUserController } from "../controllers/users/index.ts";
 import { sendVerificationEmailController, verifyEmailController } from "../controllers/users/mail.ts";
-import { addUserVehicleController } from "../controllers/users/userVehicles.ts";
+import { addUserVehicleController, deleteUserVehicleController } from "../controllers/users/userVehicles.ts";
 import {
   generateJSONRequestBody,
   generateJSONResponse,
@@ -17,7 +17,7 @@ import { profilePictureMiddleware } from "../middlewares/multer.ts";
 import { arktypeRequestValidator } from "../middlewares/validator.ts";
 import { successResponseSchema } from "../schemas/common-responses.ts";
 import { sentVerificationEmailSchema, signupSchema, updateUserSchema, verifyEmailSchema } from "../schemas/users.ts";
-import { addVehicleSchema } from "../schemas/vehicles.ts";
+import { addVehicleSchema, deleteUserVehicleSchema } from "../schemas/vehicles.ts";
 const usersRouter = Router();
 
 usersRouter.post(
@@ -72,6 +72,37 @@ usersRouter.post(
   arktypeRequestValidator(addVehicleSchema, "body"),
   addUserVehicleController
 );
+
+usersRouter.delete(
+  "/vehicles", 
+  docs.path({
+    summary: "Delete vehicle",
+    description: "Delete a vehicle from the user's list of vehicles",
+    tags: ["users"],
+    security: getSecuritySchemes(),
+    parameters: [
+      {
+        name: "id",
+        in: "query", 
+        required: true,
+        description: "The ID of the vehicle to be deleted",
+        schema: {
+          type: "string",
+        },
+      },
+    ],
+    responses: {
+      200: generateJSONResponse(successResponseSchema, "The vehicle was deleted successfully"),
+      ...getErrorResponses(["401", "404", "500"]),
+    },
+  }),
+  authMiddleware, 
+  arktypeRequestValidator(deleteUserVehicleSchema, "query"), 
+  deleteUserVehicleController
+);
+
+
+
 
 usersRouter.post(
   "/verify",
