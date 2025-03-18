@@ -8,8 +8,8 @@ import {
   generateJSONResponse,
   getErrorResponses,
   getSecuritySchemes,
-  generateQueryRequestBody,
   generateUpdateUserRequestBody,
+  generateRequestParameters,
 } from "../docs/helpers.ts";
 import { docs } from "../docs/index.ts";
 import { authMiddleware } from "../middlewares/auth.ts";
@@ -17,7 +17,7 @@ import { profilePictureMiddleware } from "../middlewares/multer.ts";
 import { arktypeRequestValidator } from "../middlewares/validator.ts";
 import { successResponseSchema } from "../schemas/common-responses.ts";
 import { sentVerificationEmailSchema, signupSchema, updateUserSchema, verifyEmailSchema } from "../schemas/users.ts";
-import { addVehicleSchema, deleteUserVehicleSchema } from "../schemas/vehicles.ts";
+import { vehicleIdSchema } from "../schemas/vehicles.ts";
 const usersRouter = Router();
 
 usersRouter.post(
@@ -56,53 +56,40 @@ usersRouter.patch(
 );
 
 usersRouter.post(
-  "/vehicles",
+  "/vehicles/:id",
   docs.path({
     summary: "Add vehicle",
     description: "Add vehicle to user",
     tags: ["users"],
     security: getSecuritySchemes(),
-    requestBody: generateJSONRequestBody(addVehicleSchema, "The vehicle to add"),
+    parameters: generateRequestParameters(vehicleIdSchema, "path"),
     responses: {
       201: generateJSONResponse(successResponseSchema, "The vehicle was added successfully"),
       ...getErrorResponses(["401", "404", "500"]),
     },
   }),
   authMiddleware,
-  arktypeRequestValidator(addVehicleSchema, "body"),
+  arktypeRequestValidator(vehicleIdSchema, "params"),
   addUserVehicleController
 );
 
 usersRouter.delete(
-  "/vehicles", 
+  "/vehicles/:id",
   docs.path({
     summary: "Delete vehicle",
     description: "Delete a vehicle from the user's list of vehicles",
     tags: ["users"],
     security: getSecuritySchemes(),
-    parameters: [
-      {
-        name: "id",
-        in: "query", 
-        required: true,
-        description: "The ID of the vehicle to be deleted",
-        schema: {
-          type: "string",
-        },
-      },
-    ],
+    parameters: generateRequestParameters(vehicleIdSchema, "path"),
     responses: {
       200: generateJSONResponse(successResponseSchema, "The vehicle was deleted successfully"),
-      ...getErrorResponses(["401", "404", "500"]),
+      ...getErrorResponses(["400", "404", "500"]),
     },
   }),
-  authMiddleware, 
-  arktypeRequestValidator(deleteUserVehicleSchema, "query"), 
+  authMiddleware,
+  arktypeRequestValidator(vehicleIdSchema, "params"),
   deleteUserVehicleController
 );
-
-
-
 
 usersRouter.post(
   "/verify",
@@ -110,7 +97,7 @@ usersRouter.post(
     summary: "Verify email",
     description: "Verify email",
     tags: ["users"],
-    parameters: generateQueryRequestBody(verifyEmailSchema),
+    parameters: generateRequestParameters(verifyEmailSchema, "query"),
     responses: {
       200: generateJSONResponse(successResponseSchema, "The email was verified successfully"),
       ...getErrorResponses(["400", "410", "404", "500"]),

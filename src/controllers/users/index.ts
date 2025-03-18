@@ -1,8 +1,6 @@
 import bcrypt from "bcrypt";
 import { UUID } from "crypto";
 import { Request, Response } from "express";
-import path from "path";
-import fs from "fs";
 import config from "../../config/env.ts";
 import { User } from "../../models/user.ts";
 import { VerificationCode } from "../../models/verificationCode.ts";
@@ -10,6 +8,7 @@ import { sendVerificationEmail } from "../../utils/mail.ts";
 import { generateOTP } from "../../utils/verificationCode.ts";
 import { signupSchema, updateUserSchema } from "../../schemas/users.ts";
 import * as jdenticon from "jdenticon";
+import { awsFolderNames, s3Handler } from "../../utils/s3.ts";
 
 async function signupController(req: Request<unknown, unknown, typeof signupSchema.infer>, res: Response) {
   try {
@@ -25,9 +24,9 @@ async function signupController(req: Request<unknown, unknown, typeof signupSche
     const userId = crypto.randomUUID();
 
     const png = jdenticon.toPng(userId, 400);
-    // fs.writeFileSync("./testicon.png", png);
+    const fileUrl = await s3Handler.uploadFile(config.S3_BUCKET_NAME, awsFolderNames.userProfile(userId), png);
 
-    const newUser = await User.create({ id: userId, first_name, last_name, email, password: hashedPassword });
+    const newUser = await User.create({ id: userId, first_name, last_name, email, password: hashedPassword, profile_picture: fileUrl });
     const verificationCode = generateOTP();
     const expires_at = Date.now() + config.VERIFICATION_CODE_LIFETIME * 60 * 1000;
 
@@ -70,11 +69,7 @@ async function updateUserController(req: Request<unknown, unknown, typeof update
     }
 
     if (req.file) {
-      const ext = path.extname(req.file.originalname).toLowerCase();
-      const fileName = `${userId}-${Date.now()}${ext}`;
-      // Upload the file to S3
-      // const fileUrl = await uploadFileToS3(req.file.buffer, fileName);
-      const fileUrl = `https://your-bucket-name.s3.your-region.amazonaws.com/${fileName}`;
+      const fileUrl = await s3Handler.uploadFile(config.S3_BUCKET_NAME, awsFolderNames.userProfile(userId), req.file.buffer);
       queryBody["profile_picture"] = fileUrl;
     } else {
       const allFieldsUndefined = Object.values(queryBody).every((value) => value === undefined);
