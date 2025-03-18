@@ -1,4 +1,5 @@
 import { type } from "arktype";
+
 const vehicleSchema = type({
   id: "string.uuid",
   user_id: "string.uuid",
@@ -6,14 +7,13 @@ const vehicleSchema = type({
   created_at: type.Date,
 });
 
-const addVehicleSchema = vehicleSchema.pick("vehicle_id");
 const getVehicleSchema = type({
   "id?": "string",
   "model?": "string",
 });
 
-const deleteUserVehicleSchema = type({
-  id: "string.numeric", 
+const vehicleIdSchema = type({
+  id: "string",
 });
 
-export { vehicleSchema, addVehicleSchema, getVehicleSchema,deleteUserVehicleSchema };
+export { vehicleSchema, getVehicleSchema, vehicleIdSchema };

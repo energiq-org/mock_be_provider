@@ -31,5 +31,4 @@ const updateUserSchema = type({
   "phone_number?": userSchema.get("phone_number"),
 });
 
-
 export { userSchema, signupSchema, verifyEmailSchema, updateUserSchema, sentVerificationEmailSchema };
