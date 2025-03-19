@@ -16,6 +16,7 @@ interface S3Storage {
   uploadFile(bucket: string, key: string, file: Buffer): Promise<string>;
   generateFileURL(bucket: string, key: string): Promise<string>;
   downloadFile(bucket: string, key: string): Promise<Buffer>;
+  deleteFile(bucket: string, key: string): Promise<void>;
 }
 
 class AWS implements S3Storage {
