@@ -22,7 +22,7 @@ authRouter.post(
   "/login",
   docs.path({
     tags: ["auth"],
-    summary: "Login user",
+    summary: "Login",
     description: "Authenticate user with email and password",
     requestBody: generateJSONRequestBody(loginSchema, "Login request body"),
     responses: {
@@ -38,12 +38,12 @@ authRouter.post(
   "/refresh",
   docs.path({
     tags: ["auth"],
-    summary: "Refresh token",
-    description: "Refresh token",
+    summary: "Request refresh token",
+    description: "Request refresh token",
     requestBody: generateJSONRequestBody(refreshSchema, "Refresh token request body"),
     responses: {
-      "200": generateJSONResponse(refreshResponseSchema, "Refresh token successful"),
-      ...getErrorResponses(["400", "401", "404", "500"]),
+      "200": generateJSONResponse(refreshResponseSchema, "Refresh token request successful"),
+      ...getErrorResponses(["400", "401", "403", "404", "500"]),
     },
   }),
   arktypeRequestValidator(refreshSchema, "body"),
@@ -54,12 +54,12 @@ authRouter.post(
   "/logout",
   docs.path({
     tags: ["auth"],
-    summary: "Logout user",
+    summary: "Logout",
     description: "Logout user",
     requestBody: generateJSONRequestBody(logoutSchema, "Logout request body"),
     responses: {
       "200": generateJSONResponse(successResponseSchema, "Logout successful"),
-      ...getErrorResponses(["400", "401", "404", "500"]),
+      ...getErrorResponses(["404", "500"]),
     },
   }),
   arktypeRequestValidator(logoutSchema, "body"),

@@ -2,21 +2,22 @@
 import { Router } from "express";
 import { signupController, updateUserController } from "../controllers/users/index.ts";
 import { sendVerificationEmailController, verifyEmailController } from "../controllers/users/mail.ts";
-import { addUserVehicleController } from "../controllers/users/userVehicles.ts";
-import { generateJSONRequestBody, generateJSONResponse, getSecuritySchemes } from "../docs/helpers.ts";
+import { addUserVehicleController, deleteUserVehicleController } from "../controllers/users/userVehicles.ts";
+import {
+  generateJSONRequestBody,
+  generateJSONResponse,
+  getErrorResponses,
+  getSecuritySchemes,
+  generateUpdateUserRequestBody,
+  generateRequestParameters,
+} from "../docs/helpers.ts";
 import { docs } from "../docs/index.ts";
 import { authMiddleware } from "../middlewares/auth.ts";
 import { profilePictureMiddleware } from "../middlewares/multer.ts";
 import { arktypeRequestValidator } from "../middlewares/validator.ts";
-import {
-  badRequestErrorSchema,
-  conflictErrorSchema,
-  internalServerErrorSchema,
-  successResponseSchema,
-  unauthorizedErrorSchema,
-} from "../schemas/common-responses.ts";
+import { successResponseSchema } from "../schemas/common-responses.ts";
 import { sentVerificationEmailSchema, signupSchema, updateUserSchema, verifyEmailSchema } from "../schemas/users.ts";
-import { addVehicleSchema } from "../schemas/vehicles.ts";
+import { vehicleIdSchema } from "../schemas/vehicles.ts";
 const usersRouter = Router();
 
 usersRouter.post(
@@ -28,9 +29,7 @@ usersRouter.post(
     requestBody: generateJSONRequestBody(signupSchema, "The user to signup"),
     responses: {
       201: generateJSONResponse(successResponseSchema, "The user was created successfully"),
-      400: generateJSONResponse(badRequestErrorSchema, "The user was not created"),
-      409: generateJSONResponse(conflictErrorSchema, "The user already exists"),
-      500: generateJSONResponse(internalServerErrorSchema, "The user was not created"),
+      ...getErrorResponses(["409", "500"]),
     },
   }),
   arktypeRequestValidator(signupSchema, "body"),
@@ -41,14 +40,13 @@ usersRouter.patch(
   "/",
   docs.path({
     summary: "Update user",
-    description: "Update user",
+    description: "Update user data and/or profile picture",
     tags: ["users"],
     security: getSecuritySchemes(),
-    requestBody: generateJSONRequestBody(updateUserSchema, "The user to update"),
+    requestBody: generateUpdateUserRequestBody(),
     responses: {
       200: generateJSONResponse(successResponseSchema, "The user was updated successfully"),
-      400: generateJSONResponse(badRequestErrorSchema, "The user was not updated"),
-      401: generateJSONResponse(unauthorizedErrorSchema, "The user was not updated"),
+      ...getErrorResponses(["400", "401", "409", "404", "500"]),
     },
   }),
   authMiddleware,
@@ -58,16 +56,69 @@ usersRouter.patch(
 );
 
 usersRouter.post(
-  "/vehicles",
+  "/vehicles/:id",
+  docs.path({
+    summary: "Add vehicle",
+    description: "Add vehicle to user",
+    tags: ["users"],
+    security: getSecuritySchemes(),
+    parameters: generateRequestParameters(vehicleIdSchema, "path"),
+    responses: {
+      201: generateJSONResponse(successResponseSchema, "The vehicle was added successfully"),
+      ...getErrorResponses(["401", "404", "500"]),
+    },
+  }),
   authMiddleware,
-  arktypeRequestValidator(addVehicleSchema, "body"),
+  arktypeRequestValidator(vehicleIdSchema, "params"),
   addUserVehicleController
 );
 
-usersRouter.post("/verify", arktypeRequestValidator(verifyEmailSchema, "query"), verifyEmailController);
+usersRouter.delete(
+  "/vehicles/:id",
+  docs.path({
+    summary: "Delete vehicle",
+    description: "Delete a vehicle from the user's list of vehicles",
+    tags: ["users"],
+    security: getSecuritySchemes(),
+    parameters: generateRequestParameters(vehicleIdSchema, "path"),
+    responses: {
+      200: generateJSONResponse(successResponseSchema, "The vehicle was deleted successfully"),
+      ...getErrorResponses(["400", "404", "500"]),
+    },
+  }),
+  authMiddleware,
+  arktypeRequestValidator(vehicleIdSchema, "params"),
+  deleteUserVehicleController
+);
+
+usersRouter.post(
+  "/verify",
+  docs.path({
+    summary: "Verify email",
+    description: "Verify email",
+    tags: ["users"],
+    parameters: generateRequestParameters(verifyEmailSchema, "query"),
+    responses: {
+      200: generateJSONResponse(successResponseSchema, "The email was verified successfully"),
+      ...getErrorResponses(["400", "410", "404", "500"]),
+    },
+  }),
+  arktypeRequestValidator(verifyEmailSchema, "query"),
+  verifyEmailController
+);
 
 usersRouter.post(
   "/send-verification-email",
+  docs.path({
+    summary: "Send verification email",
+    description: "Send verification email",
+    tags: ["users"],
+    requestBody: generateJSONRequestBody(sentVerificationEmailSchema, "The email to send verification email"),
+    responses: {
+      200: generateJSONResponse(successResponseSchema, "The verification email was sent successfully"),
+      ...getErrorResponses(["404", "500"]),
+    },
+  }),
   arktypeRequestValidator(sentVerificationEmailSchema, "body"),
   sendVerificationEmailController
 );

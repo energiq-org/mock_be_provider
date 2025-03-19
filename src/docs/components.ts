@@ -4,6 +4,7 @@ const OAuth2SecurityScheme: SecuritySchemeObject = {
     password: {
       tokenUrl: "http://localhost:8000/api/v1/auth/login",
       refreshUrl: "http://localhost:8000/api/v1/auth/refresh",
+      scopes: {},
     },
   },
 };

@@ -25,9 +25,6 @@ const loginResponseSchema = type({
 
 const refreshResponseSchema = type({
   access_token: accessTokenSchema.get("access_token"),
-  refresh_token: tokenSchema.get("refresh_token"),
-  access_token_expires_in: "number",
-  refresh_token_expires_in: "number",
 });
 
 export {

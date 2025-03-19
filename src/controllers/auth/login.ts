@@ -15,7 +15,7 @@ async function loginController(req: Request<unknown, unknown, typeof loginSchema
 
     const user = await User.findOne({ where: { email: email } });
     if (!user) {
-      return res.status(401).json({ msg: "user not found" });
+      return res.status(404).json({ msg: "user not found" });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -44,10 +44,8 @@ async function loginController(req: Request<unknown, unknown, typeof loginSchema
     await Token.create({ refresh_token: refreshToken, user_id: user.id, expires_at: expiresAt });
 
     return res.status(200).json({
-      accessToken,
-      accessTokenExpiresIn: config.ACCESS_TOKEN_LIFETIME,
-      refreshToken,
-      refreshTokenExpiresIn: config.REFRESH_TOKEN_LIFETIME,
+      access_token: accessToken,
+      refresh_token: refreshToken,
     });
   } catch (error) {
     return res.status(500).json({ msg: (error as Error).message });
