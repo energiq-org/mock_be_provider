@@ -7,7 +7,7 @@ const userSchema = type({
   last_name: type.string,
   email: "string.email",
   password: type.string,
-  phone_number: type.string,
+  phone_number: /^(?:\+20[-]?|0)?1[0-9]{9}$/,
   profile_picture: type.string,
   created_at: type.Date,
 });
