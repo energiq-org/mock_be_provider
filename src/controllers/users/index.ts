@@ -9,6 +9,7 @@ import { generateOTP } from "../../utils/verificationCode.ts";
 import { signupSchema, updateUserSchema } from "../../schemas/users.ts";
 import * as jdenticon from "jdenticon";
 import { awsFolderNames, s3Handler } from "../../utils/s3.ts";
+import logger from "../../utils/logging.ts";
 
 async function signupController(req: Request<unknown, unknown, typeof signupSchema.infer>, res: Response) {
   try {
@@ -25,8 +26,14 @@ async function signupController(req: Request<unknown, unknown, typeof signupSche
 
     const png = jdenticon.toPng(userId, 400);
     const fileUrl = await s3Handler.uploadFile(config.S3_BUCKET_NAME, awsFolderNames.userProfile(userId), png);
-
-    const newUser = await User.create({ id: userId, first_name, last_name, email, password: hashedPassword, profile_picture: fileUrl });
+    const newUser = await User.create({
+      id: userId,
+      first_name,
+      last_name,
+      email,
+      password: hashedPassword,
+      profile_picture: fileUrl,
+    });
     const verificationCode = generateOTP();
     const expires_at = Date.now() + config.VERIFICATION_CODE_LIFETIME * 60 * 1000;
 
@@ -69,7 +76,11 @@ async function updateUserController(req: Request<unknown, unknown, typeof update
     }
 
     if (req.file) {
-      const fileUrl = await s3Handler.uploadFile(config.S3_BUCKET_NAME, awsFolderNames.userProfile(userId), req.file.buffer);
+      const fileUrl = await s3Handler.uploadFile(
+        config.S3_BUCKET_NAME,
+        awsFolderNames.userProfile(userId),
+        req.file.buffer
+      );
       queryBody["profile_picture"] = fileUrl;
     } else {
       const allFieldsUndefined = Object.values(queryBody).every((value) => value === undefined);
