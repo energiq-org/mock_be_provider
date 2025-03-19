@@ -16,7 +16,7 @@ class User extends Model<
   declare email: string;
   declare email_verified: CreationOptional<boolean>;
   declare phone_number: CreationOptional<string>;
-  declare profile_picture: CreationOptional<string>;
+  declare profile_picture: string;
   declare created_at: CreationOptional<Date>;
   declare tokens?: NonAttribute<Token[]>;
   declare verification_codes?: NonAttribute<VerificationCode[]>;
@@ -47,7 +47,7 @@ User.init(
       defaultValue: false,
     },
     phone_number: DataTypes.STRING,
-    profile_picture: DataTypes.STRING,
+    profile_picture: DataTypes.TEXT,
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,
