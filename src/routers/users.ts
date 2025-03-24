@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from "express";
-import { signupController, updateUserController } from "../controllers/users/index.ts";
+import {
+  signupController,
+  updateUserController,
+  getUserController,
+  deleteUserController,
+} from "../controllers/users/index.ts";
 import { sendVerificationEmailController, verifyEmailController } from "../controllers/users/mail.ts";
 import { addUserVehicleController, deleteUserVehicleController } from "../controllers/users/userVehicles.ts";
 import {
@@ -18,6 +23,7 @@ import { arktypeRequestValidator } from "../middlewares/validator.ts";
 import { successResponseSchema } from "../schemas/common-responses.ts";
 import { sentVerificationEmailSchema, signupSchema, updateUserSchema, verifyEmailSchema } from "../schemas/users.ts";
 import { vehicleIdSchema } from "../schemas/vehicles.ts";
+
 const usersRouter = Router();
 
 usersRouter.post(
@@ -53,6 +59,38 @@ usersRouter.patch(
   profilePictureMiddleware,
   arktypeRequestValidator(updateUserSchema, "body"),
   updateUserController
+);
+
+usersRouter.get(
+  "/",
+  docs.path({
+    summary: "Get user",
+    description: "Retrieve the authenticated user's data",
+    tags: ["users"],
+    security: getSecuritySchemes(),
+    responses: {
+      200: generateJSONResponse(successResponseSchema, "User data retrieved successfully"),
+      ...getErrorResponses(["401", "404", "500"]),
+    },
+  }),
+  authMiddleware,
+  getUserController
+);
+
+usersRouter.delete(
+  "/",
+  docs.path({
+    summary: "Delete user",
+    description: "Delete the authenticated user from the database",
+    tags: ["users"],
+    security: getSecuritySchemes(),
+    responses: {
+      200: generateJSONResponse(successResponseSchema, "User deleted successfully"),
+      ...getErrorResponses(["401", "404", "500"]),
+    },
+  }),
+  authMiddleware,
+  deleteUserController
 );
 
 usersRouter.post(
