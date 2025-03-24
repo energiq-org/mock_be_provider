@@ -96,5 +96,33 @@ async function updateUserController(req: Request<unknown, unknown, typeof update
     return res.status(500).json({ msg: (error as Error).message });
   }
 }
+async function getUserController(req: Request, res: Response) {
+  const userId = req["userId"] as UUID;
+  try {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ msg: "user not found" });
+    }
+    // Exclude the password from the returned user data
+    const { password, ...userData } = user.toJSON();
+    return res.status(200).json({ data: userData });
+  } catch (error) {
+    return res.status(500).json({ msg: (error as Error).message });
+  }
+}
 
-export { signupController, updateUserController };
+async function deleteUserController(req: Request, res: Response) {
+  const userId = req["userId"] as UUID;
+  try {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ msg: "user not found" });
+    }
+    await user.destroy();
+    return res.status(200).json({ msg: "user deleted successfully" });
+  } catch (error) {
+    return res.status(500).json({ msg: (error as Error).message });
+  }
+}
+
+export { signupController, updateUserController, getUserController, deleteUserController };
