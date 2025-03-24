@@ -9,7 +9,6 @@ import { generateOTP } from "../../utils/verificationCode.ts";
 import { signupSchema, updateUserSchema } from "../../schemas/users.ts";
 import * as jdenticon from "jdenticon";
 import { awsFolderNames, s3Handler } from "../../utils/s3.ts";
-import logger from "../../utils/logging.ts";
 
 async function signupController(req: Request<unknown, unknown, typeof signupSchema.infer>, res: Response) {
   try {
@@ -105,7 +104,7 @@ async function getUserController(req: Request, res: Response) {
     }
     // Exclude the password from the returned user data
     const { password, ...userData } = user.toJSON();
-    return res.status(200).json({ data: userData });
+    return res.status(200).json(userData);
   } catch (error) {
     return res.status(500).json({ msg: (error as Error).message });
   }

@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import express from "express";
 // import * as OpenApiValidator from "express-openapi-validator";
 import { apiReference } from "@scalar/express-api-reference";
