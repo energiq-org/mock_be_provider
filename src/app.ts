@@ -1,22 +1,20 @@
-import bodyParser from "body-parser";
 import express from "express";
-import * as OpenApiValidator from "express-openapi-validator";
-import { Express } from "express-serve-static-core";
+// import * as OpenApiValidator from "express-openapi-validator";
+import { apiReference } from "@scalar/express-api-reference";
 import morgan from "morgan";
 import morganBody from "morgan-body";
-import { summarise } from "swagger-routes-express";
-import YAML from "yamljs";
-import config from "./config/env";
-import { helloRouter } from "./routers/greeting";
-import logger from "./utils/logging";
+import swaggerUi from "swagger-ui-express";
+import config from "./config/env.ts";
+import { docs } from "./docs/index.ts";
+import { authRouter } from "./routers/auth.ts";
+import { usersRouter } from "./routers/users.ts";
+import { vehiclesRouter } from "./routers/vehicles.ts";
 
-function createServer(): Express {
-  const yamlSpecFile = "./openapi.yml";
-  const apiDefinition = YAML.load(yamlSpecFile) as object;
-  const apiSummary = summarise(apiDefinition);
-  logger.info(apiSummary);
+function createServer() {
   const server = express();
-  server.use(bodyParser.json());
+
+  server.use(express.json());
+  // server.use(express.urlencoded({ extended: true }));
 
   if (config.HTTP_LOGGING) {
     server.use(morgan("dev"));
@@ -26,28 +24,45 @@ function createServer(): Express {
     morganBody(server);
   }
 
+  server.use("/api/v1/auth", authRouter);
+  server.use("/api/v1/vehicles", vehiclesRouter);
+  server.use("/api/v1/users", usersRouter);
+
+  const openAPIDocs = docs.generateDocument(docs.document, server._router, docs.options.basePath);
+
+  server.use(docs);
+
+  server.use(
+    "/docs/scalar",
+    apiReference({
+      spec: {
+        content: openAPIDocs,
+      },
+    })
+  );
+  server.use("/docs/swagger", swaggerUi.serve, swaggerUi.setup(openAPIDocs));
+
   // setup API validator
-  const validatorOptions = {
-    apiSpec: yamlSpecFile,
-    validateRequests: config.SPEC_REQUEST_VALIDATION,
-    validateResponses: config.SPEC_RESPONSE_VALIDATION,
-  };
+  // const validatorOptions: OpenApiValidatorOpts = {
+  //   apiSpec: openAPIDocs,
+  //   validateResponses: true,
+  //   validateApiSpec: true,
+  // };
 
-  server.use(OpenApiValidator.middleware(validatorOptions));
-
-  server.use("/api/v1", helloRouter);
+  // server.use(OpenApiValidator.middleware(validatorOptions));
 
   // error customization, if request is invalid
-  server.use((err: object, _req: express.Request, res: express.Response, next: express.NextFunction) => {
-    res.status(Number(err["status"]) || 500).json({
-      error: {
-        type: "request_validation",
-        message: err["message"] as string,
-        errors: err["errors"] as object,
-      },
-    });
-    next();
-  });
+  // server.use((err: object, _req: express.Request, res: express.Response, next: express.NextFunction) => {
+  //   res.status(Number(err["status"]) || 500).json({
+  //     error: {
+  //       type: "request_validation",
+  //       message: err["message"] as string,
+  //       errors: err["errors"] as object,
+  //     },
+  //   });
+  //   next();
+  // });
+
   return server;
 }
 

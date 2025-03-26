@@ -1,6 +1,6 @@
 import NodeCache from "node-cache";
 
-import config from "../../config/env";
+import config from "../../config/env.ts";
 
 type Key = string | number;
 
