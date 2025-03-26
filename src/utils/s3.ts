@@ -14,7 +14,8 @@ import logger from "./logging.ts";
 interface S3Storage {
   listBuckets(): Promise<string[]>;
   uploadFile(bucket: string, key: string, file: Buffer): Promise<string>;
-  generateFileURL(bucket: string, key: string): Promise<string>;
+  generatePresignedURL(bucket: string, key: string): Promise<string>;
+  generatePublicURL(bucket: string, key: string): string;
   downloadFile(bucket: string, key: string): Promise<Buffer>;
   deleteFile(bucket: string, key: string): Promise<void>;
 }
@@ -79,16 +80,14 @@ class AWS implements S3Storage {
     });
     try {
       await this.s3Client.send(command);
-      const url = await this.generateFileURL(bucket, key);
-      return url;
+      return this.generatePublicURL(bucket, key);
     } catch (error) {
       console.error("Error uploading file:", error);
       throw error;
     }
   }
 
-  // Generates URL for downloading a file. URL expires in 5 minutes.
-  async generateFileURL(bucket: string, key: string): Promise<string> {
+  async generatePresignedURL(bucket: string, key: string): Promise<string> {
     const command = new GetObjectCommand({
       Bucket: bucket,
       Key: key,
@@ -100,6 +99,11 @@ class AWS implements S3Storage {
       console.error("Error generating signed URL:", error);
       throw error;
     }
+  }
+
+  generatePublicURL(bucket: string, key: string): string {
+    const url = `https://${bucket}.s3.${config.S3_REGION}.amazonaws.com/${key}`;
+    return url;
   }
 
   async downloadFile(bucket: string, key: string): Promise<Buffer> {
@@ -138,13 +142,13 @@ class AWS implements S3Storage {
 // helper to ease folder names
 const awsFolderNames = {
   cars: "cars/",
-  carModels: (modelId: string): string => `cars/models/${modelId}/`,
-  carSmallImage: (modelId: string): string => `cars/models/${modelId}/small.jpg`,
-  carFullImage: (modelId: string): string => `cars/models/${modelId}/full.jpg`,
+  carModels: (modelId: string, extension: string): string => `cars/models/${modelId}.${extension}`,
+  // carSmallImage: (modelId: string, extension: string): string => `cars/models/${modelId}/small.${extension}`,
+  // carFullImage: (modelId: string, extension: string): string => `cars/models/${modelId}/full.${extension}`,
   pfp: "pfp/",
-  userProfile: (userId: string): string => `pfp/${userId}/`,
-  userSmallImage: (userId: string): string => `pfp/${userId}/small.jpg`,
-  userFullImage: (userId: string): string => `pfp/${userId}/full.jpg`,
+  userProfile: (userId: string, extension: string): string => `pfp/${userId}.${extension}`,
+  // userSmallImage: (userId: string, extension: string): string => `pfp/${userId}/small.${extension}`,
+  // userFullImage: (userId: string, extension: string): string => `pfp/${userId}/full.${extension}`,
 };
 
 const s3Handler = AWS.getInstance();

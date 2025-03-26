@@ -9,6 +9,7 @@ import { generateOTP } from "../../utils/verificationCode.ts";
 import { signupSchema, updateUserSchema } from "../../schemas/users.ts";
 import * as jdenticon from "jdenticon";
 import { awsFolderNames, s3Handler } from "../../utils/s3.ts";
+import logger from "../../utils/logging.ts";
 
 async function signupController(req: Request<unknown, unknown, typeof signupSchema.infer>, res: Response) {
   try {
@@ -23,8 +24,12 @@ async function signupController(req: Request<unknown, unknown, typeof signupSche
     const hashedPassword = await bcrypt.hash(password, 10);
     const userId = crypto.randomUUID();
 
-    const png = jdenticon.toPng(userId, 400);
-    const fileUrl = await s3Handler.uploadFile(config.S3_BUCKET_NAME, awsFolderNames.userProfile(userId), png);
+    const profile_picture = jdenticon.toPng(userId, 400);
+    const fileUrl = await s3Handler.uploadFile(
+      config.S3_BUCKET_NAME,
+      awsFolderNames.userProfile(userId, "png"),
+      profile_picture
+    );
     const newUser = await User.create({
       id: userId,
       first_name,
@@ -75,9 +80,10 @@ async function updateUserController(req: Request<unknown, unknown, typeof update
     }
 
     if (req.file) {
+      const extension = req.file.mimetype.split("/")[1];
       const fileUrl = await s3Handler.uploadFile(
         config.S3_BUCKET_NAME,
-        awsFolderNames.userProfile(userId),
+        awsFolderNames.userProfile(userId, extension),
         req.file.buffer
       );
       queryBody["profile_picture"] = fileUrl;
