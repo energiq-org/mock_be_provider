@@ -2,6 +2,7 @@ import express from "express";
 // import * as OpenApiValidator from "express-openapi-validator";
 import { apiReference } from "@scalar/express-api-reference";
 import morgan from "morgan";
+import cors from "cors";
 import morganBody from "morgan-body";
 import swaggerUi from "swagger-ui-express";
 import config from "./config/env.ts";
@@ -13,8 +14,10 @@ import { vehiclesRouter } from "./routers/vehicles.ts";
 function createServer() {
   const server = express();
 
+  server.use(cors());
+
   server.use(express.json());
-  // server.use(express.urlencoded({ extended: true }));
+  server.use(express.urlencoded({ extended: true }));
 
   if (config.HTTP_LOGGING) {
     server.use(morgan("dev"));
