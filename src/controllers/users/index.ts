@@ -9,7 +9,7 @@ import { generateOTP } from "../../utils/verificationCode.ts";
 import { signupSchema, updateUserSchema } from "../../schemas/users.ts";
 import * as jdenticon from "jdenticon";
 import { awsFolderNames, s3Handler } from "../../utils/s3.ts";
-import logger from "../../utils/logging.ts";
+import { UserVehicle } from "../../models/userVehicles.ts";
 
 async function signupController(req: Request<unknown, unknown, typeof signupSchema.infer>, res: Response) {
   try {
@@ -104,11 +104,21 @@ async function updateUserController(req: Request<unknown, unknown, typeof update
 async function getUserController(req: Request, res: Response) {
   const userId = req["userId"] as UUID;
   try {
-    const user = await User.findByPk(userId);
+    const user = await User.findOne({
+      where: { id: userId },
+      include: [
+        {
+          model: UserVehicle,
+          as: "user_vehicles",
+          attributes: { exclude: ["user_id"] },
+        },
+      ],
+    });
     if (!user) {
       return res.status(404).json({ msg: "user not found" });
     }
     // Exclude the password from the returned user data
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { password, ...userData } = user.toJSON();
     return res.status(200).json(userData);
   } catch (error) {
