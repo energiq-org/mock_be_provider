@@ -21,7 +21,7 @@ function generateJSONRequestBody(schema: type, description?: string) {
   };
 }
 
-function generateRequestParameters(schema: type, source: "query" | "path" , required = false) {
+function generateRequestParameters(schema: type, source: "query" | "path", required = false) {
   const parameters: Array<{
     in: typeof source;
     name: string;

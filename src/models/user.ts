@@ -1,5 +1,5 @@
 import { UUID } from "crypto";
-import { CreationOptional, DataTypes , Model, NonAttribute } from "sequelize";
+import { CreationOptional, DataTypes, Model, NonAttribute } from "sequelize";
 import { sequelize } from "../config/dbConnection.ts";
 import { Token } from "./token.ts";
 import { UserVehicle } from "./userVehicles.ts";
@@ -62,21 +62,21 @@ User.hasMany(Token, {
   sourceKey: "id",
   foreignKey: "user_id",
   as: "tokens",
-  onDelete: 'CASCADE'
+  onDelete: "CASCADE",
 });
 
 User.hasMany(VerificationCode, {
   sourceKey: "id",
   foreignKey: "user_id",
   as: "verification_codes",
-  onDelete: 'CASCADE'
+  onDelete: "CASCADE",
 });
 
 User.hasMany(UserVehicle, {
   sourceKey: "id",
   foreignKey: "user_id",
   as: "user_vehicles",
-  onDelete: 'CASCADE'
+  onDelete: "CASCADE",
 });
 
 export { User };

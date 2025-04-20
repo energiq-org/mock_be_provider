@@ -13,11 +13,11 @@ UserVehicle.init(
   {
     user_id: {
       type: DataTypes.UUID,
-      primaryKey: true
+      primaryKey: true,
     },
     vehicle_id: {
       type: DataTypes.INTEGER,
-      primaryKey: true
+      primaryKey: true,
     },
     created_at: {
       type: DataTypes.DATE,
