@@ -100,7 +100,7 @@ usersRouter.post(
     description: "Add vehicle to user",
     tags: ["users"],
     security: getSecuritySchemes(),
-    parameters: generateRequestParameters(vehicleIdSchema, "path"),
+    parameters: generateRequestParameters(vehicleIdSchema, "path" ,true),
     responses: {
       201: generateJSONResponse(successResponseSchema, "The vehicle was added successfully"),
       ...getErrorResponses(["401", "404", "500"]),
@@ -118,7 +118,7 @@ usersRouter.delete(
     description: "Delete a vehicle from the user's list of vehicles",
     tags: ["users"],
     security: getSecuritySchemes(),
-    parameters: generateRequestParameters(vehicleIdSchema, "path"),
+    parameters: generateRequestParameters(vehicleIdSchema, "path" ,true),
     responses: {
       200: generateJSONResponse(successResponseSchema, "The vehicle was deleted successfully"),
       ...getErrorResponses(["400", "404", "500"]),
@@ -135,7 +135,7 @@ usersRouter.post(
     summary: "Verify email",
     description: "Verify email",
     tags: ["users"],
-    parameters: generateRequestParameters(verifyEmailSchema, "query"),
+    parameters: generateRequestParameters(verifyEmailSchema, "query" ,true),
     responses: {
       200: generateJSONResponse(successResponseSchema, "The email was verified successfully"),
       ...getErrorResponses(["400", "410", "404", "500"]),
