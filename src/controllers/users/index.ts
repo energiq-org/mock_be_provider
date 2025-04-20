@@ -117,8 +117,7 @@ async function getUserController(req: Request, res: Response) {
     if (!user) {
       return res.status(404).json({ msg: "user not found" });
     }
-    // Exclude the password from the returned user data
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unused-vars, no-unused-vars
     const { password, ...userData } = user.toJSON();
     return res.status(200).json(userData);
   } catch (error) {
