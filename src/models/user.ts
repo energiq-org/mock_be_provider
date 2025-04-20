@@ -1,14 +1,11 @@
 import { UUID } from "crypto";
-import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute } from "sequelize";
+import { CreationOptional, DataTypes , Model, NonAttribute } from "sequelize";
 import { sequelize } from "../config/dbConnection.ts";
 import { Token } from "./token.ts";
 import { UserVehicle } from "./userVehicles.ts";
 import { VerificationCode } from "./verificationCode.ts";
 
-class User extends Model<
-  InferAttributes<User, { omit: "tokens" | "verification_codes" | "user_vehicles" }>,
-  InferCreationAttributes<User, { omit: "tokens" | "verification_codes" | "user_vehicles" }>
-> {
+class User extends Model {
   declare id: CreationOptional<UUID>;
   declare first_name: string;
   declare last_name: string;
@@ -65,18 +62,21 @@ User.hasMany(Token, {
   sourceKey: "id",
   foreignKey: "user_id",
   as: "tokens",
+  onDelete: 'CASCADE'
 });
 
 User.hasMany(VerificationCode, {
   sourceKey: "id",
   foreignKey: "user_id",
   as: "verification_codes",
+  onDelete: 'CASCADE'
 });
 
 User.hasMany(UserVehicle, {
   sourceKey: "id",
   foreignKey: "user_id",
   as: "user_vehicles",
+  onDelete: 'CASCADE'
 });
 
 export { User };
