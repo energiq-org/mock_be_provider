@@ -27,7 +27,7 @@ async function signupController(req: Request<unknown, unknown, typeof signupSche
     const profile_picture = jdenticon.toPng(userId, 400);
     const fileUrl = await s3Handler.uploadFile(
       config.S3_BUCKET_NAME,
-      awsFolderNames.userProfile(userId, "png"),
+      awsFolderNames.userProfile(userId),
       profile_picture
     );
     const newUser = await User.create({
@@ -80,10 +80,9 @@ async function updateUserController(req: Request<unknown, unknown, typeof update
     }
 
     if (req.file) {
-      const extension = req.file.mimetype.split("/")[1];
       const fileUrl = await s3Handler.uploadFile(
         config.S3_BUCKET_NAME,
-        awsFolderNames.userProfile(userId, extension),
+        awsFolderNames.userProfile(userId),
         req.file.buffer
       );
       queryBody["profile_picture"] = fileUrl;

@@ -64,7 +64,7 @@ function generateUpdateUserRequestBody() {
             profile_picture: {
               type: "string",
               format: "binary",
-              description: "Profile picture image file (jpeg, png, jpg)",
+              description: "Profile picture image file (png)",
             },
           },
         },

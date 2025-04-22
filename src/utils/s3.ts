@@ -146,7 +146,7 @@ const awsFolderNames = {
   // carSmallImage: (modelId: string, extension: string): string => `cars/models/${modelId}/small.${extension}`,
   // carFullImage: (modelId: string, extension: string): string => `cars/models/${modelId}/full.${extension}`,
   pfp: "pfp/",
-  userProfile: (userId: string, extension: string): string => `pfp/${userId}.${extension}`,
+  userProfile: (userId: string): string => `pfp/${userId}.png`,
   // userSmallImage: (userId: string, extension: string): string => `pfp/${userId}/small.${extension}`,
   // userFullImage: (userId: string, extension: string): string => `pfp/${userId}/full.${extension}`,
 };
