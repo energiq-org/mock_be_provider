@@ -14,7 +14,7 @@ RUN npm run build
 FROM node:lts-slim AS runner
 WORKDIR /app
 COPY package.json .
+COPY ./mock ./mock
 RUN npm install --omit=dev
 COPY --from=builder /app/dist /app/
-COPY mock .
 CMD ["node", "index.js"]
