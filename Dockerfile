@@ -14,4 +14,4 @@ RUN npm run build
 FROM node:lts-slim AS runner
 COPY --from=builder /app/dist /app/
 WORKDIR /app
-CMD ["node", "/app/dist/index.js"]
+CMD ["node", "index.js"]
