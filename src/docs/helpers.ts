@@ -21,7 +21,7 @@ function generateJSONRequestBody(schema: type, description?: string) {
   };
 }
 
-function generateRequestParameters(schema: type, source: "query" | "path") {
+function generateRequestParameters(schema: type, source: "query" | "path", required = false) {
   const parameters: Array<{
     in: typeof source;
     name: string;
@@ -38,7 +38,7 @@ function generateRequestParameters(schema: type, source: "query" | "path") {
         in: source,
         name: key,
         schema: { type: "string" },
-        required: true,
+        required,
         description: `The ${key} parameter`,
       });
     }
@@ -64,7 +64,7 @@ function generateUpdateUserRequestBody() {
             profile_picture: {
               type: "string",
               format: "binary",
-              description: "Profile picture image file (jpeg, png, jpg)",
+              description: "Profile picture image file (png)",
             },
           },
         },

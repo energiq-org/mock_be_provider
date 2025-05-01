@@ -6,12 +6,12 @@ function profilePictureMiddleware(req: Request, res: Response, next: NextFunctio
   const upload = multer({
     storage: multer.memoryStorage(),
     fileFilter: (req, file, cb) => {
-      const allowedExtensions = [".png", ".jpg", ".jpeg"];
+      const allowedExtensions = [".png"];
       const ext = path.extname(file.originalname).toLowerCase();
       if (allowedExtensions.includes(ext)) {
         cb(null, true);
       } else {
-        return res.status(400).json({ message: "Invalid file type" });
+        return res.status(400).json({ message: "Invalid file type, only png files accepted." });
       }
     },
   }).single("profile_picture");
