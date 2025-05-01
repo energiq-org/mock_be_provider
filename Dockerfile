@@ -12,6 +12,8 @@ COPY . .
 RUN npm run build
 
 FROM node:lts-slim AS runner
+COPY package.json .
+RUN npm install --omit=dev
 COPY --from=builder /app/dist /app/
 WORKDIR /app
 CMD ["node", "index.js"]
