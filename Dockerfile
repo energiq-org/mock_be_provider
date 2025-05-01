@@ -12,9 +12,9 @@ COPY . .
 RUN npm run build
 
 FROM node:lts-slim AS runner
+WORKDIR /app
 COPY package.json .
 RUN npm install --omit=dev
 COPY --from=builder /app/dist /app/
 COPY mock .
-WORKDIR /app
 CMD ["node", "index.js"]
