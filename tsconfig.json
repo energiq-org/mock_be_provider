@@ -1,6 +1,5 @@
 {
-  "extends": "@tsconfig/node20/tsconfig.json"
-,
+  "extends": "@tsconfig/node20/tsconfig.json",
   "compilerOptions": {
     "paths": {
       "@src/*": ["src/*"]
@@ -12,14 +11,14 @@
     "noImplicitAny": false,
     "esModuleInterop": true,
     "allowJs": true,
-    "allowImportingTsExtensions": true,
-    "noEmit": true
+    //"allowImportingTsExtensions": true,
+    "noEmit": false
   },
   "include": [
-    "src/**/*.*",
-    "eslint.config.mjs"
+    "src/**/*.*"
   ],
   "exclude": [
+    "./eslint.config.mjs",
     "node_modules",
     "dist",
     "**/*.js",
@@ -28,6 +27,6 @@
   "ts-node": {
     "experimentalSpecifierResolution": "node",
     "transpileOnly": true,
-    "esm": true,
+    "esm": true
   }
 }

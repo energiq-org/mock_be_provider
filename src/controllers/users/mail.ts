@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { User } from "../../models/user.ts";
-import { VerificationCode } from "../../models/verificationCode.ts";
-import { sendVerificationEmail, sendWelcomeEmail } from "../../utils/mail.ts";
-import { verifyEmailSchema, sentVerificationEmailSchema } from "../../schemas/users.ts";
-import { generateOTP } from "../../utils/verificationCode.ts";
-import config from "../../config/env.ts";
+import { User } from "../../models/user.js";
+import { VerificationCode } from "../../models/verificationCode.js";
+import { sendVerificationEmail, sendWelcomeEmail } from "../../utils/mail.js";
+import { verifyEmailSchema, sentVerificationEmailSchema } from "../../schemas/users.js";
+import { generateOTP } from "../../utils/verificationCode.js";
+import config from "../../config/env.js";
 
 async function verifyEmailController(
   req: Request<unknown, unknown, unknown, typeof verifyEmailSchema.infer>,

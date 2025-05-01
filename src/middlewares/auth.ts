@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import config from "../config/env.ts";
-import { accessTokenPayloadSchema } from "../schemas/auth.ts";
-import { validateArkTypeSchema } from "../utils/validation.ts";
+import config from "../config/env.js";
+import { accessTokenPayloadSchema } from "../schemas/auth.js";
+import { validateArkTypeSchema } from "../utils/validation.js";
 
 function authMiddleware(req: Request, res: Response, next: NextFunction) {
   const token = (req.headers["authorization"] as string)?.split(" ")[1];

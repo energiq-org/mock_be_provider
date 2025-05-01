@@ -5,9 +5,9 @@ import {
   updateUserController,
   getUserController,
   deleteUserController,
-} from "../controllers/users/index.ts";
-import { sendVerificationEmailController, verifyEmailController } from "../controllers/users/mail.ts";
-import { addUserVehicleController, deleteUserVehicleController } from "../controllers/users/userVehicles.ts";
+} from "../controllers/users/index.js";
+import { sendVerificationEmailController, verifyEmailController } from "../controllers/users/mail.js";
+import { addUserVehicleController, deleteUserVehicleController } from "../controllers/users/userVehicles.js";
 import {
   generateJSONRequestBody,
   generateJSONResponse,
@@ -15,14 +15,14 @@ import {
   getSecuritySchemes,
   generateUpdateUserRequestBody,
   generateRequestParameters,
-} from "../docs/helpers.ts";
-import { docs } from "../docs/index.ts";
-import { authMiddleware } from "../middlewares/auth.ts";
-import { profilePictureMiddleware } from "../middlewares/multer.ts";
-import { arktypeRequestValidator } from "../middlewares/validator.ts";
-import { successResponseSchema } from "../schemas/common-responses.ts";
-import { sentVerificationEmailSchema, signupSchema, updateUserSchema, verifyEmailSchema } from "../schemas/users.ts";
-import { vehicleIdSchema } from "../schemas/vehicles.ts";
+} from "../docs/helpers.js";
+import { docs } from "../docs/index.js";
+import { authMiddleware } from "../middlewares/auth.js";
+import { profilePictureMiddleware } from "../middlewares/multer.js";
+import { arktypeRequestValidator } from "../middlewares/validator.js";
+import { successResponseSchema } from "../schemas/common-responses.js";
+import { sentVerificationEmailSchema, signupSchema, updateUserSchema, verifyEmailSchema } from "../schemas/users.js";
+import { vehicleIdSchema } from "../schemas/vehicles.js";
 
 const usersRouter = Router();
 

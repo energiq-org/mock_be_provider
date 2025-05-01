@@ -7,7 +7,7 @@ import {
   internalServerErrorSchema,
   notFoundErrorSchema,
   unauthorizedErrorSchema,
-} from "../schemas/common-responses.ts";
+} from "../schemas/common-responses.js";
 
 function generateJSONRequestBody(schema: type, description?: string) {
   return {

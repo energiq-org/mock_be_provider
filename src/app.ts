@@ -5,11 +5,11 @@ import morgan from "morgan";
 import cors from "cors";
 import morganBody from "morgan-body";
 import swaggerUi from "swagger-ui-express";
-import config from "./config/env.ts";
-import { docs } from "./docs/index.ts";
-import { authRouter } from "./routers/auth.ts";
-import { usersRouter } from "./routers/users.ts";
-import { vehiclesRouter } from "./routers/vehicles.ts";
+import config from "./config/env.js";
+import { docs } from "./docs/index.js";
+import { authRouter } from "./routers/auth.js";
+import { usersRouter } from "./routers/users.js";
+import { vehiclesRouter } from "./routers/vehicles.js";
 
 function createServer() {
   const server = express();

@@ -1,20 +1,20 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
 import { Router } from "express";
-import { loginController } from "../controllers/auth/login.ts";
-import { logoutController } from "../controllers/auth/logout.ts";
-import { refreshTokenController } from "../controllers/auth/refresh.ts";
-import { generateJSONRequestBody, generateJSONResponse, getErrorResponses } from "../docs/helpers.ts";
-import { docs } from "../docs/index.ts";
-import { arktypeRequestValidator } from "../middlewares/validator.ts";
+import { loginController } from "../controllers/auth/login.js";
+import { logoutController } from "../controllers/auth/logout.js";
+import { refreshTokenController } from "../controllers/auth/refresh.js";
+import { generateJSONRequestBody, generateJSONResponse, getErrorResponses } from "../docs/helpers.js";
+import { docs } from "../docs/index.js";
+import { arktypeRequestValidator } from "../middlewares/validator.js";
 import {
   loginResponseSchema,
   loginSchema,
   logoutSchema,
   refreshResponseSchema,
   refreshSchema,
-} from "../schemas/auth.ts";
-import { successResponseSchema } from "../schemas/common-responses.ts";
+} from "../schemas/auth.js";
+import { successResponseSchema } from "../schemas/common-responses.js";
 
 const authRouter: Router = Router();
 

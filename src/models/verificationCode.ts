@@ -1,6 +1,6 @@
 import { UUID } from "crypto";
 import { CreationOptional, DataTypes, Model } from "sequelize";
-import { sequelize } from "../config/dbConnection.ts";
+import { sequelize } from "../config/dbConnection.js";
 
 class VerificationCode extends Model {
   declare id: CreationOptional<UUID>;
