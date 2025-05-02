@@ -23,7 +23,7 @@ import { arktypeRequestValidator } from "../middlewares/validator.js";
 import { successResponseSchema } from "../schemas/common-responses.js";
 import { sentVerificationEmailSchema, signupSchema, updateUserSchema, verifyEmailSchema } from "../schemas/users.js";
 import { vehicleIdSchema } from "../schemas/userVehicles.js";
-import { getUserByAccessToken } from "../schemas/controllers/users/get/user.js";
+import { getUserByAccessTokenResponseSchema } from "../schemas/controllers/users/get/user.js";
 
 const usersRouter = Router();
 
@@ -70,7 +70,7 @@ usersRouter.get(
     tags: ["users"],
     security: getSecuritySchemes(),
     responses: {
-      200: generateJSONResponse(getUserByAccessToken, "User data retrieved successfully"),
+      200: generateJSONResponse(getUserByAccessTokenResponseSchema, "User data retrieved successfully"),
       ...getErrorResponses(["401", "404", "500"]),
     },
   }),
