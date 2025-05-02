@@ -1,6 +1,6 @@
 import { type } from "arktype";
-import { userSchema } from "../../../users.ts";
-import { vehicleSchema } from "../../../vehicles.ts";
+import { userSchema } from "../../../users.js";
+import { vehicleSchema } from "../../../vehicles.js";
 
 const getUserByAccessToken = type({
   "...": userSchema,
