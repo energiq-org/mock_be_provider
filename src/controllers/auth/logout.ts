@@ -1,4 +1,4 @@
-import { logoutSchema } from "@src/schemas/auth.ts";
+import { logoutSchema } from "../../schemas/auth.ts";
 import { Request, Response } from "express";
 import { Token } from "../../models/token.ts";
 

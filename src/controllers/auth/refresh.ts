@@ -1,4 +1,4 @@
-import { refreshSchema } from "@src/schemas/auth.ts";
+import { refreshSchema } from "../../schemas/auth.ts";
 import { Request, Response } from "express";
 import { Token } from "../../models/token.ts";
 import { User } from "../../models/user.ts";

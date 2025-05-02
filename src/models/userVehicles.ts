@@ -11,13 +11,18 @@ class UserVehicle extends Model {
 
 UserVehicle.init(
   {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+    },
     user_id: {
       type: DataTypes.UUID,
-      primaryKey: true,
+      allowNull: false,
     },
     vehicle_id: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
+      allowNull: false,
     },
     created_at: {
       type: DataTypes.DATE,

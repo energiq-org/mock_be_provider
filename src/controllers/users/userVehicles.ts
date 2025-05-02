@@ -2,7 +2,7 @@ import { UUID } from "crypto";
 import { Request, Response } from "express";
 import { UserVehicle } from "../../models/userVehicles.ts";
 import { fuzzySearcher } from "../../utils/vehiclesStore.ts";
-import { vehicleIdSchema } from "../../schemas/vehicles.ts";
+import { vehicleIdSchema } from "../../schemas/userVehicles.ts";
 import { User } from "../../models/user.ts";
 
 async function addUserVehicleController(

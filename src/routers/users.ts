@@ -22,7 +22,8 @@ import { profilePictureMiddleware } from "../middlewares/multer.ts";
 import { arktypeRequestValidator } from "../middlewares/validator.ts";
 import { successResponseSchema } from "../schemas/common-responses.ts";
 import { sentVerificationEmailSchema, signupSchema, updateUserSchema, verifyEmailSchema } from "../schemas/users.ts";
-import { vehicleIdSchema } from "../schemas/vehicles.ts";
+import { vehicleIdSchema } from "../schemas/userVehicles.ts";
+import { getUserByAccessToken } from "../schemas/controllers/users/get/user.ts";
 
 const usersRouter = Router();
 
@@ -69,7 +70,7 @@ usersRouter.get(
     tags: ["users"],
     security: getSecuritySchemes(),
     responses: {
-      200: generateJSONResponse(successResponseSchema, "User data retrieved successfully"),
+      200: generateJSONResponse(getUserByAccessToken, "User data retrieved successfully"),
       ...getErrorResponses(["401", "404", "500"]),
     },
   }),

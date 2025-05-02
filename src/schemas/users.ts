@@ -9,7 +9,7 @@ const userSchema = type({
   password: "string >=8",
   phone_number: /^(?:\+20[-]?|0)?1[0-9]{9}$/,
   profile_picture: type.string,
-  created_at: type.Date,
+  created_at: "string",
 });
 
 const signupSchema = userSchema.pick("first_name", "last_name", "email", "password");

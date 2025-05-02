@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { getVehicleController } from "../controllers/vehicles/index.ts";
 import { arktypeRequestValidator } from "../middlewares/validator.ts";
-import { getVehicleSchema } from "../schemas/vehicles.ts";
+import { getVehicleSchema } from "../schemas/userVehicles.ts";
 import { docs } from "../docs/index.ts";
 import { generateRequestParameters, getErrorResponses } from "../docs/helpers.ts";
 import { generateJSONResponse } from "../docs/helpers.ts";

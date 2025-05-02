@@ -1,19 +1,18 @@
 import { type } from "arktype";
 
 const vehicleSchema = type({
-  id: "string.uuid",
-  user_id: "string.uuid",
-  vehicle_id: type.number,
-  created_at: type.Date,
+  id: "number",
+  model: "string",
+  availability: "string",
+  range: "string",
+  efficiency: "string",
+  weight: "string",
+  acceleration: "string",
+  "1_stop_range": "string",
+  battery: "string",
+  fastcharge: "string",
+  towing: "string",
+  cargo_volume: "string",
 });
 
-const getVehicleSchema = type({
-  "id?": "string",
-  "model?": "string",
-});
-
-const vehicleIdSchema = type({
-  id: "string",
-});
-
-export { vehicleSchema, getVehicleSchema, vehicleIdSchema };
+export { vehicleSchema };

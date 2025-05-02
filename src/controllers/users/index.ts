@@ -10,6 +10,7 @@ import { signupSchema, updateUserSchema } from "../../schemas/users.ts";
 import * as jdenticon from "jdenticon";
 import { awsFolderNames, s3Handler } from "../../utils/s3.ts";
 import { UserVehicle } from "../../models/userVehicles.ts";
+import { fuzzySearcher, Vehicle } from "../../utils/vehiclesStore.ts";
 
 async function signupController(req: Request<unknown, unknown, typeof signupSchema.infer>, res: Response) {
   try {
@@ -116,9 +117,23 @@ async function getUserController(req: Request, res: Response) {
     if (!user) {
       return res.status(404).json({ msg: "user not found" });
     }
+
+    const vehicleIds = user.user_vehicles?.map((vehicle) => vehicle.vehicle_id) ?? [];
+
+    const vehicles: Vehicle[] = [];
+    for (const vehicleId of vehicleIds) {
+      const vehicle = fuzzySearcher.findById(vehicleId);
+      if (vehicle) {
+        vehicles.push(vehicle);
+      }
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unused-vars, no-unused-vars
-    const { password, ...userData } = user.toJSON();
-    return res.status(200).json(userData);
+    const { password, user_vehicles, ...userData } = user.toJSON();
+    return res.status(200).json({
+      ...userData,
+      vehicles,
+    });
   } catch (error) {
     return res.status(500).json({ msg: (error as Error).message });
   }
