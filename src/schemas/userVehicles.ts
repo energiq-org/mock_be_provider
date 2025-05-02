@@ -7,13 +7,8 @@ const userVehicleSchema = type({
   created_at: "string",
 });
 
-const getVehicleSchema = type({
-  "id?": "string",
-  "model?": "string",
-});
-
 const vehicleIdSchema = type({
   id: "string",
 });
 
-export { userVehicleSchema, getVehicleSchema, vehicleIdSchema };
+export { userVehicleSchema, vehicleIdSchema };
