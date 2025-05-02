@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { getVehicleController } from "../controllers/vehicles/index.js";
 import { arktypeRequestValidator } from "../middlewares/validator.js";
-import { getVehicleSchema } from "../schemas/vehicles.js";
+import { vehicleSchema } from "../schemas/vehicles.js";
 import { docs } from "../docs/index.js";
 import { generateRequestParameters, getErrorResponses } from "../docs/helpers.js";
 import { generateJSONResponse } from "../docs/helpers.js";
@@ -14,13 +14,13 @@ vehiclesRouter.get(
     summary: "Get vehicle",
     description: "Get vehicle",
     tags: ["vehicles"],
-    parameters: generateRequestParameters(getVehicleSchema, "query"),
+    parameters: generateRequestParameters(vehicleSchema, "query"),
     responses: {
       200: generateJSONResponse(successResponseSchema, "The vehicle was retrieved successfully"),
       ...getErrorResponses(["500"]),
     },
   }),
-  arktypeRequestValidator(getVehicleSchema, "query"),
+  arktypeRequestValidator(vehicleSchema, "query"),
   getVehicleController
 );
 
