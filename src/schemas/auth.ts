@@ -1,6 +1,6 @@
 import { type } from "arktype";
-import { tokenSchema } from "./tokens.ts";
-import { userSchema } from "./users.ts";
+import { tokenSchema } from "./tokens.js";
+import { userSchema } from "./users.js";
 
 const accessTokenPayloadSchema = type({
   userId: userSchema.get("id"),

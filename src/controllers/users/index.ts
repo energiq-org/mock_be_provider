@@ -1,16 +1,16 @@
 import bcrypt from "bcrypt";
 import { UUID } from "crypto";
 import { Request, Response } from "express";
-import config from "../../config/env.ts";
-import { User } from "../../models/user.ts";
-import { VerificationCode } from "../../models/verificationCode.ts";
-import { sendVerificationEmail } from "../../utils/mail.ts";
-import { generateOTP } from "../../utils/verificationCode.ts";
-import { signupSchema, updateUserSchema } from "../../schemas/users.ts";
+import config from "../../config/env.js";
+import { User } from "../../models/user.js";
+import { VerificationCode } from "../../models/verificationCode.js";
+import { sendVerificationEmail } from "../../utils/mail.js";
+import { generateOTP } from "../../utils/verificationCode.js";
+import { signupSchema, updateUserSchema } from "../../schemas/users.js";
 import * as jdenticon from "jdenticon";
-import { awsFolderNames, s3Handler } from "../../utils/s3.ts";
-import { UserVehicle } from "../../models/userVehicles.ts";
-import { fuzzySearcher, Vehicle } from "../../utils/vehiclesStore.ts";
+import { awsFolderNames, s3Handler } from "../../utils/s3.js";
+import { UserVehicle } from "../../models/userVehicles.js";
+import { fuzzySearcher, Vehicle } from "../../utils/vehiclesStore.js";
 
 async function signupController(req: Request<unknown, unknown, typeof signupSchema.infer>, res: Response) {
   try {

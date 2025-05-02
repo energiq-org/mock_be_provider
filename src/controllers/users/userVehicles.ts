@@ -1,9 +1,9 @@
 import { UUID } from "crypto";
 import { Request, Response } from "express";
-import { UserVehicle } from "../../models/userVehicles.ts";
-import { fuzzySearcher } from "../../utils/vehiclesStore.ts";
-import { vehicleIdSchema } from "../../schemas/userVehicles.ts";
-import { User } from "../../models/user.ts";
+import { UserVehicle } from "../../models/userVehicles.js";
+import { fuzzySearcher } from "../../utils/vehiclesStore.js";
+import { vehicleIdSchema } from "../../schemas/userVehicles.js";
+import { User } from "../../models/user.js";
 
 async function addUserVehicleController(
   req: Request<typeof vehicleIdSchema.infer, unknown, unknown, unknown>,

@@ -1,8 +1,8 @@
-import { refreshSchema } from "../../schemas/auth.ts";
+import { refreshSchema } from "../../schemas/auth.js";
 import { Request, Response } from "express";
-import { Token } from "../../models/token.ts";
-import { User } from "../../models/user.ts";
-import { generateAccessToken } from "../../utils/token.ts";
+import { Token } from "../../models/token.js";
+import { User } from "../../models/user.js";
+import { generateAccessToken } from "../../utils/token.js";
 
 async function refreshTokenController(req: Request<unknown, unknown, typeof refreshSchema.infer>, res: Response) {
   try {

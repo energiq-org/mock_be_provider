@@ -1,6 +1,6 @@
-import { logoutSchema } from "../../schemas/auth.ts";
+import { logoutSchema } from "../../schemas/auth.js";
 import { Request, Response } from "express";
-import { Token } from "../../models/token.ts";
+import { Token } from "../../models/token.js";
 
 async function logoutController(req: Request<unknown, unknown, typeof logoutSchema.infer>, res: Response) {
   try {

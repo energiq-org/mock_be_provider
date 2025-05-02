@@ -1,7 +1,7 @@
 import { type } from "arktype";
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
-import { validateArkTypeSchema } from "../utils/validation.ts";
+import { validateArkTypeSchema } from "../utils/validation.js";
 
 function validateRequest(req: Request, res: Response, next: NextFunction) {
   const errors = validationResult(req);

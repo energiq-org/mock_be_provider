@@ -1,5 +1,5 @@
 import { type } from "arktype";
-import { codeSchema } from "./codes.ts";
+import { codeSchema } from "./codes.js";
 
 const userSchema = type({
   id: "string.uuid",
