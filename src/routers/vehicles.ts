@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { getVehicleController } from "../controllers/vehicles/index.ts";
-import { arktypeRequestValidator } from "../middlewares/validator.ts";
-import { getVehicleSchema } from "../schemas/vehicles.ts";
-import { docs } from "../docs/index.ts";
-import { generateRequestParameters, getErrorResponses } from "../docs/helpers.ts";
-import { generateJSONResponse } from "../docs/helpers.ts";
-import { successResponseSchema } from "../schemas/common-responses.ts";
+import { getVehicleController } from "../controllers/vehicles/index.js";
+import { arktypeRequestValidator } from "../middlewares/validator.js";
+import { getVehicleSchema } from "../schemas/vehicles.js";
+import { docs } from "../docs/index.js";
+import { generateRequestParameters, getErrorResponses } from "../docs/helpers.js";
+import { generateJSONResponse } from "../docs/helpers.js";
+import { successResponseSchema } from "../schemas/common-responses.js";
 const vehiclesRouter = Router();
 
 vehiclesRouter.get(

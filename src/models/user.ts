@@ -1,9 +1,9 @@
 import { UUID } from "crypto";
 import { CreationOptional, DataTypes, Model, NonAttribute } from "sequelize";
-import { sequelize } from "../config/dbConnection.ts";
-import { Token } from "./token.ts";
-import { UserVehicle } from "./userVehicles.ts";
-import { VerificationCode } from "./verificationCode.ts";
+import { sequelize } from "../config/dbConnection.js";
+import { Token } from "./token.js";
+import { UserVehicle } from "./userVehicles.js";
+import { VerificationCode } from "./verificationCode.js";
 
 class User extends Model {
   declare id: CreationOptional<UUID>;

@@ -1,5 +1,5 @@
 import sgMail from "@sendgrid/mail";
-import config from "../config/env.ts";
+import config from "../config/env.js";
 
 sgMail.setApiKey(config.SENDGRID_API_KEY);
 

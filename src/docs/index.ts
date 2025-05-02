@@ -1,5 +1,5 @@
 import openapi from "@wesleytodd/openapi";
-import { BearerSecurityScheme, OAuth2SecurityScheme } from "./components.ts";
+import { BearerSecurityScheme, OAuth2SecurityScheme } from "./components.js";
 
 const docs = openapi({
   openapi: "3.0.0",

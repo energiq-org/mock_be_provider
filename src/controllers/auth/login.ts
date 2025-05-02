@@ -1,13 +1,13 @@
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
-import config from "../../config/env.ts";
-import { Token } from "../../models/token.ts";
-import { User } from "../../models/user.ts";
-import { VerificationCode } from "../../models/verificationCode.ts";
-import { loginSchema } from "../../schemas/auth.ts";
-import { sendVerificationEmail } from "../../utils/mail.ts";
-import { generateAccessToken, generateRefreshToken } from "../../utils/token.ts";
-import { generateOTP } from "../../utils/verificationCode.ts";
+import config from "../../config/env.js";
+import { Token } from "../../models/token.js";
+import { User } from "../../models/user.js";
+import { VerificationCode } from "../../models/verificationCode.js";
+import { loginSchema } from "../../schemas/auth.js";
+import { sendVerificationEmail } from "../../utils/mail.js";
+import { generateAccessToken, generateRefreshToken } from "../../utils/token.js";
+import { generateOTP } from "../../utils/verificationCode.js";
 
 async function loginController(req: Request<unknown, unknown, typeof loginSchema.infer>, res: Response) {
   try {
