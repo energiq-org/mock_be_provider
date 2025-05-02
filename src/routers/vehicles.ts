@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { getVehicleController } from "../controllers/vehicles/index.js";
-import { arktypeRequestValidator } from "../middlewares/validator.js";
 import { docs } from "../docs/index.js";
 import { generateRequestParameters, getErrorResponses } from "../docs/helpers.js";
 import { generateJSONResponse } from "../docs/helpers.js";
@@ -20,7 +19,7 @@ vehiclesRouter.get(
       ...getErrorResponses(["500"]),
     },
   }),
-  arktypeRequestValidator(getVehiclesQueryParamsSchema, "query"),
+  // arktypeRequestValidator(getVehiclesQueryParamsSchema, "query"),
   getVehicleController
 );
 

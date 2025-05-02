@@ -10,7 +10,7 @@ function getVehicleController(
 
     let response: Vehicle[] | Vehicle | undefined;
     if (id !== undefined) {
-      response = fuzzySearcher.findById(id) ?? [];
+      response = fuzzySearcher.findById(parseInt(id.toString())) ?? [];
     } else if (model !== undefined) {
       response = fuzzySearcher.find({ model });
     } else {
