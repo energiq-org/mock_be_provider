@@ -1,9 +1,11 @@
 import { UUID } from "crypto";
 import { Request, Response } from "express";
-import { UserVehicle } from "../../models/userVehicles.js";
+import { UserVehicle } from "../../models/userVehicle.js";
 import { fuzzySearcher } from "../../utils/vehiclesStore.js";
 import { vehicleIdSchema } from "../../schemas/userVehicles.js";
 import { User } from "../../models/user.js";
+import logger from "../../utils/logging.js";
+import { Vehicle } from "../../models/vehicle.js";
 
 async function addUserVehicleController(
   req: Request<typeof vehicleIdSchema.infer, unknown, unknown, unknown>,
@@ -16,18 +18,24 @@ async function addUserVehicleController(
       return res.status(404).json({ msg: "user not found" });
     }
     const vehicleId = Number(req.params.id);
-    const vehicle = fuzzySearcher.findById(vehicleId);
-    if (!vehicle) {
+    // const vehicle = fuzzySearcher.findById(vehicleId);
+    // if (!vehicle) {
+    //   return res.status(404).json({ msg: "vehicle not found" });
+    // }
+    const vehicle = await Vehicle.findByPk(vehicleId);
+    if (vehicle === null) {
       return res.status(404).json({ msg: "vehicle not found" });
     }
-
-    await UserVehicle.create({
-      user_id: userId,
-      vehicle_id: vehicleId,
+    await user.addVehicle(vehicle, {
+      through: {
+        connector_type: "bergergtg",
+        actual_battery: "1457 KWh",
+      },
     });
 
     return res.status(201).json({ msg: "Vehicle added successfully" });
   } catch (error) {
+    logger.error(error);
     return res.status(500).json({ msg: (error as Error).message });
   }
 }

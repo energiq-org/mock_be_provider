@@ -1,9 +1,29 @@
 import { UUID } from "crypto";
-import { CreationOptional, DataTypes, Model, NonAttribute } from "sequelize";
+import {
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyAddAssociationsMixin,
+  BelongsToManyCountAssociationsMixin,
+  BelongsToManyCreateAssociationMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyHasAssociationMixin,
+  BelongsToManyRemoveAssociationMixin,
+  BelongsToManyRemoveAssociationsMixin,
+  BelongsToManySetAssociationsMixin,
+  CreationOptional,
+  DataTypes,
+  Model,
+  NonAttribute,
+} from "sequelize";
 import { sequelize } from "../config/dbConnection.js";
 import { Token } from "./token.js";
-import { UserVehicle } from "./userVehicles.js";
+import { UserVehicle } from "./userVehicle.js";
 import { VerificationCode } from "./verificationCode.js";
+import { Vehicle } from "./vehicle.js";
+
+interface UserVehicleAttributes {
+  connector_type: string;
+  actual_battery: string;
+}
 
 class User extends Model {
   declare id: CreationOptional<UUID>;
@@ -17,7 +37,17 @@ class User extends Model {
   declare created_at: CreationOptional<Date>;
   declare tokens?: NonAttribute<Token[]>;
   declare verification_codes?: NonAttribute<VerificationCode[]>;
-  declare user_vehicles?: NonAttribute<UserVehicle[]>;
+  declare vehicles?: NonAttribute<UserVehicle[]>;
+
+  declare getVehicles: BelongsToManyGetAssociationsMixin<Vehicle>;
+  declare setVehicles: BelongsToManySetAssociationsMixin<Vehicle, Vehicle["id"]>;
+  declare addVehicle: BelongsToManyAddAssociationMixin<Vehicle, UserVehicleAttributes>;
+  declare addVehicles: BelongsToManyAddAssociationsMixin<Vehicle, Vehicle["id"]>;
+  declare removeVehicle: BelongsToManyRemoveAssociationMixin<Vehicle, Vehicle["id"]>;
+  declare removeVehicles: BelongsToManyRemoveAssociationsMixin<Vehicle, Vehicle["id"]>;
+  declare hasVehicle: BelongsToManyHasAssociationMixin<Vehicle, Vehicle["id"]>;
+  declare countVehicles: BelongsToManyCountAssociationsMixin;
+  declare createVehicle: BelongsToManyCreateAssociationMixin<Vehicle>;
 }
 
 /*
@@ -69,13 +99,6 @@ User.hasMany(VerificationCode, {
   sourceKey: "id",
   foreignKey: "user_id",
   as: "verification_codes",
-  onDelete: "CASCADE",
-});
-
-User.hasMany(UserVehicle, {
-  sourceKey: "id",
-  foreignKey: "user_id",
-  as: "user_vehicles",
   onDelete: "CASCADE",
 });
 

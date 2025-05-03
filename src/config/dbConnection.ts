@@ -9,11 +9,11 @@ const sequelize = new Sequelize({
   port: config.DB_PORT,
   dialect: "postgres",
   logging: config.DB_LOGGING,
-  dialectOptions: {
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  },
+  // dialectOptions: {
+  //   ssl: {
+  //     rejectUnauthorized: true,
+  //   },
+  // },
 });
 
 export { sequelize };

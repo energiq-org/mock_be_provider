@@ -9,7 +9,7 @@ import { generateOTP } from "../../utils/verificationCode.js";
 import { signupSchema, updateUserSchema } from "../../schemas/users.js";
 import * as jdenticon from "jdenticon";
 import { awsFolderNames, s3Handler } from "../../utils/s3.js";
-import { UserVehicle } from "../../models/userVehicles.js";
+import { UserVehicle } from "../../models/userVehicle.js";
 import { fuzzySearcher, Vehicle } from "../../utils/vehiclesStore.js";
 
 async function signupController(req: Request<unknown, unknown, typeof signupSchema.infer>, res: Response) {
