@@ -1,4 +1,4 @@
-import { logoutSchema } from "@src/schemas/auth.js";
+import { logoutSchema } from "../../schemas/auth.js";
 import { Request, Response } from "express";
 import { Token } from "../../models/token.js";
 

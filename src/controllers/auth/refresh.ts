@@ -1,4 +1,4 @@
-import { refreshSchema } from "@src/schemas/auth.js";
+import { refreshSchema } from "../../schemas/auth.js";
 import { Request, Response } from "express";
 import { Token } from "../../models/token.js";
 import { User } from "../../models/user.js";
