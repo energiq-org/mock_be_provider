@@ -8,13 +8,11 @@ function getVehicleController(
   res: Response
 ) {
   try {
-    const { id, model } = req.query;
-
     let response: Vehicle[] | Vehicle | undefined;
-    if (id !== undefined) {
-      response = fuzzySearcher.findById(parseInt(id.toString())) ?? [];
-    } else if (model !== undefined) {
-      response = fuzzySearcher.find({ model });
+    if (req.query.id !== undefined) {
+      response = fuzzySearcher.findById(req.query.id) ?? [];
+    } else if (req.query.model !== undefined) {
+      response = fuzzySearcher.find({ model: req.query.model }) ?? [];
     } else {
       response = fuzzySearcher.list();
     }

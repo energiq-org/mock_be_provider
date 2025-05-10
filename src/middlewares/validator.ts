@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { TSchema } from "@sinclair/typebox";
 import { Ajv } from "ajv";
+import { Value } from "@sinclair/typebox/value";
 
 const ajv = new Ajv({
   allErrors: true,
@@ -22,6 +23,8 @@ const ajvRequestValidator =
         errors 
       });
     }
+
+    req[source] = Value.Convert(schema, req[source]);
     next();
   };
 

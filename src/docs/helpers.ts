@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -39,9 +40,9 @@ function generateRequestParameters(schema: TSchema, source: "query" | "path", re
     parameters.push({
       in: source,
       name: key,
-      schema: { type: value.type || "string" },
+      schema: { type: (value as { type?: string }).type || "string" },
       required: required || schema.required?.includes(key) || false,
-      description: value.description || `The ${key} parameter`,
+      description: (value as { description?: string }).description || `The ${key} parameter`,
     });
   }
 
