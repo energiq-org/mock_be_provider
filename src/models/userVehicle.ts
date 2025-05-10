@@ -6,6 +6,8 @@ class UserVehicle extends Model {
   declare id: CreationOptional<UUID>;
   declare vehicle_id: number;
   declare user_id: UUID;
+  declare connector_type: string;
+  declare actual_battery: string;
   declare created_at: CreationOptional<Date>;
 }
 
@@ -22,6 +24,14 @@ UserVehicle.init(
     },
     vehicle_id: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    connector_type: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    actual_battery: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     created_at: {

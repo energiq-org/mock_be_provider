@@ -11,8 +11,9 @@
     "noImplicitAny": false,
     "esModuleInterop": true,
     "allowJs": true,
+    "resolveJsonModule": true,
     //"allowImportingTsExtensions": true,
-    "noEmit": false
+    "noEmit": false,
   },
   "include": [
     "src/**/*.*"
