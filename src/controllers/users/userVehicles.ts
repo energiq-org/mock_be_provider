@@ -1,74 +1,83 @@
 import { UUID } from "crypto";
 import { Request, Response } from "express";
-import { UserVehicle } from "../../models/userVehicle.js";
-import { fuzzySearcher } from "../../utils/vehiclesStore.js";
 import { vehicleIdSchema } from "../../schemas/userVehicles.js";
-import { User } from "../../models/user.js";
 import { Static } from "@sinclair/typebox";
-
+import { UserVehicle } from "../../models/userVehicle.js";
+import { addUserVehicleSchema } from "../../schemas/controllers/users/userVehicles.js";
+import { ForeignKeyConstraintError } from "sequelize";
+import { updateUserVehicleSchema } from "../../schemas/controllers/users/userVehicles.js";
 async function addUserVehicleController(
-  req: Request<Static<typeof vehicleIdSchema>>,
+  req: Request<unknown, unknown, Static<typeof addUserVehicleSchema>>,
   res: Response
 ) {
   try {
     const userId = req["userId"] as UUID;
-    const user = await User.findByPk(userId);
-    if (!user) {
-      return res.status(404).json({ msg: "user not found" });
-    }
-    const vehicleId = Number(req.params.id);
-    // const vehicle = fuzzySearcher.findById(vehicleId);
-    // if (!vehicle) {
-    //   return res.status(404).json({ msg: "vehicle not found" });
-    // }
-    const vehicle = await Vehicle.findByPk(vehicleId);
-    if (vehicle === null) {
-      return res.status(404).json({ msg: "vehicle not found" });
-    }
-    await user.addVehicle(vehicle, {
-      through: {
-        connector_type: "bergergtg",
-        actual_battery: "1457 KWh",
-      },
+    const vehicleId = req.body.id;
+
+    await UserVehicle.create({
+      user_id: userId,
+      vehicle_id: vehicleId,
+      connector_type: req.body.connector_type,
+      actual_battery: req.body.actual_battery,
     });
 
     return res.status(201).json({ msg: "Vehicle added successfully" });
   } catch (error) {
-    logger.error(error);
+    if (error instanceof ForeignKeyConstraintError) {
+      return res.status(404).json({ msg: "double check the vehicle id" });
+    }
     return res.status(500).json({ msg: (error as Error).message });
   }
 }
 
-async function deleteUserVehicleController(
-  req: Request<Static<typeof vehicleIdSchema>>,
-  res: Response
-) {
+async function deleteUserVehicleController(req: Request<Static<typeof vehicleIdSchema>>, res: Response) {
   try {
-    const userId = req["userId"] as UUID;
-    const user = await User.findByPk(userId);
+    const vehicleId = req.params.id;
 
-    if (!user) {
-      return res.status(404).json({ msg: "user not found" });
-    }
-
-    const vehicleId = Number(req.params.id);
-    if (isNaN(vehicleId)) {
-      return res.status(400).json({ msg: "Invalid vehicle ID" });
-    }
-
-    const vehicle = await UserVehicle.findOne({
-      where: { vehicle_id: vehicleId, user_id: userId },
+    const result = await UserVehicle.destroy({
+      where: {
+        id: vehicleId,
+      },
     });
 
-    if (!vehicle) {
-      return res.status(404).json({ msg: "Vehicle not found or not owned by the user" });
+    if (!result) {
+      return res.status(404).json({ msg: "Vehicle not found" });
     }
 
-    await vehicle.destroy();
     return res.status(200).json({ msg: "Vehicle deleted successfully" });
   } catch (error) {
     return res.status(500).json({ msg: (error as Error).message });
   }
 }
 
-export { addUserVehicleController, deleteUserVehicleController };
+async function updateUserVehicleController(
+  req: Request<Static<typeof vehicleIdSchema>, unknown, Static<typeof updateUserVehicleSchema>>,
+  res: Response
+) {
+  try {
+    const vehicleId = req.params.id;
+    const { connector_type, actual_battery } = req.body;
+
+    const [affectedCount] = await UserVehicle.update(
+      {
+        connector_type,
+        actual_battery,
+      },
+      {
+        where: {
+          id: vehicleId,
+        },
+      }
+    );
+
+    if (!affectedCount) {
+      return res.status(404).json({ msg: "Vehicle not found" });
+    }
+
+    return res.status(200).json({ msg: "Vehicle updated successfully" });
+  } catch (error) {
+    return res.status(500).json({ msg: (error as Error).message });
+  }
+}
+
+export { addUserVehicleController, deleteUserVehicleController, updateUserVehicleController };

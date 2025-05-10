@@ -1,6 +1,6 @@
 import { Type } from "@sinclair/typebox";
-import { userSchema } from "../../../users.js";
-import { vehicleSchema } from "../../../vehicles.js";
+import { userSchema } from "../../users.js";
+import { vehicleSchema } from "../../vehicles.js";
 
 const getUserByAccessTokenResponseSchema = Type.Composite([
   userSchema,

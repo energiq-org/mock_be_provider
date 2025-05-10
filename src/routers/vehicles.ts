@@ -3,7 +3,7 @@ import { getVehicleController } from "../controllers/vehicles/index.js";
 import { docs } from "../docs/index.js";
 import { generateRequestParameters, getErrorResponses } from "../docs/helpers.js";
 import { generateJSONResponse } from "../docs/helpers.js";
-import { getVehiclesQueryParamsSchema } from "../schemas/controllers/vehicles/get/vehicles.js";
+import { getVehiclesQueryParamsSchema } from "../schemas/controllers/vehicles/vehicles.js";
 import { ajvRequestValidator } from "../middlewares/validator.js";
 import { vehicleSchema } from "../schemas/vehicles.js";
 import { Type } from "@sinclair/typebox";

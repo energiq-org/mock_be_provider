@@ -1,4 +1,4 @@
-import { Type } from "@sinclair/typebox";
+import { Type, Static } from "@sinclair/typebox";
 
 const vehicleSchema = Type.Object({
   id: Type.Number(),
@@ -8,11 +8,13 @@ const vehicleSchema = Type.Object({
   efficiency: Type.String(),
   weight: Type.String(),
   acceleration: Type.String(),
-  "1_stop_range": Type.String(),
+  one_stop_range: Type.String(),
   battery: Type.String(),
   fastcharge: Type.String(),
   towing: Type.String(),
   cargo_volume: Type.String(),
 });
 
-export { vehicleSchema };
+type VehicleSchemaType = Static<typeof vehicleSchema>;
+
+export { vehicleSchema, VehicleSchemaType };

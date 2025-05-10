@@ -1,22 +1,24 @@
 import { Request, Response } from "express";
-import { fuzzySearcher, Vehicle } from "../../utils/vehiclesStore.js";
-import { getVehiclesQueryParamsSchema } from "../../schemas/controllers/vehicles/get/vehicles.js";
+import { fuzzySearcher } from "../../utils/fuzzySearcher.js";
 import { Static } from "@sinclair/typebox";
+import { getVehiclesQueryParamsSchema } from "../../schemas/controllers/vehicles/vehicles.js";
+import { VehicleSchemaType } from "../../schemas/vehicles.js";
 
 function getVehicleController(
   req: Request<unknown, unknown, unknown, Static<typeof getVehiclesQueryParamsSchema>>,
   res: Response
 ) {
   try {
-    let response: Vehicle[] | Vehicle | undefined;
+    let vehicles: VehicleSchemaType[] = [];
     if (req.query.id !== undefined) {
-      response = fuzzySearcher.findById(req.query.id) ?? [];
+      const vehicle = fuzzySearcher.store.findById(req.query.id);
+      vehicles = vehicle ? [vehicle] : [];
     } else if (req.query.model !== undefined) {
-      response = fuzzySearcher.find({ model: req.query.model }) ?? [];
+      vehicles = fuzzySearcher.search({ model: req.query.model });
     } else {
-      response = fuzzySearcher.list();
+      vehicles = fuzzySearcher.store.list();
     }
-    return res.status(200).json(response);
+    return res.status(200).json(vehicles);
   } catch (error) {
     return res.status(500).json({ msg: (error as Error).message });
   }

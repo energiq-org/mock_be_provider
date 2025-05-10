@@ -7,7 +7,11 @@ import {
   deleteUserController,
 } from "../controllers/users/index.js";
 import { sendVerificationEmailController, verifyEmailController } from "../controllers/users/mail.js";
-import { addUserVehicleController, deleteUserVehicleController } from "../controllers/users/userVehicles.js";
+import {
+  addUserVehicleController,
+  deleteUserVehicleController,
+  updateUserVehicleController,
+} from "../controllers/users/userVehicles.js";
 import {
   generateJSONRequestBody,
   generateJSONResponse,
@@ -23,7 +27,8 @@ import { ajvRequestValidator } from "../middlewares/validator.js";
 import { successResponseSchema } from "../schemas/common-responses.js";
 import { sentVerificationEmailSchema, signupSchema, updateUserSchema, verifyEmailSchema } from "../schemas/users.js";
 import { vehicleIdSchema } from "../schemas/userVehicles.js";
-import { getUserByAccessTokenResponseSchema } from "../schemas/controllers/users/get/user.js";
+import { addUserVehicleSchema, updateUserVehicleSchema } from "../schemas/controllers/users/userVehicles.js";
+import { getUserByAccessTokenResponseSchema } from "../schemas/controllers/users/user.js";
 
 const usersRouter = Router();
 
@@ -95,20 +100,20 @@ usersRouter.delete(
 );
 
 usersRouter.post(
-  "/vehicles/:id",
+  "/vehicle",
   docs.path({
     summary: "Add vehicle",
     description: "Add vehicle to user",
-    tags: ["users"],
+    tags: ["user - vehicles"],
     security: getSecuritySchemes(),
-    parameters: generateRequestParameters(vehicleIdSchema, "path", true),
+    requestBody: generateJSONRequestBody(addUserVehicleSchema, "The vehicle to add"),
     responses: {
       201: generateJSONResponse(successResponseSchema, "The vehicle was added successfully"),
       ...getErrorResponses(["401", "404", "500"]),
     },
   }),
   authMiddleware,
-  ajvRequestValidator(vehicleIdSchema, "params"),
+  ajvRequestValidator(addUserVehicleSchema, "body"),
   addUserVehicleController
 );
 
@@ -117,7 +122,7 @@ usersRouter.delete(
   docs.path({
     summary: "Delete vehicle",
     description: "Delete a vehicle from the user's list of vehicles",
-    tags: ["users"],
+    tags: ["user - vehicles"],
     security: getSecuritySchemes(),
     parameters: generateRequestParameters(vehicleIdSchema, "path", true),
     responses: {
@@ -129,13 +134,31 @@ usersRouter.delete(
   ajvRequestValidator(vehicleIdSchema, "params"),
   deleteUserVehicleController
 );
+usersRouter.patch(
+  "/vehicles/:id",
+  docs.path({
+    summary: "Update vehicle",
+    description: "Update a vehicle from the user's list of vehicles",
+    tags: ["user - vehicles"],
+    security: getSecuritySchemes(),
+    parameters: generateRequestParameters(vehicleIdSchema, "path", true),
+    requestBody: generateJSONRequestBody(updateUserVehicleSchema, "The vehicle to update"),
+    responses: {
+      200: generateJSONResponse(successResponseSchema, "The vehicle was updated successfully"),
+      ...getErrorResponses(["400", "404", "500"]),
+    },
+  }),
+  authMiddleware,
+  ajvRequestValidator(updateUserVehicleSchema, "body"),
+  updateUserVehicleController
+);
 
 usersRouter.post(
   "/verify",
   docs.path({
     summary: "Verify email",
     description: "Verify email",
-    tags: ["users"],
+    tags: ["user - verification"],
     parameters: generateRequestParameters(verifyEmailSchema, "query", true),
     responses: {
       200: generateJSONResponse(successResponseSchema, "The email was verified successfully"),
@@ -151,7 +174,7 @@ usersRouter.post(
   docs.path({
     summary: "Send verification email",
     description: "Send verification email",
-    tags: ["users"],
+    tags: ["user - verification"],
     requestBody: generateJSONRequestBody(sentVerificationEmailSchema, "The email to send verification email"),
     responses: {
       200: generateJSONResponse(successResponseSchema, "The verification email was sent successfully"),
