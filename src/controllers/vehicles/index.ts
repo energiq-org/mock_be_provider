@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
 import { fuzzySearcher, Vehicle } from "../../utils/vehiclesStore.js";
-import { getVehiclesQueryParamsSchema } from "../../schemas/controllers/vehicles/vehicles.js";
+import { getVehiclesQueryParamsSchema } from "../../schemas/controllers/vehicles/get/vehicles.js";
+import { Static } from "@sinclair/typebox";
+
 function getVehicleController(
-  req: Request<unknown, unknown, unknown, typeof getVehiclesQueryParamsSchema.infer>,
+  req: Request<unknown, unknown, unknown, Static<typeof getVehiclesQueryParamsSchema>>,
   res: Response
 ) {
   try {

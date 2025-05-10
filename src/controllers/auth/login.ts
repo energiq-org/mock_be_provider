@@ -8,8 +8,9 @@ import { loginSchema } from "../../schemas/auth.js";
 import { sendVerificationEmail } from "../../utils/mail.js";
 import { generateAccessToken, generateRefreshToken } from "../../utils/token.js";
 import { generateOTP } from "../../utils/verificationCode.js";
+import { Static } from "@sinclair/typebox";
 
-async function loginController(req: Request<unknown, unknown, typeof loginSchema.infer>, res: Response) {
+async function loginController(req: Request<unknown, unknown, Static<typeof loginSchema>>, res: Response) {
   try {
     const { email, password } = req.body;
 

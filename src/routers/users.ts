@@ -19,7 +19,7 @@ import {
 import { docs } from "../docs/index.js";
 import { authMiddleware } from "../middlewares/auth.js";
 import { profilePictureMiddleware } from "../middlewares/multer.js";
-import { arktypeRequestValidator } from "../middlewares/validator.js";
+import { ajvRequestValidator } from "../middlewares/validator.js";
 import { successResponseSchema } from "../schemas/common-responses.js";
 import { sentVerificationEmailSchema, signupSchema, updateUserSchema, verifyEmailSchema } from "../schemas/users.js";
 import { vehicleIdSchema } from "../schemas/userVehicles.js";
@@ -39,7 +39,7 @@ usersRouter.post(
       ...getErrorResponses(["409", "500"]),
     },
   }),
-  arktypeRequestValidator(signupSchema, "body"),
+  ajvRequestValidator(signupSchema, "body"),
   signupController
 );
 
@@ -58,7 +58,7 @@ usersRouter.patch(
   }),
   authMiddleware,
   profilePictureMiddleware,
-  arktypeRequestValidator(updateUserSchema, "body"),
+  ajvRequestValidator(updateUserSchema, "body"),
   updateUserController
 );
 
@@ -108,7 +108,7 @@ usersRouter.post(
     },
   }),
   authMiddleware,
-  arktypeRequestValidator(vehicleIdSchema, "params"),
+  ajvRequestValidator(vehicleIdSchema, "params"),
   addUserVehicleController
 );
 
@@ -126,7 +126,7 @@ usersRouter.delete(
     },
   }),
   authMiddleware,
-  arktypeRequestValidator(vehicleIdSchema, "params"),
+  ajvRequestValidator(vehicleIdSchema, "params"),
   deleteUserVehicleController
 );
 
@@ -142,7 +142,7 @@ usersRouter.post(
       ...getErrorResponses(["400", "410", "404", "500"]),
     },
   }),
-  arktypeRequestValidator(verifyEmailSchema, "query"),
+  ajvRequestValidator(verifyEmailSchema, "query"),
   verifyEmailController
 );
 
@@ -158,7 +158,7 @@ usersRouter.post(
       ...getErrorResponses(["404", "500"]),
     },
   }),
-  arktypeRequestValidator(sentVerificationEmailSchema, "body"),
+  ajvRequestValidator(sentVerificationEmailSchema, "body"),
   sendVerificationEmailController
 );
 

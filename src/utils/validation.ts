@@ -1,11 +1,15 @@
-import { type } from "arktype";
+import { TSchema } from "@sinclair/typebox";
+import { Ajv } from "ajv";
 
-function validateArkTypeSchema(input: unknown, schema: type): { isValid: boolean; message?: string } {
-  const validationResult = schema(input);
-  if (validationResult instanceof type.errors) {
-    return { isValid: false, message: validationResult.summary };
+const ajv = new Ajv();
+
+function validateTypeboxSchema(input: unknown, schema: TSchema): { isValid: boolean; message?: string } {
+  const validate = ajv.compile(schema);
+  const valid = validate(input);
+  if (!valid) {
+    return { isValid: false, message: validate.errors?.[0]?.message };
   }
   return { isValid: true };
 }
 
-export { validateArkTypeSchema };
+export { validateTypeboxSchema };

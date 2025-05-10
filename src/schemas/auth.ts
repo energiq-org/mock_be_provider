@@ -1,30 +1,30 @@
-import { type } from "arktype";
+import { Type } from "@sinclair/typebox";
 import { tokenSchema } from "./tokens.js";
 import { userSchema } from "./users.js";
 
-const accessTokenPayloadSchema = type({
-  userId: userSchema.get("id"),
-  email: userSchema.get("email"),
+const accessTokenPayloadSchema = Type.Object({
+  userId: userSchema.properties.id,
+  email: userSchema.properties.email,
 });
 
-const loginSchema = userSchema.pick("email", "password");
-const refreshSchema = type({
-  token: tokenSchema.get("refresh_token"),
+const loginSchema = Type.Pick(userSchema, ['email', 'password']);
+const refreshSchema = Type.Object({
+  token: tokenSchema.properties.refresh_token,
 });
-const logoutSchema = tokenSchema.pick("refresh_token");
+const logoutSchema = Type.Pick(tokenSchema, ['refresh_token']);
 
-const accessTokenSchema = type({
-  access_token: "string",
+const accessTokenSchema = Type.Object({
+  access_token: Type.String(),
 });
 
 // Response schemas
-const loginResponseSchema = type({
-  access_token: accessTokenSchema.get("access_token"),
-  refresh_token: tokenSchema.get("refresh_token"),
+const loginResponseSchema = Type.Object({
+  access_token: accessTokenSchema.properties.access_token,
+  refresh_token: tokenSchema.properties.refresh_token,
 });
 
-const refreshResponseSchema = type({
-  access_token: accessTokenSchema.get("access_token"),
+const refreshResponseSchema = Type.Object({
+  access_token: accessTokenSchema.properties.access_token,
 });
 
 export {

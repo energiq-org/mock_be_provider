@@ -5,9 +5,10 @@ import { sendVerificationEmail, sendWelcomeEmail } from "../../utils/mail.js";
 import { verifyEmailSchema, sentVerificationEmailSchema } from "../../schemas/users.js";
 import { generateOTP } from "../../utils/verificationCode.js";
 import config from "../../config/env.js";
+import { Static } from "@sinclair/typebox";
 
 async function verifyEmailController(
-  req: Request<unknown, unknown, unknown, typeof verifyEmailSchema.infer>,
+  req: Request<unknown, unknown, unknown, Static<typeof verifyEmailSchema>>,
   res: Response
 ) {
   try {
@@ -49,7 +50,7 @@ async function verifyEmailController(
 }
 
 async function sendVerificationEmailController(
-  req: Request<unknown, unknown, typeof sentVerificationEmailSchema.infer>,
+  req: Request<unknown, unknown, Static<typeof sentVerificationEmailSchema>>,
   res: Response
 ) {
   try {

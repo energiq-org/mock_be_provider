@@ -1,8 +1,9 @@
 import { logoutSchema } from "../../schemas/auth.js";
 import { Request, Response } from "express";
 import { Token } from "../../models/token.js";
+import { Static } from "@sinclair/typebox";
 
-async function logoutController(req: Request<unknown, unknown, typeof logoutSchema.infer>, res: Response) {
+async function logoutController(req: Request<unknown, unknown, Static<typeof logoutSchema>>, res: Response) {
   try {
     const { refresh_token } = req.body;
 

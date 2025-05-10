@@ -11,8 +11,9 @@ import * as jdenticon from "jdenticon";
 import { awsFolderNames, s3Handler } from "../../utils/s3.js";
 import { UserVehicle } from "../../models/userVehicles.js";
 import { fuzzySearcher, Vehicle } from "../../utils/vehiclesStore.js";
+import { Static } from "@sinclair/typebox";
 
-async function signupController(req: Request<unknown, unknown, typeof signupSchema.infer>, res: Response) {
+async function signupController(req: Request<unknown, unknown, Static<typeof signupSchema>>, res: Response) {
   try {
     const { first_name, last_name, email, password } = req.body;
 
@@ -53,7 +54,7 @@ async function signupController(req: Request<unknown, unknown, typeof signupSche
   }
 }
 
-async function updateUserController(req: Request<unknown, unknown, typeof updateUserSchema.infer>, res: Response) {
+async function updateUserController(req: Request<unknown, unknown, Static<typeof updateUserSchema>>, res: Response) {
   const userId = req["userId"] as UUID;
   try {
     const user = await User.findByPk(userId);

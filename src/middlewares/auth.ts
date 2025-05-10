@@ -2,7 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import config from "../config/env.js";
 import { accessTokenPayloadSchema } from "../schemas/auth.js";
-import { validateArkTypeSchema } from "../utils/validation.js";
+import { validateTypeboxSchema } from "../utils/validation.js";
+import { Static } from "@sinclair/typebox";
 
 function authMiddleware(req: Request, res: Response, next: NextFunction) {
   const token = (req.headers["authorization"] as string)?.split(" ")[1];
@@ -10,14 +11,14 @@ function authMiddleware(req: Request, res: Response, next: NextFunction) {
     return res.status(401).json({ msg: "invalid token" });
   }
 
-  let tokenPayload: typeof accessTokenPayloadSchema.infer;
+  let tokenPayload: Static<typeof accessTokenPayloadSchema>;
   try {
-    tokenPayload = jwt.verify(token, config.JWT_SECRET) as typeof accessTokenPayloadSchema.infer;
+    tokenPayload = jwt.verify(token, config.JWT_SECRET) as Static<typeof accessTokenPayloadSchema>;
   } catch {
     return res.status(401).json({ msg: "unauthorized" });
   }
 
-  if (!validateArkTypeSchema(tokenPayload, accessTokenPayloadSchema).isValid) {
+  if (!validateTypeboxSchema(tokenPayload, accessTokenPayloadSchema).isValid) {
     return res.status(401).json({ msg: "invalid token" });
   }
 
