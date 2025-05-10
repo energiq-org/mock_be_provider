@@ -1,5 +1,5 @@
 import { Type } from "@sinclair/typebox";
-import { codeSchema } from "./codes.js";
+import { codeSchema } from "./verificationCodes.js";
 
 const userSchema = Type.Object({
   id: Type.String(),

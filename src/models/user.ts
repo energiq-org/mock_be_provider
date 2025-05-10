@@ -1,14 +1,11 @@
 import { UUID } from "crypto";
 import {
   BelongsToManyAddAssociationMixin,
-  BelongsToManyAddAssociationsMixin,
   BelongsToManyCountAssociationsMixin,
   BelongsToManyCreateAssociationMixin,
   BelongsToManyGetAssociationsMixin,
   BelongsToManyHasAssociationMixin,
   BelongsToManyRemoveAssociationMixin,
-  BelongsToManyRemoveAssociationsMixin,
-  BelongsToManySetAssociationsMixin,
   CreationOptional,
   DataTypes,
   Model,
@@ -39,15 +36,65 @@ class User extends Model {
   declare verification_codes?: NonAttribute<VerificationCode[]>;
   declare vehicles?: NonAttribute<UserVehicle[]>;
 
-  declare getVehicles: BelongsToManyGetAssociationsMixin<Vehicle>;
-  declare setVehicles: BelongsToManySetAssociationsMixin<Vehicle, Vehicle["id"]>;
+  declare getVehicles: BelongsToManyGetAssociationsMixin<Vehicle & { UserVehicle: UserVehicle }>;
   declare addVehicle: BelongsToManyAddAssociationMixin<Vehicle, UserVehicleAttributes>;
-  declare addVehicles: BelongsToManyAddAssociationsMixin<Vehicle, Vehicle["id"]>;
   declare removeVehicle: BelongsToManyRemoveAssociationMixin<Vehicle, Vehicle["id"]>;
-  declare removeVehicles: BelongsToManyRemoveAssociationsMixin<Vehicle, Vehicle["id"]>;
   declare hasVehicle: BelongsToManyHasAssociationMixin<Vehicle, Vehicle["id"]>;
   declare countVehicles: BelongsToManyCountAssociationsMixin;
   declare createVehicle: BelongsToManyCreateAssociationMixin<Vehicle>;
+
+  async getVehiclesTransformed(): Promise<
+    Array<{
+      id: UUID;
+      model: string;
+      availability: string;
+      range: string;
+      efficiency: string;
+      weight: string;
+      acceleration: string;
+      one_stop_range: string;
+      battery: string;
+      fastcharge: string;
+      towing: string;
+      cargo_volume: string;
+      connector_type: string;
+      actual_battery: string;
+      created_at: Date;
+    }>
+  > {
+    const vehicles = await this.getVehicles();
+
+    const transformedVehicles = vehicles.map((vehicle) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, no-unused-vars, @typescript-eslint/no-unused-vars
+      const { UserVehicle, id, ...vehicleData } = vehicle.toJSON();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, no-unused-vars, @typescript-eslint/no-unused-vars
+      const { user_id, vehicle_id, ...rest } = UserVehicle;
+      return {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        id: vehicle_id,
+        ...rest,
+        ...vehicleData,
+      } as {
+        id: UUID;
+        model: string;
+        availability: string;
+        range: string;
+        efficiency: string;
+        weight: string;
+        acceleration: string;
+        one_stop_range: string;
+        battery: string;
+        fastcharge: string;
+        towing: string;
+        cargo_volume: string;
+        connector_type: string;
+        actual_battery: string;
+        created_at: Date;
+      };
+    });
+
+    return transformedVehicles;
+  }
 }
 
 /*

@@ -9,8 +9,7 @@ import { generateOTP } from "../../utils/verificationCode.js";
 import { signupSchema, updateUserSchema } from "../../schemas/users.js";
 import * as jdenticon from "jdenticon";
 import { awsFolderNames, s3Handler } from "../../utils/s3.js";
-import { UserVehicle } from "../../models/userVehicle.js";
-import { fuzzySearcher, Vehicle } from "../../utils/vehiclesStore.js";
+
 import { Static } from "@sinclair/typebox";
 
 async function signupController(req: Request<unknown, unknown, Static<typeof signupSchema>>, res: Response) {
@@ -107,30 +106,15 @@ async function getUserController(req: Request, res: Response) {
   try {
     const user = await User.findOne({
       where: { id: userId },
-      include: [
-        {
-          model: UserVehicle,
-          as: "user_vehicles",
-          attributes: { exclude: ["user_id"] },
-        },
-      ],
     });
     if (!user) {
       return res.status(404).json({ msg: "user not found" });
     }
 
-    const vehicleIds = user.user_vehicles?.map((vehicle) => vehicle.vehicle_id) ?? [];
-
-    const vehicles: Vehicle[] = [];
-    for (const vehicleId of vehicleIds) {
-      const vehicle = fuzzySearcher.findById(vehicleId);
-      if (vehicle) {
-        vehicles.push(vehicle);
-      }
-    }
+    const vehicles = await user.getVehiclesTransformed();
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unused-vars, no-unused-vars
-    const { password, user_vehicles, ...userData } = user.toJSON();
+    const { password, ...userData } = user.toJSON();
     return res.status(200).json({
       ...userData,
       vehicles,

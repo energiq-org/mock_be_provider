@@ -13,14 +13,15 @@ const ajvRequestValidator =
     const validate = ajv.compile(schema);
     const valid = validate(req[source]);
     if (!valid) {
-      const errors = validate.errors?.map(error => ({
-        field: error.instancePath.replace('/', ''),
-        message: error.message
-      })) || [];
-      
-      return res.status(400).json({ 
+      const errors =
+        validate.errors?.map((error) => ({
+          field: error.instancePath.replace("/", ""),
+          message: error.message,
+        })) || [];
+
+      return res.status(400).json({
         msg: "Validation failed",
-        errors 
+        errors,
       });
     }
 

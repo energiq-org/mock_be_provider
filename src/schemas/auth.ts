@@ -7,11 +7,11 @@ const accessTokenPayloadSchema = Type.Object({
   email: userSchema.properties.email,
 });
 
-const loginSchema = Type.Pick(userSchema, ['email', 'password']);
+const loginSchema = Type.Pick(userSchema, ["email", "password"]);
 const refreshSchema = Type.Object({
   token: tokenSchema.properties.refresh_token,
 });
-const logoutSchema = Type.Pick(tokenSchema, ['refresh_token']);
+const logoutSchema = Type.Pick(tokenSchema, ["refresh_token"]);
 
 const accessTokenSchema = Type.Object({
   access_token: Type.String(),
