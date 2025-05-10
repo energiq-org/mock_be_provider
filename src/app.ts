@@ -9,6 +9,7 @@ import { docs } from "./docs/index.js";
 import { authRouter } from "./routers/auth.js";
 import { usersRouter } from "./routers/users.js";
 import { vehiclesRouter } from "./routers/vehicles.js";
+import { getThemeSync } from '@intelika/swagger-theme';
 
 function createServer() {
   const server = express();
@@ -44,7 +45,16 @@ function createServer() {
       },
     })
   );
-  server.use("/docs/swagger", swaggerUi.serve, swaggerUi.setup(openAPIDocs));
+  server.use(
+    "/docs/swagger",
+    swaggerUi.serve,
+    swaggerUi.setup(openAPIDocs, {
+      customCss: `
+        ${getThemeSync().toString()}
+        .swagger-ui .topbar { display: none !important; }
+      `
+    })
+  );
 
   return server;
 }
