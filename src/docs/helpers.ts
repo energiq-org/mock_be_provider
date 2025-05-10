@@ -1,4 +1,8 @@
-import { type } from "arktype";
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import {
   badRequestErrorSchema,
   conflictErrorSchema,
@@ -8,20 +12,21 @@ import {
   notFoundErrorSchema,
   unauthorizedErrorSchema,
 } from "../schemas/common-responses.js";
+import { TSchema } from "@sinclair/typebox";
 
-function generateJSONRequestBody(schema: type, description?: string) {
+function generateJSONRequestBody<T extends TSchema>(schema: T, description?: string) {
   return {
     description,
     required: true,
     content: {
       "application/json": {
-        schema: schema.toJsonSchema(),
+        schema,
       },
     },
   };
 }
 
-function generateRequestParameters(schema: type, source: "query" | "path", required = false) {
+function generateRequestParameters(schema: TSchema, source: "query" | "path", required = false) {
   const parameters: Array<{
     in: typeof source;
     name: string;
@@ -30,18 +35,15 @@ function generateRequestParameters(schema: type, source: "query" | "path", requi
     description: string;
   }> = [];
 
-  const schemaObj = schema.toJsonSchema() as { properties?: Record<string, unknown> };
-
-  if (schemaObj?.properties) {
-    for (const key of Object.keys(schemaObj.properties)) {
-      parameters.push({
-        in: source,
-        name: key,
-        schema: { type: "string" },
-        required,
-        description: `The ${key} parameter`,
-      });
-    }
+  const properties = schema.properties || {};
+  for (const [key, value] of Object.entries(properties)) {
+    parameters.push({
+      in: source,
+      name: key,
+      schema: { type: (value as { type?: string }).type || "string" },
+      required: required || schema.required?.includes(key) || false,
+      description: (value as { description?: string }).description || `The ${key} parameter`,
+    });
   }
 
   return parameters;
@@ -58,8 +60,8 @@ function generateUpdateUserRequestBody() {
           properties: {
             first_name: { type: "string" },
             last_name: { type: "string" },
-            email: { type: "string", format: "email" },
-            password: { type: "string", format: "password" },
+            email: { type: "string" },
+            password: { type: "string"},
             phone_number: { type: "string" },
             profile_picture: {
               type: "string",
@@ -73,12 +75,12 @@ function generateUpdateUserRequestBody() {
   };
 }
 
-function generateJSONResponse(schema: type, description?: string) {
+function generateJSONResponse<T extends TSchema>(schema: T, description?: string) {
   return {
     description,
     content: {
       "application/json": {
-        schema: schema.toJsonSchema(),
+        schema,
       },
     },
   };

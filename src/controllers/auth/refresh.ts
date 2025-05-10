@@ -3,8 +3,9 @@ import { Request, Response } from "express";
 import { Token } from "../../models/token.js";
 import { User } from "../../models/user.js";
 import { generateAccessToken } from "../../utils/token.js";
+import { Static } from "@sinclair/typebox";
 
-async function refreshTokenController(req: Request<unknown, unknown, typeof refreshSchema.infer>, res: Response) {
+async function refreshTokenController(req: Request<unknown, unknown, Static<typeof refreshSchema>>, res: Response) {
   try {
     const { token } = req.body;
 

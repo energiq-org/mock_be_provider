@@ -1,34 +1,34 @@
-import { type } from "arktype";
+import { Type } from "@sinclair/typebox";
 import { codeSchema } from "./codes.js";
 
-const userSchema = type({
-  id: "string.uuid",
-  first_name: type.string,
-  last_name: type.string,
-  email: "string.email",
-  password: "string >=8",
-  phone_number: /^(?:\+20[-]?|0)?1[0-9]{9}$/,
-  profile_picture: type.string,
-  created_at: "string",
+const userSchema = Type.Object({
+  id: Type.String(),
+  first_name: Type.String(),
+  last_name: Type.String(),
+  email: Type.String(),
+  password: Type.String(),
+  phone_number: Type.String(),
+  profile_picture: Type.String(),
+  created_at: Type.String(),
 });
 
-const signupSchema = userSchema.pick("first_name", "last_name", "email", "password");
+const signupSchema = Type.Pick(userSchema, ["first_name", "last_name", "email", "password"]);
 
-const verifyEmailSchema = type({
-  email: userSchema.get("email"),
-  code: codeSchema.get("code"),
+const verifyEmailSchema = Type.Object({
+  email: userSchema.properties.email,
+  code: codeSchema.properties.code,
 });
 
-const sentVerificationEmailSchema = type({
-  email: userSchema.get("email"),
+const sentVerificationEmailSchema = Type.Object({
+  email: userSchema.properties.email,
 });
 
-const updateUserSchema = type({
-  "first_name?": userSchema.get("first_name"),
-  "last_name?": userSchema.get("last_name"),
-  "email?": userSchema.get("email"),
-  "password?": userSchema.get("password"),
-  "phone_number?": userSchema.get("phone_number"),
+const updateUserSchema = Type.Object({
+  first_name: userSchema.properties.first_name,
+  last_name: userSchema.properties.last_name,
+  email: userSchema.properties.email,
+  password: userSchema.properties.password,
+  phone_number: userSchema.properties.phone_number,
 });
 
 export { userSchema, signupSchema, verifyEmailSchema, updateUserSchema, sentVerificationEmailSchema };

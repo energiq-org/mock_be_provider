@@ -1,12 +1,12 @@
-import { type } from "arktype";
+import { Type } from "@sinclair/typebox";
 
-const tokenSchema = type({
-  id: "string.uuid",
-  user_id: "string.uuid",
-  refresh_token: type.string,
-  created_at: type.Date,
-  expires_at: type.Date,
-  revoked_at: type.Date,
+const tokenSchema = Type.Object({
+  id: Type.String(),
+  user_id: Type.String(),
+  refresh_token: Type.String(),
+  created_at: Type.Date(),
+  expires_at: Type.Date(),
+  revoked_at: Type.Date(),
 });
 
 export { tokenSchema };

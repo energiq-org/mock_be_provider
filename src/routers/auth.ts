@@ -6,7 +6,7 @@ import { logoutController } from "../controllers/auth/logout.js";
 import { refreshTokenController } from "../controllers/auth/refresh.js";
 import { generateJSONRequestBody, generateJSONResponse, getErrorResponses } from "../docs/helpers.js";
 import { docs } from "../docs/index.js";
-import { arktypeRequestValidator } from "../middlewares/validator.js";
+import { ajvRequestValidator } from "../middlewares/validator.js";
 import {
   loginResponseSchema,
   loginSchema,
@@ -30,7 +30,7 @@ authRouter.post(
       ...getErrorResponses(["400", "401", "404", "500"]),
     },
   }),
-  arktypeRequestValidator(loginSchema, "body"),
+  ajvRequestValidator(loginSchema, "body"),
   loginController
 );
 
@@ -46,7 +46,7 @@ authRouter.post(
       ...getErrorResponses(["400", "401", "403", "404", "500"]),
     },
   }),
-  arktypeRequestValidator(refreshSchema, "body"),
+  ajvRequestValidator(refreshSchema, "body"),
   refreshTokenController
 );
 
@@ -62,7 +62,7 @@ authRouter.post(
       ...getErrorResponses(["404", "500"]),
     },
   }),
-  arktypeRequestValidator(logoutSchema, "body"),
+  ajvRequestValidator(logoutSchema, "body"),
   logoutController
 );
 

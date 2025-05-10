@@ -1,12 +1,12 @@
-import { type } from "arktype";
+import { Type } from "@sinclair/typebox";
 
-const codeSchema = type({
-  id: "string.uuid",
-  email: type.string,
-  code: type.string,
-  used: type.boolean,
-  created_at: type.Date,
-  expires_at: type.Date,
+const codeSchema = Type.Object({
+  id: Type.String(),
+  email: Type.String(),
+  code: Type.String(),
+  used: Type.Boolean(),
+  created_at: Type.Date(),
+  expires_at: Type.Date(),
 });
 
 export { codeSchema };

@@ -4,11 +4,10 @@ import { UserVehicle } from "../../models/userVehicle.js";
 import { fuzzySearcher } from "../../utils/vehiclesStore.js";
 import { vehicleIdSchema } from "../../schemas/userVehicles.js";
 import { User } from "../../models/user.js";
-import logger from "../../utils/logging.js";
-import { Vehicle } from "../../models/vehicle.js";
+import { Static } from "@sinclair/typebox";
 
 async function addUserVehicleController(
-  req: Request<typeof vehicleIdSchema.infer, unknown, unknown, unknown>,
+  req: Request<Static<typeof vehicleIdSchema>>,
   res: Response
 ) {
   try {
@@ -41,7 +40,7 @@ async function addUserVehicleController(
 }
 
 async function deleteUserVehicleController(
-  req: Request<typeof vehicleIdSchema.infer, unknown, unknown, unknown>,
+  req: Request<Static<typeof vehicleIdSchema>>,
   res: Response
 ) {
   try {
