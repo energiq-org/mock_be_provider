@@ -46,3 +46,36 @@ jobs:
           push: true
           tags: |
             ${{ format('{0}:{1}', env.IMAGE_NAME, env.DATE) }}
+
+      - name: Update Deployment Configuration
+        run: |
+          # Set up SSH key
+          mkdir -p ~/.ssh
+          echo "${{ secrets.ACTIONS }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          
+          # Clone infrastructure repository
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git clone git@github.com:energiq-org/infra.git
+          cd infra
+          
+          # Determine which file to update based on branch
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            CONFIG_FILE="prod/deployments/energi-backend.yaml"
+          elif [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
+            CONFIG_FILE="dev/deployments/energi-backend.yaml"
+          else
+            echo "Not updating deployment config for this branch"
+            exit 0
+          fi
+          
+          # Update the image tag in the configuration file
+          IMAGE_TAG="${{ env.DATE }}"
+          sed -i "s|image: ghcr.io/energiq-org/be_user:[0-9-]*z|image: ghcr.io/energiq-org/be_user:$IMAGE_TAG|g" $CONFIG_FILE
+          
+          # Commit and push the changes
+          git add $CONFIG_FILE
+          git commit -m "Update image tag to $IMAGE_TAG for ${{ github.ref_name }} deployment"
+          git push
