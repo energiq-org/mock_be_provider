@@ -32,6 +32,7 @@ type SchemaObject =
       pattern?: string;
       [key: string]: unknown;
     }
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   | import("arktype").JsonSchema;
 
 type ParameterObject = {

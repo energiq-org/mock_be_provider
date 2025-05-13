@@ -1,4 +1,4 @@
-import { logoutSchema } from "../../schemas/auth.js";
+import { logoutSchema } from "../../schemas/controllers/auth/auth.js";
 import { Request, Response } from "express";
 import { Token } from "../../models/token.js";
 import { Static } from "@sinclair/typebox";

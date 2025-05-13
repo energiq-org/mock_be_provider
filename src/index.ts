@@ -1,10 +1,8 @@
 import { createServer } from "./app.js";
 import { sequelize } from "./config/dbConnection.js";
 import config from "./config/env.js";
-import { User } from "./models/user.js";
 import logger from "./utils/logging.js";
-import { Vehicle } from "./models/vehicle.js";
-import { UserVehicle } from "./models/userVehicle.js";
+import { initializeAssociations } from "./models/associations.js";
 
 const startServer = async () => {
   const server = createServer();
@@ -12,26 +10,14 @@ const startServer = async () => {
   logger.info(`Listening on http://localhost:${config.LISTEN_PORT}`);
 
   await sequelize.authenticate();
-
-  Vehicle.belongsToMany(User, {
-    through: UserVehicle,
-    foreignKey: "vehicle_id",
-    otherKey: "user_id",
-    as: "users",
-    onDelete: "CASCADE",
-  });
-
-  User.belongsToMany(Vehicle, {
-    through: UserVehicle,
-    foreignKey: "user_id",
-    otherKey: "vehicle_id",
-    as: "vehicles",
-    onDelete: "CASCADE",
-  });
-
   logger.info("Database connection has been established successfully.");
 
+  // Initialize model associations
+  initializeAssociations();
+  logger.info("Model associations initialized successfully.");
+
   await sequelize.sync({ [config.DB_SYNC_POLICY]: true });
+  logger.info("Database synchronized successfully.");
 };
 
 startServer().catch((err) => {

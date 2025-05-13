@@ -6,7 +6,7 @@ import { User } from "../../models/user.js";
 import { VerificationCode } from "../../models/verificationCode.js";
 import { sendVerificationEmail } from "../../utils/mail.js";
 import { generateOTP } from "../../utils/verificationCode.js";
-import { signupSchema, updateUserSchema } from "../../schemas/users.js";
+import { signupSchema, updateUserSchema } from "../../schemas/controllers/users/user.js";
 import * as jdenticon from "jdenticon";
 import { awsFolderNames, s3Handler } from "../../utils/s3.js";
 

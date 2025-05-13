@@ -15,7 +15,7 @@ vehiclesRouter.get(
   docs.path({
     summary: "Get vehicle",
     description: "Get vehicle",
-    tags: ["vehicles"],
+    tags: ["Vehicles"],
     parameters: generateRequestParameters(getVehiclesQueryParamsSchema, "query"),
     responses: {
       200: generateJSONResponse(Type.Array(vehicleSchema), "The vehicle was retrieved successfully"),

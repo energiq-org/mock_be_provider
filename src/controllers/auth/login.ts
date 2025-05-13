@@ -4,7 +4,7 @@ import config from "../../config/env.js";
 import { Token } from "../../models/token.js";
 import { User } from "../../models/user.js";
 import { VerificationCode } from "../../models/verificationCode.js";
-import { loginSchema } from "../../schemas/auth.js";
+import { loginSchema } from "../../schemas/controllers/auth/auth.js";
 import { sendVerificationEmail } from "../../utils/mail.js";
 import { generateAccessToken, generateRefreshToken } from "../../utils/token.js";
 import { generateOTP } from "../../utils/verificationCode.js";
