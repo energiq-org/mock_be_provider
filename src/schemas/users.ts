@@ -7,7 +7,7 @@ const userSchema = Type.Object({
   last_name: Type.String(),
   email: Type.String(),
   password: Type.String(),
-  phone_number: Type.String(),
+  phone_number: Type.String({ pattern: "^(?:\\+20[-]?|0)?1[0-9]{9}$" }),
   profile_picture: Type.String(),
   created_at: Type.String(),
 });
@@ -24,11 +24,11 @@ const sentVerificationEmailSchema = Type.Object({
 });
 
 const updateUserSchema = Type.Object({
-  first_name: userSchema.properties.first_name,
-  last_name: userSchema.properties.last_name,
-  email: userSchema.properties.email,
-  password: userSchema.properties.password,
-  phone_number: userSchema.properties.phone_number,
+  first_name: Type.Optional(userSchema.properties.first_name),
+  last_name: Type.Optional(userSchema.properties.last_name),
+  email: Type.Optional(userSchema.properties.email),
+  password: Type.Optional(userSchema.properties.password),
+  phone_number: Type.Optional(userSchema.properties.phone_number),
 });
 
 export { userSchema, signupSchema, verifyEmailSchema, updateUserSchema, sentVerificationEmailSchema };
