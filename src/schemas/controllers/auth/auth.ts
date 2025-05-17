@@ -20,7 +20,7 @@ const verifyPasswordResetOTPSchema = Type.Object({
 });
 
 const resetPasswordSchema = Type.Object({
-  token: OTPCodeSchema.properties.code,
+  token: Type.String(),
   new_password: userSchema.properties.password,
 });
 
