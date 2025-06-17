@@ -183,10 +183,16 @@ async function getUserVehiclesController(req: Request, res: Response) {
 
     const vehicles = await user.getVehiclesTransformed();
     return res.status(200).json(vehicles);
-    
   } catch (error) {
     return res.status(500).json({ msg: (error as Error).message });
   }
 }
 
-export { signupController, updateUserController, getUserController, updateUserPasswordController, deleteUserController, getUserVehiclesController };
+export {
+  signupController,
+  updateUserController,
+  getUserController,
+  updateUserPasswordController,
+  deleteUserController,
+  getUserVehiclesController,
+};

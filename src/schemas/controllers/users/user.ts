@@ -16,7 +16,6 @@ const updateUserPasswordSchema = Type.Object({
   new_password: userSchema.properties.password,
 });
 
-
 const getUserVehiclesResponseSchema = Type.Object({
   vehicles: Type.Array(
     Type.Intersect([
@@ -44,4 +43,10 @@ const getUserByAccessTokenResponseSchema = Type.Intersect([
   }),
 ]);
 
-export { getUserByAccessTokenResponseSchema, getUserVehiclesResponseSchema,signupSchema, updateUserSchema, updateUserPasswordSchema } ;
+export {
+  getUserByAccessTokenResponseSchema,
+  getUserVehiclesResponseSchema,
+  signupSchema,
+  updateUserSchema,
+  updateUserPasswordSchema,
+};
