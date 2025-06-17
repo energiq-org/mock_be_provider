@@ -3,7 +3,7 @@ import { User } from "../../models/user.js";
 import { OTP } from "../../models/OTP.js";
 import { sendVerificationEmail, sendWelcomeEmail } from "../../utils/mail.js";
 import { verifyEmailSchema, sentVerificationEmailSchema } from "../../schemas/controllers/users/mail.js";
-import { generateOTP } from "../../utils/verificationCode.js";
+import { generateOTP } from "../../utils/OTP.js";
 import config from "../../config/env.js";
 import { Static } from "@sinclair/typebox";
 

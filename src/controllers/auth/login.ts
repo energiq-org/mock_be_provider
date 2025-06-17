@@ -7,7 +7,7 @@ import { OTP } from "../../models/OTP.js";
 import { loginSchema } from "../../schemas/controllers/auth/auth.js";
 import { sendVerificationEmail } from "../../utils/mail.js";
 import { generateAccessToken, generateRefreshToken } from "../../utils/token.js";
-import { generateOTP } from "../../utils/verificationCode.js";
+import { generateOTP } from "../../utils/OTP.js";
 import { Static } from "@sinclair/typebox";
 
 async function loginController(req: Request<unknown, unknown, Static<typeof loginSchema>>, res: Response) {

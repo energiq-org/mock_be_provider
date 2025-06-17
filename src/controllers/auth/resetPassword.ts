@@ -7,7 +7,7 @@ import {
 import { resetTokenPayloadSchema } from "../../schemas/token.js";
 import { Request, Response } from "express";
 import { Static } from "@sinclair/typebox";
-import { generateOTP } from "../../utils/verificationCode.js";
+import { generateOTP } from "../../utils/OTP.js";
 import { OTP } from "../../models/OTP.js";
 import config from "../../config/env.js";
 import { sendResetPasswordEmail } from "../../utils/mail.js";

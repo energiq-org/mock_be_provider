@@ -8,8 +8,12 @@ const updateUserSchema = Type.Object({
   first_name: userSchema.properties.first_name,
   last_name: userSchema.properties.last_name,
   email: userSchema.properties.email,
-  password: userSchema.properties.password,
   phone_number: userSchema.properties.phone_number,
+});
+
+const updateUserPasswordSchema = Type.Object({
+  old_password: userSchema.properties.password,
+  new_password: userSchema.properties.password,
 });
 
 // Response schemas
@@ -20,4 +24,4 @@ const getUserByAccessTokenResponseSchema = Type.Composite([
   }),
 ]);
 
-export { getUserByAccessTokenResponseSchema, signupSchema, updateUserSchema };
+export { getUserByAccessTokenResponseSchema, signupSchema, updateUserSchema, updateUserPasswordSchema };

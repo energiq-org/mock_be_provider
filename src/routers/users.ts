@@ -5,6 +5,7 @@ import {
   updateUserController,
   getUserController,
   deleteUserController,
+  updateUserPasswordController,
 } from "../controllers/users/index.js";
 import { sendVerificationEmailController, verifyEmailController } from "../controllers/users/mail.js";
 import {
@@ -31,6 +32,7 @@ import {
   getUserByAccessTokenResponseSchema,
   signupSchema,
   updateUserSchema,
+  updateUserPasswordSchema,
 } from "../schemas/controllers/users/user.js";
 import { verifyEmailSchema, sentVerificationEmailSchema } from "../schemas/controllers/users/mail.js";
 const usersRouter = Router();
@@ -70,6 +72,23 @@ usersRouter.patch(
   updateUserController
 );
 
+usersRouter.patch(
+  "/password",
+  docs.path({
+    summary: "Update user password",
+    description: "Update user password",
+    tags: ["Users"],
+    security: getSecuritySchemes(),
+    requestBody: generateJSONRequestBody(updateUserPasswordSchema, "The user's new password"),
+    responses: {
+      200: generateJSONResponse(successResponseSchema, "The user's password was updated successfully"),
+      ...getErrorResponses(["400", "401", "404", "500"]),
+    },
+  }),
+  authMiddleware,
+  ajvRequestValidator(updateUserPasswordSchema, "body"),
+  updateUserPasswordController
+);
 usersRouter.get(
   "/",
   docs.path({
