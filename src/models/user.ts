@@ -14,9 +14,8 @@ import {
 import { sequelize } from "../config/dbConnection.js";
 import { Token } from "./token.js";
 import { UserVehicle } from "./userVehicle.js";
-import { VerificationCode } from "./verificationCode.js";
+import { OTP } from "./OTP.js";
 import { Vehicle } from "./vehicle.js";
-import { ResetPasswordCode } from "./resetPasswordCode.js";
 
 interface UserVehicleAttributes {
   connector_type: string;
@@ -34,8 +33,7 @@ class User extends Model {
   declare profile_picture: string;
   declare created_at: CreationOptional<Date>;
   declare tokens?: NonAttribute<Token[]>;
-  declare verification_codes?: NonAttribute<VerificationCode[]>;
-  declare reset_password_codes?: NonAttribute<ResetPasswordCode[]>;
+  declare otps?: NonAttribute<OTP[]>;
   declare vehicles?: NonAttribute<UserVehicle[]>;
 
   declare getVehicles: BelongsToManyGetAssociationsMixin<Vehicle & { UserVehicle: UserVehicle }>;
@@ -144,17 +142,10 @@ User.hasMany(Token, {
   onDelete: "CASCADE",
 });
 
-User.hasMany(VerificationCode, {
+User.hasMany(OTP, {
   sourceKey: "id",
   foreignKey: "user_id",
-  as: "verification_codes",
-  onDelete: "CASCADE",
-});
-
-User.hasMany(ResetPasswordCode, {
-  sourceKey: "id",
-  foreignKey: "user_id",
-  as: "reset_password_codes",
+  as: "otps",
   onDelete: "CASCADE",
 });
 

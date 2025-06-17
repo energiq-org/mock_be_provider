@@ -2,7 +2,7 @@ import { UUID } from "crypto";
 import { CreationOptional, DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/dbConnection.js";
 
-class ResetPasswordCode extends Model {
+class OTP extends Model {
   declare id: CreationOptional<UUID>;
   declare user_id: UUID;
   declare email: string;
@@ -12,7 +12,7 @@ class ResetPasswordCode extends Model {
   declare created_at: CreationOptional<Date>;
 }
 
-ResetPasswordCode.init(
+OTP.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -39,6 +39,10 @@ ResetPasswordCode.init(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    type: {
+      type: DataTypes.ENUM("verification", "reset_password"),
+      allowNull: false,
+    },
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -46,10 +50,10 @@ ResetPasswordCode.init(
     },
   },
   {
-    tableName: "reset_password_codes",
+    tableName: "otps",
     timestamps: false,
     sequelize,
   }
 );
 
-export { ResetPasswordCode };
+export { OTP };

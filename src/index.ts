@@ -15,9 +15,6 @@ const startServer = async () => {
   // Initialize model associations
   initializeAssociations();
   logger.info("Model associations initialized successfully.");
-
-  await sequelize.sync({ [config.DB_SYNC_POLICY]: true });
-  logger.info("Database synchronized successfully.");
 };
 
 startServer().catch((err) => {

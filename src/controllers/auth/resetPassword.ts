@@ -8,7 +8,7 @@ import { resetTokenPayloadSchema } from "../../schemas/token.js";
 import { Request, Response } from "express";
 import { Static } from "@sinclair/typebox";
 import { generateOTP } from "../../utils/verificationCode.js";
-import { ResetPasswordCode } from "../../models/resetPasswordCode.js";
+import { OTP } from "../../models/OTP.js";
 import config from "../../config/env.js";
 import { sendResetPasswordEmail } from "../../utils/mail.js";
 import { generateResetPasswordToken, verifyToken } from "../../utils/token.js";
@@ -26,12 +26,13 @@ async function forgetPasswordController(
       return res.status(404).json({ msg: "User not found" });
     }
     const resetPasswordCode = generateOTP();
-    const expires_at = Date.now() + config.RESET_PASSWORD_CODE_LIFETIME * 60 * 1000;
-    await ResetPasswordCode.create({
+    const expires_at = Date.now() + config.OTP_LIFETIME * 60 * 1000;
+    await OTP.create({
       user_id: user.id,
       email: user.email,
       code: resetPasswordCode,
       expires_at,
+      type: "reset_password",
     });
 
     await sendResetPasswordEmail(user.email, resetPasswordCode);
@@ -48,7 +49,7 @@ async function verifyPasswordResetOTPController(
 ) {
   try {
     const { email, code } = req.body;
-    const resetPasswordCode = await ResetPasswordCode.findOne({ where: { code } });
+    const resetPasswordCode = await OTP.findOne({ where: { code, type: "reset_password" } });
     if (!resetPasswordCode) {
       return res.status(404).json({ msg: "reset password code not found" });
     }
