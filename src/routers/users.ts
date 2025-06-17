@@ -5,6 +5,7 @@ import {
   updateUserController,
   getUserController,
   deleteUserController,
+  getUserVehiclesController,
 } from "../controllers/users/index.js";
 import { sendVerificationEmailController, verifyEmailController } from "../controllers/users/mail.js";
 import {
@@ -28,7 +29,7 @@ import { successResponseSchema } from "../schemas/common-responses.js";
 import { sentVerificationEmailSchema, signupSchema, updateUserSchema, verifyEmailSchema } from "../schemas/users.js";
 import { vehicleIdSchema } from "../schemas/userVehicles.js";
 import { addUserVehicleSchema, updateUserVehicleSchema } from "../schemas/controllers/users/userVehicles.js";
-import { getUserByAccessTokenResponseSchema } from "../schemas/controllers/users/user.js";
+import { getUserByAccessTokenResponseSchema, getUserVehiclesResponseSchema } from "../schemas/controllers/users/user.js";
 
 const usersRouter = Router();
 
@@ -87,7 +88,7 @@ usersRouter.delete(
   "/",
   docs.path({
     summary: "Delete user",
-    description: "Delete the authenticated user from the database",
+    description: "Deletes the authenticated user from the database",
     tags: ["users"],
     security: getSecuritySchemes(),
     responses: {
@@ -121,7 +122,7 @@ usersRouter.delete(
   "/vehicles/:id",
   docs.path({
     summary: "Delete vehicle",
-    description: "Delete a vehicle from the user's list of vehicles",
+    description: "Deletes a vehicle from the user's list of vehicles",
     tags: ["user - vehicles"],
     security: getSecuritySchemes(),
     parameters: generateRequestParameters(vehicleIdSchema, "path", true),
@@ -183,6 +184,22 @@ usersRouter.post(
   }),
   ajvRequestValidator(sentVerificationEmailSchema, "body"),
   sendVerificationEmailController
+);
+
+usersRouter.get(
+  "/vehicles",
+  docs.path({
+    summary: "Get user vehicles",
+    description: "Retrieve the authenticated user's vehicles",
+    tags: ["user - vehicles"],
+    security: getSecuritySchemes(),
+    responses: {
+      200: generateJSONResponse(getUserVehiclesResponseSchema, "User vehicles retrieved successfully"),
+      ...getErrorResponses(["401", "404", "500"]),
+    },
+  }),
+  authMiddleware,
+  getUserVehiclesController
 );
 
 export { usersRouter };
