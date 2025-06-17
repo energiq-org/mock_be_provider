@@ -3,10 +3,10 @@ import { UUID } from "crypto";
 import { Request, Response } from "express";
 import config from "../../config/env.js";
 import { User } from "../../models/user.js";
-import { VerificationCode } from "../../models/verificationCode.js";
+import { OTP } from "../../models/OTP.js";
 import { sendVerificationEmail } from "../../utils/mail.js";
-import { generateOTP } from "../../utils/verificationCode.js";
-import { signupSchema, updateUserSchema } from "../../schemas/users.js";
+import { generateOTP } from "../../utils/OTP.js";
+import { signupSchema, updateUserPasswordSchema, updateUserSchema } from "../../schemas/controllers/users/user.js";
 import * as jdenticon from "jdenticon";
 import { awsFolderNames, s3Handler } from "../../utils/s3.js";
 
@@ -40,9 +40,9 @@ async function signupController(req: Request<unknown, unknown, Static<typeof sig
       profile_picture: fileUrl,
     });
     const verificationCode = generateOTP();
-    const expires_at = Date.now() + config.VERIFICATION_CODE_LIFETIME * 60 * 1000;
+    const expires_at = Date.now() + config.OTP_LIFETIME * 60 * 1000;
 
-    await VerificationCode.create({ user_id: newUser.id, email, code: verificationCode, expires_at });
+    await OTP.create({ user_id: newUser.id, email, code: verificationCode, expires_at, type: "verification" });
     await sendVerificationEmail(email, verificationCode);
 
     res.status(201).json({ msg: "user created successfully" });
@@ -65,7 +65,6 @@ async function updateUserController(req: Request<unknown, unknown, Static<typeof
       first_name: req.body.first_name,
       last_name: req.body.last_name,
       email: req.body.email,
-      password: req.body.password != null ? await bcrypt.hash(req.body.password, 10) : undefined,
       phone_number: req.body.phone_number,
     };
 
@@ -123,7 +122,34 @@ async function getUserController(req: Request, res: Response) {
     return res.status(500).json({ msg: (error as Error).message });
   }
 }
+async function updateUserPasswordController(
+  req: Request<unknown, unknown, Static<typeof updateUserPasswordSchema>>,
+  res: Response
+) {
+  const userId = req["userId"] as UUID;
+  try {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ msg: "user not found" });
+    }
+    const isPasswordValid = await bcrypt.compare(req.body.old_password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ msg: "invalid password" });
+    }
+    // Check if new password is the same as old password
+    const isSamePassword = await bcrypt.compare(req.body.new_password, user.password);
+    if (isSamePassword) {
+      return res.status(400).json({ msg: "new password cannot be the same as the old password" });
+    }
 
+    const hashedNewPassword = await bcrypt.hash(req.body.new_password, 10);
+
+    await user.update({ password: hashedNewPassword });
+    return res.status(200).json({ msg: "password updated successfully" });
+  } catch (error) {
+    return res.status(500).json({ msg: (error as Error).message });
+  }
+}
 async function deleteUserController(req: Request, res: Response) {
   const userId = req["userId"] as UUID;
   try {
@@ -138,4 +164,10 @@ async function deleteUserController(req: Request, res: Response) {
   }
 }
 
-export { signupController, updateUserController, getUserController, deleteUserController };
+export {
+  signupController,
+  updateUserController,
+  getUserController,
+  deleteUserController,
+  updateUserPasswordController,
+};

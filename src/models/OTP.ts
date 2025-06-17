@@ -2,7 +2,7 @@ import { UUID } from "crypto";
 import { CreationOptional, DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/dbConnection.js";
 
-class VerificationCode extends Model {
+class OTP extends Model {
   declare id: CreationOptional<UUID>;
   declare user_id: UUID;
   declare email: string;
@@ -12,7 +12,7 @@ class VerificationCode extends Model {
   declare created_at: CreationOptional<Date>;
 }
 
-VerificationCode.init(
+OTP.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -28,7 +28,7 @@ VerificationCode.init(
       allowNull: false,
     },
     code: {
-      type: DataTypes.STRING,
+      type: DataTypes.CHAR(6),
       allowNull: false,
     },
     expires_at: {
@@ -39,6 +39,10 @@ VerificationCode.init(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    type: {
+      type: DataTypes.ENUM("verification", "reset_password"),
+      allowNull: false,
+    },
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -46,10 +50,10 @@ VerificationCode.init(
     },
   },
   {
-    tableName: "verification_codes",
+    tableName: "otps",
     timestamps: false,
     sequelize,
   }
 );
 
-export { VerificationCode };
+export { OTP };

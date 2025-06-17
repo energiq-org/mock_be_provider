@@ -21,7 +21,7 @@ export default cleanEnv(process.env, {
   DB_NAME: str(),
   DB_LOGGING: bool({ default: false }),
   DB_SYNC_POLICY: str({ choices: ["force", "alter", "default"], default: "default" }),
-  VERIFICATION_CODE_LIFETIME: num({ default: 10 }),
+  OTP_LIFETIME: num({ default: 10 }),
   SENDGRID_API_KEY: str(),
   EMAIL_SENDER: str(),
   JWT_SECRET: str(),
@@ -32,6 +32,7 @@ export default cleanEnv(process.env, {
   S3_URL_EXPIRATION: num({ default: 300 }),
   REFRESH_TOKEN_LIFETIME: tokenLifetimeValidator(str({ default: "30d" })),
   ACCESS_TOKEN_LIFETIME: tokenLifetimeValidator(str({ default: "6h" })),
+  RESET_PASSWORD_TOKEN_LIFETIME: tokenLifetimeValidator(str({ default: "10m" })),
   HTTP_LOGGING: bool({ default: false }),
   HTTP_BODY_LOGGING: bool({ default: false }),
   LOGGING_LEVEL: str({

@@ -61,7 +61,6 @@ function generateUpdateUserRequestBody() {
             first_name: { type: "string" },
             last_name: { type: "string" },
             email: { type: "string" },
-            password: { type: "string" },
             phone_number: { type: "string" },
             profile_picture: {
               type: "string",
