@@ -1,7 +1,9 @@
 "use strict";
 
 /** @type {import('sequelize-cli').Migration} */
+// eslint-disable-next-line no-undef
 module.exports = {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   async up(queryInterface, Sequelize) {
     await queryInterface.dropTable("reset_password_codes");
   },

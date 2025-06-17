@@ -1,3 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-undef */
 "use strict";
 
 const fs = require("fs");
@@ -26,11 +33,12 @@ module.exports = {
     }));
 
     // Insert vehicles data
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     await queryInterface.bulkInsert("vehicles", vehiclesWithTimestamp, {});
 
     console.log(`Successfully seeded ${vehiclesWithTimestamp.length} vehicles`);
   },
-
+  // eslint-disable-next-line no-unused-vars
   async down(queryInterface, Sequelize) {
     // Remove all vehicles that were seeded
     await queryInterface.bulkDelete("vehicles", null, {});
