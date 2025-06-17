@@ -76,11 +76,18 @@ function generateUpdateUserRequestBody() {
 }
 
 function generateJSONResponse<T extends TSchema>(schema: T, description?: string) {
+  const convertedSchema = {
+    ...schema,
+    type: schema.type || (schema.properties ? "object" : "string"),
+    ...(schema.items && { items: schema.items }),
+    ...(schema.allOf && { allOf: schema.allOf }),
+  };
+
   return {
     description,
     content: {
       "application/json": {
-        schema,
+        schema: convertedSchema,
       },
     },
   };

@@ -18,7 +18,7 @@ interface SecuritySchemeObject {
 }
 
 type SchemaObject = {
-  type: string;
+  type?: string;
   properties?: Record<string, SchemaObject>;
   items?: SchemaObject;
   $ref?: string;
@@ -29,6 +29,10 @@ type SchemaObject = {
   minimum?: number;
   maximum?: number;
   pattern?: string;
+  additionalProperties?: boolean | SchemaObject;
+  allOf?: SchemaObject[];
+  anyOf?: SchemaObject[];
+  oneOf?: SchemaObject[];
   [key: string]: unknown;
 };
 
