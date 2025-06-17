@@ -17,22 +17,20 @@ interface SecuritySchemeObject {
   openIdConnectUrl?: string;
 }
 
-type SchemaObject =
-  | {
-      type: string;
-      properties?: Record<string, SchemaObject>;
-      items?: SchemaObject;
-      $ref?: string;
-      required?: string[];
-      format?: string;
-      description?: string;
-      enum?: string[];
-      minimum?: number;
-      maximum?: number;
-      pattern?: string;
-      [key: string]: unknown;
-    }
-  | import("arktype").JsonSchema;
+type SchemaObject = {
+  type: string;
+  properties?: Record<string, SchemaObject>;
+  items?: SchemaObject;
+  $ref?: string;
+  required?: string[];
+  format?: string;
+  description?: string;
+  enum?: string[];
+  minimum?: number;
+  maximum?: number;
+  pattern?: string;
+  [key: string]: unknown;
+};
 
 type ParameterObject = {
   name: string;

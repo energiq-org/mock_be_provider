@@ -21,7 +21,6 @@ async function seedVehicles() {
     }
 
     // Create vehicles from JSON data
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const createdVehicles = await Vehicle.bulkCreate(vehicleData, {
       returning: true,
     });
