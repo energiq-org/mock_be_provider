@@ -29,7 +29,10 @@ import { successResponseSchema } from "../schemas/common-responses.js";
 import { sentVerificationEmailSchema, signupSchema, updateUserSchema, verifyEmailSchema } from "../schemas/users.js";
 import { vehicleIdSchema } from "../schemas/userVehicles.js";
 import { addUserVehicleSchema, updateUserVehicleSchema } from "../schemas/controllers/users/userVehicles.js";
-import { getUserByAccessTokenResponseSchema, getUserVehiclesResponseSchema } from "../schemas/controllers/users/user.js";
+import {
+  getUserByAccessTokenResponseSchema,
+  getUserVehiclesResponseSchema,
+} from "../schemas/controllers/users/user.js";
 
 const usersRouter = Router();
 

@@ -9,7 +9,7 @@ import { docs } from "./docs/index.js";
 import { authRouter } from "./routers/auth.js";
 import { usersRouter } from "./routers/users.js";
 import { vehiclesRouter } from "./routers/vehicles.js";
-import { getThemeSync } from '@intelika/swagger-theme';
+import { getThemeSync } from "@intelika/swagger-theme";
 
 function createServer() {
   const server = express();
@@ -52,7 +52,7 @@ function createServer() {
       customCss: `
         ${getThemeSync().toString()}
         .swagger-ui .topbar { display: none !important; }
-      `
+      `,
     })
   );
 
