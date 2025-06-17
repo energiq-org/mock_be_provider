@@ -2,12 +2,19 @@ import { UUID } from "crypto";
 import { CreationOptional, DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/dbConnection.js";
 
+/* eslint-disable no-unused-vars */
+enum OTPType {
+  VERIFICATION = "verification",
+  RESET_PASSWORD = "reset_password",
+}
+
 class OTP extends Model {
   declare id: CreationOptional<UUID>;
   declare user_id: UUID;
   declare email: string;
   declare code: string;
   declare used: boolean;
+  declare type: OTPType;
   declare expires_at: Date;
   declare created_at: CreationOptional<Date>;
 }
@@ -40,7 +47,7 @@ OTP.init(
       defaultValue: false,
     },
     type: {
-      type: DataTypes.ENUM("verification", "reset_password"),
+      type: DataTypes.ENUM(...Object.values(OTPType)),
       allowNull: false,
     },
     created_at: {
@@ -56,4 +63,4 @@ OTP.init(
   }
 );
 
-export { OTP };
+export { OTP, OTPType };

@@ -8,7 +8,7 @@ import { resetTokenPayloadSchema } from "../../schemas/token.js";
 import { Request, Response } from "express";
 import { Static } from "@sinclair/typebox";
 import { generateOTP } from "../../utils/OTP.js";
-import { OTP } from "../../models/OTP.js";
+import { OTP, OTPType } from "../../models/OTP.js";
 import config from "../../config/env.js";
 import { sendResetPasswordEmail } from "../../utils/mail.js";
 import { generateResetPasswordToken, verifyToken } from "../../utils/token.js";
@@ -32,7 +32,7 @@ async function forgetPasswordController(
       email: user.email,
       code: resetPasswordCode,
       expires_at,
-      type: "reset_password",
+      type: OTPType.RESET_PASSWORD,
     });
 
     await sendResetPasswordEmail(user.email, resetPasswordCode);
@@ -49,7 +49,7 @@ async function verifyPasswordResetOTPController(
 ) {
   try {
     const { email, code } = req.body;
-    const resetPasswordCode = await OTP.findOne({ where: { code, type: "reset_password" } });
+    const resetPasswordCode = await OTP.findOne({ where: { code, type: OTPType.RESET_PASSWORD } });
     if (!resetPasswordCode) {
       return res.status(404).json({ msg: "reset password code not found" });
     }

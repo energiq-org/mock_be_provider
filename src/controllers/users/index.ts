@@ -3,7 +3,7 @@ import { UUID } from "crypto";
 import { Request, Response } from "express";
 import config from "../../config/env.js";
 import { User } from "../../models/user.js";
-import { OTP } from "../../models/OTP.js";
+import { OTP, OTPType } from "../../models/OTP.js";
 import { sendVerificationEmail } from "../../utils/mail.js";
 import { generateOTP } from "../../utils/OTP.js";
 import { signupSchema, updateUserPasswordSchema, updateUserSchema } from "../../schemas/controllers/users/user.js";
@@ -42,7 +42,7 @@ async function signupController(req: Request<unknown, unknown, Static<typeof sig
     const verificationCode = generateOTP();
     const expires_at = Date.now() + config.OTP_LIFETIME * 60 * 1000;
 
-    await OTP.create({ user_id: newUser.id, email, code: verificationCode, expires_at, type: "verification" });
+    await OTP.create({ user_id: newUser.id, email, code: verificationCode, expires_at, type: OTPType.VERIFICATION });
     await sendVerificationEmail(email, verificationCode);
 
     res.status(201).json({ msg: "user created successfully" });

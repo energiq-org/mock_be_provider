@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { User } from "../../models/user.js";
-import { OTP } from "../../models/OTP.js";
+import { OTP, OTPType } from "../../models/OTP.js";
 import { sendVerificationEmail, sendWelcomeEmail } from "../../utils/mail.js";
 import { verifyEmailSchema, sentVerificationEmailSchema } from "../../schemas/controllers/users/mail.js";
 import { generateOTP } from "../../utils/OTP.js";
@@ -13,7 +13,7 @@ async function verifyEmailController(
 ) {
   try {
     const { email, code } = req.query;
-    const userVerificationCode = await OTP.findOne({ where: { code, type: "verification" } });
+    const userVerificationCode = await OTP.findOne({ where: { code, type: OTPType.VERIFICATION } });
 
     if (!userVerificationCode) {
       return res.status(404).json({ msg: "verification code not found" });
@@ -68,7 +68,7 @@ async function sendVerificationEmailController(
 
     const verificationCode = generateOTP();
     const expires_at = Date.now() + config.OTP_LIFETIME * 60 * 1000;
-    await OTP.create({ user_id: user.id, email, code: verificationCode, expires_at, type: "verification" });
+    await OTP.create({ user_id: user.id, email, code: verificationCode, expires_at, type: OTPType.VERIFICATION });
 
     await sendVerificationEmail(email, verificationCode);
 

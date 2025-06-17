@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import config from "../../config/env.js";
 import { Token } from "../../models/token.js";
 import { User } from "../../models/user.js";
-import { OTP } from "../../models/OTP.js";
+import { OTP, OTPType } from "../../models/OTP.js";
 import { loginSchema } from "../../schemas/controllers/auth/auth.js";
 import { sendVerificationEmail } from "../../utils/mail.js";
 import { generateAccessToken, generateRefreshToken } from "../../utils/token.js";
@@ -29,7 +29,7 @@ async function loginController(req: Request<unknown, unknown, Static<typeof logi
       const verificationCode = generateOTP();
       const expires_at = new Date(new Date().setMinutes(new Date().getMinutes() + config.OTP_LIFETIME));
 
-      await OTP.create({ user_id: user.id, email, code: verificationCode, expires_at, type: "verification" });
+      await OTP.create({ user_id: user.id, email, code: verificationCode, expires_at, type: OTPType.VERIFICATION });
       await sendVerificationEmail(email, verificationCode);
 
       return res.status(401).json({ msg: "user is not verified and verification code has been sent" });
