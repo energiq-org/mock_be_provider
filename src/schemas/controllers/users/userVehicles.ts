@@ -8,8 +8,8 @@ const addUserVehicleSchema = Type.Object({
 });
 
 const updateUserVehicleSchema = Type.Object({
-  connector_type: userVehicleSchema.properties.connector_type,
-  actual_battery: userVehicleSchema.properties.actual_battery,
+  connector_type: Type.Optional(userVehicleSchema.properties.connector_type),
+  actual_battery: Type.Optional(userVehicleSchema.properties.actual_battery),
 });
 
 export { addUserVehicleSchema, updateUserVehicleSchema };

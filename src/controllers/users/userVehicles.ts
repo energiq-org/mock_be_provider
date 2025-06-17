@@ -56,19 +56,13 @@ async function updateUserVehicleController(
 ) {
   try {
     const vehicleId = req.params.id;
-    const { connector_type, actual_battery } = req.body;
+    const updateData = req.body;
 
-    const [affectedCount] = await UserVehicle.update(
-      {
-        connector_type,
-        actual_battery,
+    const [affectedCount] = await UserVehicle.update(updateData, {
+      where: {
+        id: vehicleId,
       },
-      {
-        where: {
-          id: vehicleId,
-        },
-      }
-    );
+    });
 
     if (!affectedCount) {
       return res.status(404).json({ msg: "Vehicle not found" });
