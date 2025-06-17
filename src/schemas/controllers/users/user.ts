@@ -16,12 +16,32 @@ const updateUserPasswordSchema = Type.Object({
   new_password: userSchema.properties.password,
 });
 
-// Response schemas
-const getUserByAccessTokenResponseSchema = Type.Composite([
+
+const getUserVehiclesResponseSchema = Type.Object({
+  vehicles: Type.Array(
+    Type.Intersect([
+      vehicleSchema,
+      Type.Object({
+        connector_type: Type.String(),
+        actual_battery: Type.String(),
+      }),
+    ])
+  ),
+});
+
+const getUserByAccessTokenResponseSchema = Type.Intersect([
   userSchema,
   Type.Object({
-    vehicles: Type.Array(vehicleSchema),
+    vehicles: Type.Array(
+      Type.Intersect([
+        vehicleSchema,
+        Type.Object({
+          connector_type: Type.String(),
+          actual_battery: Type.String(),
+        }),
+      ])
+    ),
   }),
 ]);
 
-export { getUserByAccessTokenResponseSchema, signupSchema, updateUserSchema, updateUserPasswordSchema };
+export { getUserByAccessTokenResponseSchema, getUserVehiclesResponseSchema,signupSchema, updateUserSchema, updateUserPasswordSchema } ;

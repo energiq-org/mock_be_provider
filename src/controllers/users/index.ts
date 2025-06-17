@@ -79,13 +79,21 @@ async function updateUserController(req: Request<unknown, unknown, Static<typeof
       }
     }
 
+    if (queryBody.phone_number != null) {
+      if (queryBody.phone_number != user.phone_number) {
+        const user = await User.findOne({ where: { phone_number: queryBody.phone_number } });
+        if (user) {
+          return res.status(409).json({ msg: "this phone number is already in use" });
+        }
+      }
+    }
+
     if (req.file) {
-      const fileUrl = await s3Handler.uploadFile(
+      queryBody["profile_picture"] = await s3Handler.uploadFile(
         config.S3_BUCKET_NAME,
         awsFolderNames.userProfile(userId),
         req.file.buffer
       );
-      queryBody["profile_picture"] = fileUrl;
     } else {
       const allFieldsUndefined = Object.values(queryBody).every((value) => value === undefined);
       if (allFieldsUndefined) {
@@ -164,10 +172,21 @@ async function deleteUserController(req: Request, res: Response) {
   }
 }
 
-export {
-  signupController,
-  updateUserController,
-  getUserController,
-  deleteUserController,
-  updateUserPasswordController,
-};
+async function getUserVehiclesController(req: Request, res: Response) {
+  const userId = req["userId"] as UUID;
+  try {
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return res.status(404).json({ msg: "user not found" });
+    }
+
+    const vehicles = await user.getVehiclesTransformed();
+    return res.status(200).json(vehicles);
+    
+  } catch (error) {
+    return res.status(500).json({ msg: (error as Error).message });
+  }
+}
+
+export { signupController, updateUserController, getUserController, updateUserPasswordController, deleteUserController, getUserVehiclesController };

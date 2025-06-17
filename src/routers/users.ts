@@ -6,6 +6,7 @@ import {
   getUserController,
   deleteUserController,
   updateUserPasswordController,
+  getUserVehiclesController,
 } from "../controllers/users/index.js";
 import { sendVerificationEmailController, verifyEmailController } from "../controllers/users/mail.js";
 import {
@@ -35,6 +36,8 @@ import {
   updateUserPasswordSchema,
 } from "../schemas/controllers/users/user.js";
 import { verifyEmailSchema, sentVerificationEmailSchema } from "../schemas/controllers/users/mail.js";
+import { getUserVehiclesResponseSchema } from "../schemas/controllers/users/user.js";
+
 const usersRouter = Router();
 
 usersRouter.post(
@@ -205,6 +208,22 @@ usersRouter.post(
   }),
   ajvRequestValidator(sentVerificationEmailSchema, "body"),
   sendVerificationEmailController
+);
+
+usersRouter.get(
+  "/vehicles",
+  docs.path({
+    summary: "Get user vehicles",
+    description: "Retrieve the authenticated user's vehicles",
+    tags: ["Users - Vehicles"],
+    security: getSecuritySchemes(),
+    responses: {
+      200: generateJSONResponse(getUserVehiclesResponseSchema, "User vehicles retrieved successfully"),
+      ...getErrorResponses(["401", "404", "500"]),
+    },
+  }),
+  authMiddleware,
+  getUserVehiclesController
 );
 
 export { usersRouter };

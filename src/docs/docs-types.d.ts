@@ -17,6 +17,7 @@ interface SecuritySchemeObject {
   openIdConnectUrl?: string;
 }
 
+<<<<<<< HEAD
 type SchemaObject =
   | {
       type: string;
@@ -34,6 +35,26 @@ type SchemaObject =
     }
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   | import("arktype").JsonSchema;
+=======
+type SchemaObject = {
+  type?: string;
+  properties?: Record<string, SchemaObject>;
+  items?: SchemaObject;
+  $ref?: string;
+  required?: string[];
+  format?: string;
+  description?: string;
+  enum?: string[];
+  minimum?: number;
+  maximum?: number;
+  pattern?: string;
+  additionalProperties?: boolean | SchemaObject;
+  allOf?: SchemaObject[];
+  anyOf?: SchemaObject[];
+  oneOf?: SchemaObject[];
+  [key: string]: unknown;
+};
+>>>>>>> feat/user-vehicles
 
 type ParameterObject = {
   name: string;
