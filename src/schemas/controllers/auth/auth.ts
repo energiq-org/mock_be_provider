@@ -3,6 +3,7 @@ import { refreshTokenSchema, accessTokenSchema } from "../../token.js";
 import { userSchema } from "../../users.js";
 import { OTPCodeSchema } from "../../OTP.js";
 
+// Request schemas
 const loginSchema = Type.Pick(userSchema, ["email", "password"]);
 
 const refreshSchema = Type.Object({
@@ -34,6 +35,12 @@ const refreshResponseSchema = Type.Object({
   access_token: accessTokenSchema.properties.access_token,
 });
 
+const verifyPasswordResetOTPResponseSchema = Type.Object({
+  msg: Type.String(),
+  token: Type.String({ description: "Reset password token" }),
+  expires_at: Type.String({ description: "Expiration time in format like '5m' or '10m'" }),
+});
+
 export {
   loginResponseSchema,
   refreshResponseSchema,
@@ -42,5 +49,6 @@ export {
   refreshSchema,
   forgetPasswordSchema,
   verifyPasswordResetOTPSchema,
+  verifyPasswordResetOTPResponseSchema,
   resetPasswordSchema,
 };

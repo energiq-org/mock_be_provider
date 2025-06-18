@@ -9,6 +9,7 @@ const userSchema = Type.Object({
   last_name: Type.String({ minLength: 3, maxLength: 255 }),
   email: Type.String({
     pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+    description: "Email address",
   }),
   password: Type.String({
     minLength: 8,
@@ -16,9 +17,12 @@ const userSchema = Type.Object({
     description: "Password must be at least 8 characters long and contain at least one letter and one number",
   }),
   email_verified: Type.Boolean(),
-  phone_number: Type.String({ pattern: "^(?:\\+20[-]?|0)?1[0-9]{9}$" }),
+  phone_number: Type.String({
+    pattern: "^(?:\\+20[-]?|0)?1[0-9]{9}$",
+    description: "Phone number (e.g., +201012345678)",
+  }),
   profile_picture: Type.String(),
-  created_at: Type.Date(),
+  created_at: Type.String({ format: "date-time" }),
 });
 
 export { userSchema };

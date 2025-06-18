@@ -4,7 +4,7 @@ import {
   resetPasswordSchema,
   verifyPasswordResetOTPSchema,
 } from "../../schemas/controllers/auth/auth.js";
-import { resetTokenPayloadSchema } from "../../schemas/token.js";
+import { resetPasswordTokenPayloadSchema } from "../../schemas/token.js";
 import { Request, Response } from "express";
 import { Static } from "@sinclair/typebox";
 import { generateOTP } from "../../utils/OTP.js";
@@ -79,9 +79,9 @@ async function resetPasswordController(
 ) {
   try {
     const { new_password, token } = req.body;
-    const decoded = verifyToken(token) as Static<typeof resetTokenPayloadSchema>;
+    const decoded = verifyToken(token) as Static<typeof resetPasswordTokenPayloadSchema>;
 
-    if (!validateTypeboxSchema(decoded, resetTokenPayloadSchema).isValid) {
+    if (!validateTypeboxSchema(decoded, resetPasswordTokenPayloadSchema).isValid) {
       return res.status(400).json({ msg: "invalid token" });
     }
 

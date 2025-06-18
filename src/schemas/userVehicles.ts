@@ -29,11 +29,11 @@ const userVehicleSchema = Type.Object({
     Type.Literal(ConnectorTypeEnum.Tesla),
   ]),
   actual_battery: Type.String({
-    pattern: "^\\d+(\\.\\d+)?\\s?(kWh|%|kwh)$",
-    description: "Battery capacity in kWh or percentage (e.g., '75.5 kWh', '85%')",
+    pattern: "^(([0-9]|[1-9][0-9]|[12][0-9][0-9])(\\.\\d)?|300(\\.0)?)\\s?(kWh|KWh)$",
+    description: "Battery capacity in kWh up to 300 kWh (e.g., '75.5 kWh', '100.8 KWh', '300 kWh')",
   }),
   vehicle_id: vehicleSchema.properties.id,
-  created_at: Type.Date(),
+  created_at: Type.String({ format: "date-time" }),
 });
 
 const vehicleIdSchema = Type.Object({
