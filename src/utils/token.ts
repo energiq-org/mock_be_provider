@@ -2,6 +2,7 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { StringValue } from "ms";
 import config from "../config/env.js";
+import { OTPType } from "../schemas/OTP.js";
 
 function generateAccessToken(payload: jwt.JwtPayload | { userId: number; email: string }): string {
   const options: jwt.SignOptions = {
@@ -21,7 +22,7 @@ function generateResetPasswordToken(payload: jwt.JwtPayload | { email: string })
     algorithm: "HS256",
   };
 
-  return jwt.sign({ email: payload.email as string, type: "reset_password" }, config.JWT_SECRET, options);
+  return jwt.sign({ email: payload.email as string, type: OTPType.RESET_PASSWORD }, config.JWT_SECRET, options);
 }
 
 function verifyToken(token: string): jwt.JwtPayload | null {

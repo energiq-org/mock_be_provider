@@ -5,10 +5,10 @@ import { vehicleSchema } from "../../vehicles.js";
 const signupSchema = Type.Pick(userSchema, ["first_name", "last_name", "email", "password"]);
 
 const updateUserSchema = Type.Object({
-  first_name: userSchema.properties.first_name,
-  last_name: userSchema.properties.last_name,
-  email: userSchema.properties.email,
-  phone_number: userSchema.properties.phone_number,
+  first_name: Type.Optional(userSchema.properties.first_name),
+  last_name: Type.Optional(userSchema.properties.last_name),
+  email: Type.Optional(userSchema.properties.email),
+  phone_number: Type.Optional(userSchema.properties.phone_number),
 });
 
 const updateUserPasswordSchema = Type.Object({

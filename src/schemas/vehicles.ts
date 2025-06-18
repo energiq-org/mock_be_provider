@@ -1,7 +1,7 @@
 import { Type, Static } from "@sinclair/typebox";
 
 const vehicleSchema = Type.Object({
-  id: Type.Number(),
+  id: Type.Number({ minimum: 1 }),
   model: Type.String(),
   availability: Type.String(),
   range: Type.String(),

@@ -1,12 +1,7 @@
 import { UUID } from "crypto";
 import { CreationOptional, DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/dbConnection.js";
-
-/* eslint-disable no-unused-vars */
-enum OTPType {
-  VERIFICATION = "verification",
-  RESET_PASSWORD = "reset_password",
-}
+import { OTPType } from "../schemas/OTP.js";
 
 class OTP extends Model {
   declare id: CreationOptional<UUID>;
@@ -35,8 +30,12 @@ OTP.init(
       allowNull: false,
     },
     code: {
-      type: DataTypes.CHAR(6),
+      type: DataTypes.STRING(6),
       allowNull: false,
+      validate: {
+        is: /^[0-9]{6}$/, // Exactly 6 digits
+        len: [6, 6], // Exactly 6 characters
+      },
     },
     expires_at: {
       type: DataTypes.DATE,
@@ -63,4 +62,4 @@ OTP.init(
   }
 );
 
-export { OTP, OTPType };
+export { OTP };
