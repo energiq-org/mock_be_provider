@@ -20,8 +20,8 @@ const OTPCodeSchema = Type.Object({
   }),
   used: Type.Boolean(),
   type: Type.Union([Type.Literal(OTPType.VERIFICATION), Type.Literal(OTPType.RESET_PASSWORD)]),
-  created_at: Type.Date(),
-  expires_at: Type.Date(),
+  created_at: Type.String({ format: "date-time" }),
+  expires_at: Type.String({ format: "date-time" }),
 });
 
 export { OTPCodeSchema, OTPType };

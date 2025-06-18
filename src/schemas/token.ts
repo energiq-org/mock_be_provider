@@ -9,16 +9,18 @@ const refreshTokenSchema = Type.Object({
   }),
   user_id: userSchema.properties.id,
   refresh_token: Type.String({
-    minLength: 64,
-    maxLength: 64,
+    minLength: 128,
+    maxLength: 128,
+    pattern: "^[0-9a-f]{128}$",
+    description: "Refresh token (128 hexadecimal characters)",
   }),
-  created_at: Type.Date(),
-  expires_at: Type.Date(),
-  revoked_at: Type.Date(),
+  created_at: Type.String({ format: "date-time" }),
+  expires_at: Type.String({ format: "date-time" }),
+  revoked_at: Type.String({ format: "date-time" }),
 });
 
 const accessTokenSchema = Type.Object({
-  access_token: Type.String(),
+  access_token: Type.String({ description: "Access token" }),
 });
 
 const accessTokenPayloadSchema = Type.Object({
@@ -26,9 +28,9 @@ const accessTokenPayloadSchema = Type.Object({
   email: userSchema.properties.email,
 });
 
-const resetTokenPayloadSchema = Type.Object({
+const resetPasswordTokenPayloadSchema = Type.Object({
   email: userSchema.properties.email,
   type: Type.Literal(OTPType.RESET_PASSWORD),
 });
 
-export { refreshTokenSchema, accessTokenSchema, accessTokenPayloadSchema, resetTokenPayloadSchema };
+export { refreshTokenSchema, accessTokenSchema, accessTokenPayloadSchema, resetPasswordTokenPayloadSchema };

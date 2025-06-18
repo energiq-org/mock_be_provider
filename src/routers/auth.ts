@@ -21,6 +21,7 @@ import {
   forgetPasswordSchema,
   verifyPasswordResetOTPSchema,
   resetPasswordSchema,
+  verifyPasswordResetOTPResponseSchema,
 } from "../schemas/controllers/auth/auth.js";
 import { successResponseSchema } from "../schemas/common-responses.js";
 
@@ -98,7 +99,7 @@ authRouter.post(
     description: "Verify password reset OTP",
     requestBody: generateJSONRequestBody(verifyPasswordResetOTPSchema, "Verify password reset OTP request body"),
     responses: {
-      "200": generateJSONResponse(successResponseSchema, "Verify password reset OTP request successful"),
+      "200": generateJSONResponse(verifyPasswordResetOTPResponseSchema, "Verify password reset OTP request successful"),
       ...getErrorResponses(["400", "404", "500"]),
     },
   }),

@@ -13,6 +13,7 @@ const vehicleSchema = Type.Object({
   fastcharge: Type.String(),
   towing: Type.String(),
   cargo_volume: Type.String(),
+  created_at: Type.String({ format: "date-time" }),
 });
 
 type VehicleSchemaType = Static<typeof vehicleSchema>;

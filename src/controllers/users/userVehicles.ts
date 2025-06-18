@@ -26,6 +26,7 @@ async function addUserVehicleController(
     if (error instanceof ForeignKeyConstraintError) {
       return res.status(404).json({ msg: "double check the vehicle id" });
     }
+    console.log(error);
     return res.status(500).json({ msg: (error as Error).message });
   }
 }

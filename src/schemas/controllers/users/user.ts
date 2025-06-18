@@ -1,7 +1,8 @@
 import { Type } from "@sinclair/typebox";
 import { userSchema } from "../../users.js";
-import { vehicleSchema } from "../../vehicles.js";
+import { getUserVehiclesResponseSchema } from "./userVehicles.js";
 
+// Request schemas
 const signupSchema = Type.Pick(userSchema, ["first_name", "last_name", "email", "password"]);
 
 const updateUserSchema = Type.Object({
@@ -16,37 +17,12 @@ const updateUserPasswordSchema = Type.Object({
   new_password: userSchema.properties.password,
 });
 
-const getUserVehiclesResponseSchema = Type.Object({
-  vehicles: Type.Array(
-    Type.Intersect([
-      vehicleSchema,
-      Type.Object({
-        connector_type: Type.String(),
-        actual_battery: Type.String(),
-      }),
-    ])
-  ),
-});
-
-const getUserByAccessTokenResponseSchema = Type.Intersect([
+// Response schemas
+const getUserSchema = Type.Intersect([
   userSchema,
   Type.Object({
-    vehicles: Type.Array(
-      Type.Intersect([
-        vehicleSchema,
-        Type.Object({
-          connector_type: Type.String(),
-          actual_battery: Type.String(),
-        }),
-      ])
-    ),
+    vehicles: Type.Array(getUserVehiclesResponseSchema),
   }),
 ]);
 
-export {
-  getUserByAccessTokenResponseSchema,
-  getUserVehiclesResponseSchema,
-  signupSchema,
-  updateUserSchema,
-  updateUserPasswordSchema,
-};
+export { signupSchema, updateUserSchema, updateUserPasswordSchema, getUserSchema };

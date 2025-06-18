@@ -30,13 +30,13 @@ import { successResponseSchema } from "../schemas/common-responses.js";
 import { vehicleIdSchema } from "../schemas/userVehicles.js";
 import { addUserVehicleSchema, updateUserVehicleSchema } from "../schemas/controllers/users/userVehicles.js";
 import {
-  getUserByAccessTokenResponseSchema,
   signupSchema,
   updateUserSchema,
   updateUserPasswordSchema,
+  getUserSchema,
 } from "../schemas/controllers/users/user.js";
 import { verifyEmailSchema, sentVerificationEmailSchema } from "../schemas/controllers/users/mail.js";
-import { getUserVehiclesResponseSchema } from "../schemas/controllers/users/user.js";
+import { getUserVehiclesResponseSchema } from "../schemas/controllers/users/userVehicles.js";
 
 const usersRouter = Router();
 
@@ -100,7 +100,7 @@ usersRouter.get(
     tags: ["Users"],
     security: getSecuritySchemes(),
     responses: {
-      200: generateJSONResponse(getUserByAccessTokenResponseSchema, "User data retrieved successfully"),
+      200: generateJSONResponse(getUserSchema, "User data retrieved successfully"),
       ...getErrorResponses(["401", "404", "500"]),
     },
   }),
