@@ -41,4 +41,8 @@ export default cleanEnv(process.env, {
   }),
   SPEC_REQUEST_VALIDATION: bool({ default: true }),
   SPEC_RESPONSE_VALIDATION: bool({ default: true }),
+  PAYMOB_API_KEY: str(),
+  PAYMOB_SECRET_KEY: str(),
+  PAYMOB_PUBLIC_KEY: str(),
+  PAYMOB_PAYMENT_METHOD: num(),
 });
