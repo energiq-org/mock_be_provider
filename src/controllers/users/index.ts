@@ -3,7 +3,8 @@ import { UUID } from "crypto";
 import { Request, Response } from "express";
 import config from "../../config/env.js";
 import { User } from "../../models/user.js";
-import { OTP, OTPType } from "../../models/OTP.js";
+import { OTP } from "../../models/OTP.js";
+import { OTPType } from "../../schemas/OTP.js";
 import { sendVerificationEmail } from "../../utils/mail.js";
 import { generateOTP } from "../../utils/OTP.js";
 import { signupSchema, updateUserPasswordSchema, updateUserSchema } from "../../schemas/controllers/users/user.js";
@@ -59,6 +60,10 @@ async function updateUserController(req: Request<unknown, unknown, Static<typeof
     const user = await User.findByPk(userId);
     if (!user) {
       return res.status(404).json({ msg: "user not found" });
+    }
+
+    if (Object.keys(req.body).length === 0 && !req.file) {
+      return res.status(400).json({ msg: "no data to update" });
     }
 
     const queryBody = {

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { User } from "../../models/user.js";
-import { OTP, OTPType } from "../../models/OTP.js";
+import { OTP } from "../../models/OTP.js";
+import { OTPType } from "../../schemas/OTP.js";
 import { sendVerificationEmail, sendWelcomeEmail } from "../../utils/mail.js";
 import { verifyEmailSchema, sentVerificationEmailSchema } from "../../schemas/controllers/users/mail.js";
 import { generateOTP } from "../../utils/OTP.js";

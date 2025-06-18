@@ -58,6 +58,10 @@ async function updateUserVehicleController(
     const vehicleId = req.params.id;
     const updateData = req.body;
 
+    if (Object.keys(updateData).length === 0) {
+      return res.status(400).json({ msg: "no data to update" });
+    }
+
     const [affectedCount] = await UserVehicle.update(updateData, {
       where: {
         id: vehicleId,

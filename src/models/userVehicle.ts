@@ -1,6 +1,7 @@
 import { UUID } from "crypto";
 import { CreationOptional, DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/dbConnection.js";
+import { ConnectorTypeEnum } from "../schemas/userVehicles.js";
 
 class UserVehicle extends Model {
   declare id: CreationOptional<UUID>;
@@ -27,7 +28,7 @@ UserVehicle.init(
       allowNull: false,
     },
     connector_type: {
-      type: DataTypes.STRING,
+      type: DataTypes.ENUM(...Object.values(ConnectorTypeEnum)),
       allowNull: false,
     },
     actual_battery: {

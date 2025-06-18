@@ -1,10 +1,17 @@
 import { Type } from "@sinclair/typebox";
 import { userSchema } from "./users.js";
+import { OTPType } from "./OTP.js";
 
 const refreshTokenSchema = Type.Object({
-  id: Type.String(),
-  user_id: Type.String(),
-  refresh_token: Type.String(),
+  id: Type.String({
+    pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+    description: "UUID format (e.g., 123e4567-e89b-12d3-a456-426614174000)",
+  }),
+  user_id: userSchema.properties.id,
+  refresh_token: Type.String({
+    minLength: 64,
+    maxLength: 64,
+  }),
   created_at: Type.Date(),
   expires_at: Type.Date(),
   revoked_at: Type.Date(),
@@ -21,7 +28,7 @@ const accessTokenPayloadSchema = Type.Object({
 
 const resetTokenPayloadSchema = Type.Object({
   email: userSchema.properties.email,
-  type: Type.String(),
+  type: Type.Literal(OTPType.RESET_PASSWORD),
 });
 
 export { refreshTokenSchema, accessTokenSchema, accessTokenPayloadSchema, resetTokenPayloadSchema };

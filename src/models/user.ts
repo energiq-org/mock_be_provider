@@ -109,19 +109,35 @@ User.init(
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    first_name: DataTypes.STRING,
-    last_name: DataTypes.STRING,
-    password: DataTypes.STRING,
+    first_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    last_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     email: {
       type: DataTypes.STRING,
       unique: true,
+      allowNull: false,
     },
     email_verified: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    phone_number: DataTypes.STRING,
-    profile_picture: DataTypes.TEXT,
+    phone_number: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    profile_picture: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,
