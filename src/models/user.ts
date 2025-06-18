@@ -16,6 +16,7 @@ import { Token } from "./token.js";
 import { UserVehicle } from "./userVehicle.js";
 import { OTP } from "./OTP.js";
 import { Vehicle } from "./vehicle.js";
+import { Transaction } from "../models/transaction.js";
 
 interface UserVehicleAttributes {
   connector_type: string;
@@ -164,5 +165,13 @@ User.hasMany(OTP, {
   as: "otps",
   onDelete: "CASCADE",
 });
+
+User.hasMany(Transaction,{
+  sourceKey: "id",
+  foreignKey: "user_id",
+  as: "transactions",
+  onDelete: "CASCADE",
+})
+
 
 export { User };

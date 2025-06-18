@@ -1,13 +1,14 @@
-import { DataTypes, Model } from "sequelize";
+import { CreationOptional, DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/dbConnection.js";
+import { UUID } from "crypto";
 
-class Webhooks extends Model {
-  declare id: number;
+class Webhook extends Model {
+  declare id: CreationOptional<UUID>;
   declare success: boolean;
   declare content: object;
 }
 
-Webhooks.init(
+Webhook.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -29,10 +30,10 @@ Webhooks.init(
     },
   },
   {
-    tableName: "paymob_transactions",
+    tableName: "Webhooks",
     sequelize,
     timestamps: false,
   }
 );
 
-export { Webhooks };
+export { Webhook };

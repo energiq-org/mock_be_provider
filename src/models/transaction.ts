@@ -1,11 +1,13 @@
-import { DataTypes, Model } from "sequelize";
+import { CreationOptional, DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/dbConnection.js";
+import { TransactionStatus } from "../schemas/transction.js";
+import { UUID } from "crypto";
 
 class Transaction extends Model {
-  declare id: string;
-  declare status: "pending" | "success" | "failed";
+  declare id: CreationOptional<UUID>;
+  declare status: TransactionStatus;
   declare amount: bigint;
-  declare session_kw: bigint;
+  declare session_id: string;
   declare user_id: string;
   declare vehicle_id: string;
   declare created_at: Date;
@@ -19,15 +21,15 @@ Transaction.init(
       primaryKey: true,
     },
     status: {
-      type: DataTypes.ENUM("pending", "success", "failed"),
+      type: DataTypes.ENUM(...Object.values(TransactionStatus)),
       allowNull: false,
     },
     amount: {
       type: DataTypes.BIGINT,
       allowNull: false,
     },
-    session_kw: {
-      type: DataTypes.BIGINT,
+    session_id: {
+      type: DataTypes.UUID,
       allowNull: false,
     },
     user_id: {

@@ -10,6 +10,7 @@ import { authRouter } from "./routers/auth.js";
 import { usersRouter } from "./routers/users.js";
 import { vehiclesRouter } from "./routers/vehicles.js";
 import { getThemeSync } from "@intelika/swagger-theme";
+import { paymentRouter } from "./routers/payment.js";
 
 function createServer() {
   const server = express();
@@ -30,6 +31,7 @@ function createServer() {
   server.use("/api/v1/auth", authRouter);
   server.use("/api/v1/vehicles", vehiclesRouter);
   server.use("/api/v1/users", usersRouter);
+  server.use('/api/v1/payment', paymentRouter);
 
   const openAPIDocs = docs.generateDocument(docs.document, server._router, docs.options.basePath);
 
