@@ -34,7 +34,7 @@ class Paymob {
   async createPaymentIntention(amount: number, user: User) {
     const paymobIntentionReq = JSON.stringify({
       amount: amount * 100,
-      currency: "EG",
+      currency: "EGP",
       payment_methods: this.paymentMethods,
       items: [
         {

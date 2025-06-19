@@ -11,9 +11,6 @@ import {
 import { Token } from "./token.js";
 import { OTP } from "./OTP.js";
 import { UserVehicle } from "./userVehicle.js";
-import { OTP } from "./OTP.js";
-import { Vehicle } from "./vehicle.js";
-import { Transaction } from "../models/transaction.js";
 
 @Entity("users")
 export class User extends BaseEntity {

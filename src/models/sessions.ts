@@ -1,50 +1,28 @@
-import { CreationOptional, DataTypes, Model } from "sequelize";
-import { sequelize } from "../config/dbConnection.js";
-import { UUID } from "crypto";
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    CreateDateColumn,
+    BaseEntity,
+} from "typeorm";
 
-class Session extends Model {
-  declare id: CreationOptional<UUID>;
-  declare user_id: UUID;
-  declare vehicle_id: UUID;
-  declare duration: number;
-  declare kw_consumed: number;
-  declare created_at: CreationOptional<Date>;
+@Entity("sessions")
+export class Session extends BaseEntity {
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
+
+    @Column("uuid")
+    user_id: string;
+
+    @Column("uuid")
+    vehicle_id: string;
+
+    @Column("int")
+    duration: number;
+
+    @Column("int")
+    kw_consumed: number;
+
+    @CreateDateColumn()
+    created_at: Date;
 }
-
-Session.init(
-    {
-        id: {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
-            primaryKey: true,
-        },
-        user_id: {
-            type: DataTypes.UUID,
-            allowNull: false,
-        },
-        vehicle_id: {
-            type: DataTypes.UUID,
-            allowNull: false,
-        },
-        duration: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
-        kw_consumed: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
-        created_at: {
-            type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: DataTypes.NOW,
-        },
-    },
-    {
-        tableName: "sessions",
-        sequelize,
-        timestamps: false,
-    }
-);
-
-export { Session };

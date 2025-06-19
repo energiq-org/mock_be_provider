@@ -5,6 +5,9 @@ import { Token } from "../models/token.js";
 import { User } from "../models/user.js";
 import { UserVehicle } from "../models/userVehicle.js";
 import { Vehicle } from "../models/vehicle.js";
+import { Webhook } from "../models/webhook.js";
+import { Transaction } from "../models/transaction.js";
+import { Session } from "../models/sessions.js";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
@@ -15,7 +18,7 @@ export const AppDataSource = new DataSource({
     database: config.DB_NAME,
     synchronize: false,
     logging: config.DB_LOGGING,
-    entities: [User, OTP, Token, Vehicle, UserVehicle],
+    entities: [User, OTP, Token, Vehicle, UserVehicle, Webhook, Transaction, Session],
     migrations: ["src/migrations/*.ts"],
     migrationsTableName: "migrations",
 });

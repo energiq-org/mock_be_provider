@@ -1,39 +1,22 @@
-import { CreationOptional, DataTypes, Model } from "sequelize";
-import { sequelize } from "../config/dbConnection.js";
-import { UUID } from "crypto";
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    CreateDateColumn,
+    BaseEntity,
+} from "typeorm";
 
-class Webhook extends Model {
-  declare id: CreationOptional<UUID>;
-  declare success: boolean;
-  declare content: object;
+@Entity("webhooks")
+export class Webhook extends BaseEntity {
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
+
+    @Column()
+    success: boolean;
+
+    @Column("jsonb")
+    content: object;
+
+    @CreateDateColumn()
+    created_at: Date;
 }
-
-Webhook.init(
-  {
-    id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true,
-    },
-    success: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-    },
-    content: {
-      type: DataTypes.JSONB,
-      allowNull: false,
-    },
-    created_at: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-      allowNull: false,
-    },
-  },
-  {
-    tableName: "Webhooks",
-    sequelize,
-    timestamps: false,
-  }
-);
-
-export { Webhook };
