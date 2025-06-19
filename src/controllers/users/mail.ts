@@ -27,8 +27,7 @@ async function verifyEmailController(
         if (userVerificationCode.used) {
             return res.status(410).json({ msg: "verification code has already been used" });
         }
-
-        if (userVerificationCode.expires_at < new Date()) {
+        if (userVerificationCode.expires_at < new Date(Date.now())) {
             return res.status(410).json({ msg: "verification code has expired" });
         }
 
@@ -68,7 +67,7 @@ async function sendVerificationEmailController(
         }
 
         const verificationCode = generateOTP();
-        const expires_at = Date.now() + config.OTP_LIFETIME * 60 * 1000;
+        const expires_at = new Date(Date.now() + config.OTP_LIFETIME * 60 * 1000);
 
         await OTP.save({
             user_id: user.id,

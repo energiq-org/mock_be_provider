@@ -10,16 +10,12 @@ import { authRouter } from "./routers/auth.js";
 import { usersRouter } from "./routers/users.js";
 import { vehiclesRouter } from "./routers/vehicles.js";
 import { getThemeSync } from "@intelika/swagger-theme";
-import { AppDataSource } from "./config/dbConnection.js";
 import { FuzzySearcher } from "./utils/fuzzySearcher.js";
 import { VehiclesDBLoader } from "./utils/vehicleDBLoader.js";
 
 function createServer() {
     const server = express();
-
-    server.locals.db = AppDataSource;
-    server.locals.vehicles = new VehiclesDBLoader();
-    server.locals.fuzzySearcher = new FuzzySearcher(server.locals.vehicles);
+    server.locals.fuzzySearcher = new FuzzySearcher(new VehiclesDBLoader());
 
     server.use(cors());
 
