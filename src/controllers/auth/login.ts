@@ -10,7 +10,6 @@ import { generateAccessToken, generateRefreshToken } from "../../utils/token.js"
 import { generateOTP } from "../../utils/OTP.js";
 import { Static } from "@sinclair/typebox";
 import { OTP } from "../../models/OTP.js";
-import { AppDataSource } from "../../config/dbConnection.js";
 
 async function loginController(req: Request<unknown, unknown, Static<typeof loginSchema>>, res: Response) {
     try {
@@ -49,7 +48,7 @@ async function loginController(req: Request<unknown, unknown, Static<typeof logi
         const refreshToken = generateRefreshToken();
         const expiresAt = new Date();
         expiresAt.setDate(expiresAt.getDate() + 7); // 7 days from now
-        await AppDataSource.manager.save(Token, {
+        await Token.save({
             refresh_token: refreshToken,
             user_id: user.id,
             expires_at: expiresAt,
