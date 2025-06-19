@@ -3,7 +3,7 @@ import FuzzySearch from "fuzzy-search";
 import { VehicleSchemaType } from "../schemas/vehicles.js";
 
 export class FuzzySearcher {
-    store!: IVehiclesStore;
+    private store!: IVehiclesStore;
     private static instance: FuzzySearcher;
     private fuzzy!: FuzzySearch<VehicleSchemaType>;
     private static isFuzzyInitialized = false;
@@ -25,10 +25,17 @@ export class FuzzySearcher {
         this.store = store;
     }
 
-    search(query: { model: string }): VehicleSchemaType[] {
+    search(query: { model?: string, id?: number }): VehicleSchemaType[] {
         if (!FuzzySearcher.isFuzzyInitialized) {
             this.initializeFuzzy();
         }
-        return this.fuzzy.search(query.model);
+        if (query.id !== undefined) {
+            const vehicle = this.store.findById(query.id);
+            return vehicle ? [vehicle] : [];
+        } else if (query.model !== undefined) {
+            return this.fuzzy.search(query.model);
+        } else {
+            return this.store.list();
+        }
     }
 }

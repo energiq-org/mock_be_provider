@@ -12,7 +12,7 @@ async function logoutController(req: Request<unknown, unknown, Static<typeof log
             return res.status(404).json({ msg: "refresh token not found." });
         }
 
-        existingToken.revoked_at = new Date();
+        existingToken.revoked_at = new Date(Date.now());
         await existingToken.save();
 
         return res.status(200).json({ msg: "token revoked successfully" });
