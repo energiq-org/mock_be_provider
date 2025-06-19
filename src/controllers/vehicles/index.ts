@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { Static } from "@sinclair/typebox";
 import { getVehiclesQueryParamsSchema } from "../../schemas/controllers/vehicles/vehicles.js";
 import { VehicleSchemaType } from "../../schemas/vehicles.js";
-import { Vehicle } from "@src/models/vehicle.js";
+import { Vehicle } from "../../models/vehicle.js";
 
 async function getVehicleController(
     req: Request<unknown, unknown, unknown, Static<typeof getVehiclesQueryParamsSchema>>,
