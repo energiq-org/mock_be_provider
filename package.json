@@ -18,7 +18,9 @@
     "test": "jest --detectOpenHandles --forceExit",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "migration:generate": "npx typeorm-ts-node-esm migration:generate -d src/config/dbConnection.ts src/migrations/$npm_config_name"
+    "migration:generate": "npx typeorm-ts-node-esm migration:generate -d src/config/dbConnection.ts src/migrations/$npm_config_name",
+    "migration:run": "npx typeorm-ts-node-esm migration:run -d src/config/dbConnection.ts",
+    "seed-vehicles": "node --loader ts-node/esm src/utils/seedVehicles.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.758.0",

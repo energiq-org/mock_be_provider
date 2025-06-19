@@ -65,7 +65,7 @@ async function verifyPasswordResetOTPController(
         if (resetPasswordCode.email !== email) {
             return res.status(400).json({ msg: "invalid operation" });
         }
-        if (resetPasswordCode.expires_at < new Date()) {
+        if (resetPasswordCode.expires_at < new Date(Date.now())) {
             return res.status(400).json({ msg: "reset password code expired" });
         }
         if (resetPasswordCode.used) {
