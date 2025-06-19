@@ -1,84 +1,47 @@
-import { DataTypes, Model } from "sequelize";
-import { sequelize } from "../config/dbConnection.js";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany, BaseEntity, Relation } from "typeorm";
+import { UserVehicle } from "./userVehicle.js";
 
-class Vehicle extends Model {
-  declare id: number;
-  declare model: string;
-  declare availability: string;
-  declare range: string;
-  declare efficiency: string;
-  declare weight: string;
-  declare acceleration: string;
-  declare one_stop_range: string;
-  declare battery: string;
-  declare fastcharge: string;
-  declare towing: string;
-  declare cargo_volume: string;
-  declare created_at: Date;
+@Entity("vehicles")
+export class Vehicle extends BaseEntity {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column()
+    model: string;
+
+    @Column()
+    availability: string;
+
+    @Column()
+    range: string;
+
+    @Column()
+    efficiency: string;
+
+    @Column()
+    weight: string;
+
+    @Column()
+    acceleration: string;
+
+    @Column()
+    one_stop_range: string;
+
+    @Column()
+    battery: string;
+
+    @Column()
+    fastcharge: string;
+
+    @Column()
+    towing: string;
+
+    @Column()
+    cargo_volume: string;
+
+    @CreateDateColumn()
+    created_at: Date;
+
+    @OneToMany(() => UserVehicle, (userVehicle) => userVehicle.vehicle)
+    users: Relation<UserVehicle>[];
 }
-
-Vehicle.init(
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-    model: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    availability: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    range: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    efficiency: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    weight: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    acceleration: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    one_stop_range: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    battery: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    fastcharge: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    towing: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    cargo_volume: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-  },
-  {
-    tableName: "vehicles",
-    sequelize,
-    timestamps: false,
-  }
-);
-
-export { Vehicle };

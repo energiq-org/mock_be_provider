@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from "express";
 import { getVehicleController } from "../controllers/vehicles/index.js";
 import { docs } from "../docs/index.js";
@@ -11,19 +12,19 @@ import { Type } from "@sinclair/typebox";
 const vehiclesRouter = Router();
 
 vehiclesRouter.get(
-  "/",
-  docs.path({
-    summary: "Get vehicle",
-    description: "Get vehicle",
-    tags: ["Vehicles"],
-    parameters: generateRequestParameters(getVehiclesQueryParamsSchema, "query"),
-    responses: {
-      200: generateJSONResponse(Type.Array(vehicleSchema), "The vehicle was retrieved successfully"),
-      ...getErrorResponses(["500"]),
-    },
-  }),
-  ajvRequestValidator(getVehiclesQueryParamsSchema, "query"),
-  getVehicleController
+    "/",
+    docs.path({
+        summary: "Get vehicle",
+        description: "Get vehicle",
+        tags: ["Vehicles"],
+        parameters: generateRequestParameters(getVehiclesQueryParamsSchema, "query"),
+        responses: {
+            200: generateJSONResponse(Type.Array(vehicleSchema), "The vehicle was retrieved successfully"),
+            ...getErrorResponses(["500"]),
+        },
+    }),
+    ajvRequestValidator(getVehiclesQueryParamsSchema, "query"),
+    getVehicleController
 );
 
 export { vehiclesRouter };

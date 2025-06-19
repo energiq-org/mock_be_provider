@@ -2,13 +2,13 @@ import "dotenv/config";
 import { bool, cleanEnv, makeValidator, num, str } from "envalid";
 
 const tokenLifetimeValidator = makeValidator((value: string) => {
-  const match = value.match(/^(\d+)([dhm])$/);
-  if (!match) {
-    throw new Error(
-      `Invalid token lifetime format. Expected format: <number><d|h|m> (e.g., 30d, 6h, 15m). Received: ${value}`
-    );
-  }
-  return value;
+    const match = value.match(/^(\d+)([dhm])$/);
+    if (!match) {
+        throw new Error(
+            `Invalid token lifetime format. Expected format: <number><d|h|m> (e.g., 30d, 6h, 15m). Received: ${value}`
+        );
+    }
+    return value;
 });
 
 export default cleanEnv(process.env, {
