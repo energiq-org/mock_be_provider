@@ -34,7 +34,7 @@ export class UserVehicle extends BaseEntity {
     @Column()
     actual_battery: string;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ type: "timestamptz"})
     created_at: Date;
 
     @ManyToOne(() => User, (user) => user.vehicles)

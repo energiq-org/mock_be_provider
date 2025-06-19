@@ -38,7 +38,7 @@ export class User extends BaseEntity {
     @Column({ type: "text", nullable: true })
     profile_picture: string;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ type: "timestamptz"})
     created_at: Date;
 
     @OneToMany(() => Token, (token) => token.user)

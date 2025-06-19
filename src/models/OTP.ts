@@ -22,7 +22,7 @@ export class OTP extends BaseEntity {
     @Column()
     email: string;
 
-    @Column({ length: 6 })
+    @Column({ length: 20 })
     code: string;
 
     @Column({ default: false })
@@ -34,10 +34,10 @@ export class OTP extends BaseEntity {
     })
     type: OTPType;
 
-    @Column()
+    @Column({ type: "timestamptz" })
     expires_at: Date;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ type: "timestamptz" })
     created_at: Date;
 
     @ManyToOne("User", "otps")
