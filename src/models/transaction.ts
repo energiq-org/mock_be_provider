@@ -30,6 +30,6 @@ export class Transaction extends BaseEntity {
     @Column("uuid")
     vehicle_id: string;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ type: "timestamptz"})
     created_at: Date;
 }

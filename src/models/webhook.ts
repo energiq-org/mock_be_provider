@@ -17,6 +17,6 @@ export class Webhook extends BaseEntity {
     @Column("jsonb")
     content: object;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ type: "timestamptz"})
     created_at: Date;
 }
