@@ -4,9 +4,9 @@ import config from "../config/env.js";
 sgMail.setApiKey(config.SENDGRID_API_KEY);
 
 async function sendVerificationEmail(email: string, code: string): Promise<void> {
-  const subject = "Verify Your Email Address";
+    const subject = "Verify Your Email Address";
 
-  const html = `
+    const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #333;">Email Verification</h2>
         <p>Thank you for registering in EnergiQ! Please use the following code to verify your email address:</p>
@@ -20,17 +20,17 @@ async function sendVerificationEmail(email: string, code: string): Promise<void>
       </div>
     `;
 
-  await sgMail.send({
-    from: config.EMAIL_SENDER,
-    to: email,
-    subject,
-    html,
-  });
+    await sgMail.send({
+        from: config.EMAIL_SENDER,
+        to: email,
+        subject,
+        html,
+    });
 }
 async function sendResetPasswordEmail(email: string, code: string): Promise<void> {
-  const subject = "Reset Your Password";
+    const subject = "Reset Your Password";
 
-  const html = `
+    const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <h2 style="color: #333;">Reset Password</h2>
       <p>Please use the following code to reset your password:</p>
@@ -44,18 +44,18 @@ async function sendResetPasswordEmail(email: string, code: string): Promise<void
     </div>
   `;
 
-  await sgMail.send({
-    from: config.EMAIL_SENDER,
-    to: email,
-    subject,
-    html,
-  });
+    await sgMail.send({
+        from: config.EMAIL_SENDER,
+        to: email,
+        subject,
+        html,
+    });
 }
 
 async function sendWelcomeEmail(email: string, name: string): Promise<void> {
-  const subject = "Welcome to EnergiQ!";
+    const subject = "Welcome to EnergiQ!";
 
-  const html = `
+    const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <h2 style="color: #333;">Welcome, ${name}!</h2>
       <p>Thank you for verifying your email address. Your account is now fully active.</p>
@@ -69,12 +69,12 @@ async function sendWelcomeEmail(email: string, name: string): Promise<void> {
     </div>
   `;
 
-  await sgMail.send({
-    from: config.EMAIL_SENDER,
-    to: email,
-    subject,
-    html,
-  });
+    await sgMail.send({
+        from: config.EMAIL_SENDER,
+        to: email,
+        subject,
+        html,
+    });
 }
 
 export { sendVerificationEmail, sendWelcomeEmail, sendResetPasswordEmail };
