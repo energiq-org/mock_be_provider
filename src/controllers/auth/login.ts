@@ -29,7 +29,7 @@ async function loginController(req: Request<unknown, unknown, Static<typeof logi
         const isUserVerified = user.email_verified;
         if (!isUserVerified) {
             const verificationCode = generateOTP();
-            const expires_at = new Date(new Date().setMinutes(new Date().getMinutes() + config.OTP_LIFETIME));
+            const expires_at = new Date(Date.now() + config.OTP_LIFETIME * 60 * 1000);
 
             const otp = OTP.create({
                 user_id: user.id,
@@ -46,8 +46,8 @@ async function loginController(req: Request<unknown, unknown, Static<typeof logi
 
         const accessToken = generateAccessToken({ email: user.email, userId: user.id });
         const refreshToken = generateRefreshToken();
-        const expiresAt = new Date();
-        expiresAt.setDate(expiresAt.getDate() + 7); // 7 days from now
+        const expireAtValue = config.REFRESH_TOKEN_LIFETIME.split("d")[0];
+        const expiresAt = new Date(Date.now() + parseInt(expireAtValue) * 24 * 60 * 60 * 1000);
         await Token.save({
             refresh_token: refreshToken,
             user_id: user.id,

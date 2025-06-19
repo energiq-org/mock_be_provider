@@ -17,7 +17,7 @@ async function refreshTokenController(req: Request<unknown, unknown, Static<type
             return res.status(401).json({ error: "invalid refresh token" });
         }
 
-        if (new Date(storedToken.expires_at) < new Date()) {
+        if (storedToken.expires_at < new Date(Date.now())) {
             return res.status(403).json({ error: "refresh token expired" });
         }
 
