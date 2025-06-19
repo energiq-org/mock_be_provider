@@ -16,4 +16,4 @@ export const vehicleSchema = Type.Object({
     created_at: Type.Date(),
 });
 
-export type VehicleSchemaType = typeof vehicleSchema.static
+export type VehicleSchemaType = typeof vehicleSchema.static;

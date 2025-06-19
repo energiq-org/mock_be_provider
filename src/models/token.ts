@@ -21,13 +21,13 @@ export class Token extends BaseEntity {
     @Column()
     refresh_token: string;
 
-    @Column({ type: "timestamptz"})
+    @Column({ type: "timestamptz" })
     expires_at: Date;
 
     @Column({ type: "timestamptz", nullable: true })
     revoked_at: Date;
 
-    @CreateDateColumn({type: "timestamptz"})
+    @CreateDateColumn({ type: "timestamptz" })
     created_at: Date;
 
     @ManyToOne(() => User, (user) => user.tokens)

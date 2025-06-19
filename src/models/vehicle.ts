@@ -39,7 +39,7 @@ export class Vehicle extends BaseEntity {
     @Column()
     cargo_volume: string;
 
-    @CreateDateColumn({ type: "timestamptz"})
+    @CreateDateColumn({ type: "timestamptz" })
     created_at: Date;
 
     @OneToMany(() => UserVehicle, (userVehicle) => userVehicle.vehicle)

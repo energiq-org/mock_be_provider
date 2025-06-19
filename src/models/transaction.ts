@@ -1,10 +1,4 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    CreateDateColumn,
-    BaseEntity,
-} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, BaseEntity } from "typeorm";
 import { TransactionStatus } from "../schemas/transction.js";
 
 @Entity("transactions")
@@ -30,6 +24,6 @@ export class Transaction extends BaseEntity {
     @Column("uuid")
     vehicle_id: string;
 
-    @CreateDateColumn({ type: "timestamptz"})
+    @CreateDateColumn({ type: "timestamptz" })
     created_at: Date;
 }

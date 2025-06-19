@@ -25,7 +25,7 @@ export class FuzzySearcher {
         this.store = store;
     }
 
-    search(query: { model?: string, id?: number }): VehicleSchemaType[] {
+    search(query: { model?: string; id?: number }): VehicleSchemaType[] {
         if (!FuzzySearcher.isFuzzyInitialized) {
             this.initializeFuzzy();
         }

@@ -5,7 +5,7 @@ import { StandardEnum } from "./helpers.js";
 
 // Define common connector types
 enum ConnectorTypeEnum {
-    TYPE_1= "Type 1",
+    TYPE_1 = "Type 1",
     TYPE_2 = "Type 2",
     CCS_1 = "CCS1",
     CCS_2 = "CCS2",

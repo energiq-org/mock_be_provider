@@ -1,10 +1,4 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    CreateDateColumn,
-    BaseEntity,
-} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, BaseEntity } from "typeorm";
 
 @Entity("webhooks")
 export class Webhook extends BaseEntity {
@@ -17,6 +11,6 @@ export class Webhook extends BaseEntity {
     @Column("jsonb")
     content: object;
 
-    @CreateDateColumn({ type: "timestamptz"})
+    @CreateDateColumn({ type: "timestamptz" })
     created_at: Date;
 }
