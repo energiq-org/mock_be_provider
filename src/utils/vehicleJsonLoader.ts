@@ -6,23 +6,23 @@ import { IVehiclesStore } from "../interfaces/vehicleStore.js";
 type Vehicle = Static<typeof vehicleSchema>;
 
 class VehiclesJsonLoader implements IVehiclesStore {
-  private vehicles: Vehicle[] = [];
+    private vehicles: Vehicle[] = [];
 
-  constructor() {
-    this.vehicles = JSON.parse(fs.readFileSync("mock/vehicles.json", "utf8")) as Vehicle[];
-  }
+    constructor() {
+        this.vehicles = JSON.parse(fs.readFileSync("mock/vehicles.json", "utf8")) as Vehicle[];
+    }
 
-  findById(id: number): Vehicle | null {
-    return this.vehicles.find((vehicle) => vehicle.id === id) ?? null;
-  }
+    findById(id: number): Vehicle | null {
+        return this.vehicles.find((vehicle) => vehicle.id === id) ?? null;
+    }
 
-  list(): Vehicle[] {
-    return this.vehicles;
-  }
+    list(): Vehicle[] {
+        return this.vehicles;
+    }
 
-  find(query: { model: string }): Vehicle[] {
-    return this.vehicles.filter((vehicle) => vehicle.model.toLowerCase().includes(query.model.toLowerCase()));
-  }
+    find(query: { model: string }): Vehicle[] {
+        return this.vehicles.filter((vehicle) => vehicle.model.toLowerCase().includes(query.model.toLowerCase()));
+    }
 }
 
 export { VehiclesJsonLoader };

@@ -1,168 +1,92 @@
-import { UUID } from "crypto";
 import {
-  BelongsToManyAddAssociationMixin,
-  BelongsToManyCountAssociationsMixin,
-  BelongsToManyCreateAssociationMixin,
-  BelongsToManyGetAssociationsMixin,
-  BelongsToManyHasAssociationMixin,
-  BelongsToManyRemoveAssociationMixin,
-  CreationOptional,
-  DataTypes,
-  Model,
-  NonAttribute,
-} from "sequelize";
-import { sequelize } from "../config/dbConnection.js";
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    CreateDateColumn,
+    OneToMany,
+    BaseEntity,
+    JoinColumn,
+    type Relation,
+} from "typeorm";
 import { Token } from "./token.js";
-import { UserVehicle } from "./userVehicle.js";
 import { OTP } from "./OTP.js";
-import { Vehicle } from "./vehicle.js";
+import { UserVehicle } from "./userVehicle.js";
 
-interface UserVehicleAttributes {
-  connector_type: string;
-  actual_battery: string;
-}
+@Entity("users")
+export class User extends BaseEntity {
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
 
-class User extends Model {
-  declare id: CreationOptional<UUID>;
-  declare first_name: string;
-  declare last_name: string;
-  declare password: string;
-  declare email: string;
-  declare email_verified: CreationOptional<boolean>;
-  declare phone_number: CreationOptional<string>;
-  declare profile_picture: string;
-  declare created_at: CreationOptional<Date>;
-  declare tokens?: NonAttribute<Token[]>;
-  declare otps?: NonAttribute<OTP[]>;
-  declare vehicles?: NonAttribute<UserVehicle[]>;
+    @Column()
+    first_name: string;
 
-  declare getVehicles: BelongsToManyGetAssociationsMixin<Vehicle & { UserVehicle: UserVehicle }>;
-  declare addVehicle: BelongsToManyAddAssociationMixin<Vehicle, UserVehicleAttributes>;
-  declare removeVehicle: BelongsToManyRemoveAssociationMixin<Vehicle, Vehicle["id"]>;
-  declare hasVehicle: BelongsToManyHasAssociationMixin<Vehicle, Vehicle["id"]>;
-  declare countVehicles: BelongsToManyCountAssociationsMixin;
-  declare createVehicle: BelongsToManyCreateAssociationMixin<Vehicle>;
+    @Column()
+    last_name: string;
 
-  async getVehiclesTransformed(): Promise<
-    Array<{
-      id: UUID;
-      model: string;
-      availability: string;
-      range: string;
-      efficiency: string;
-      weight: string;
-      acceleration: string;
-      one_stop_range: string;
-      battery: string;
-      fastcharge: string;
-      towing: string;
-      cargo_volume: string;
-      connector_type: string;
-      actual_battery: string;
-      created_at: Date;
-    }>
-  > {
-    const vehicles = await this.getVehicles();
+    @Column()
+    password: string;
 
-    const transformedVehicles = vehicles.map((vehicle) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, no-unused-vars, @typescript-eslint/no-unused-vars
-      const { UserVehicle, id, ...vehicleData } = vehicle.toJSON();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, no-unused-vars, @typescript-eslint/no-unused-vars
-      const { user_id, vehicle_id, ...rest } = UserVehicle;
-      return {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        id: vehicle_id,
-        ...rest,
-        ...vehicleData,
-      } as {
-        id: UUID;
-        model: string;
-        availability: string;
-        range: string;
-        efficiency: string;
-        weight: string;
-        acceleration: string;
-        one_stop_range: string;
-        battery: string;
-        fastcharge: string;
-        towing: string;
-        cargo_volume: string;
-        connector_type: string;
-        actual_battery: string;
-        created_at: Date;
-      };
-    });
+    @Column({ unique: true })
+    email: string;
 
-    return transformedVehicles;
-  }
+    @Column({ default: false })
+    email_verified: boolean;
+
+    @Column({ nullable: true })
+    phone_number: string;
+
+    @Column({ type: "text", nullable: true })
+    profile_picture: string;
+
+    @CreateDateColumn()
+    created_at: Date;
+
+    @OneToMany(() => Token, (token) => token.user)
+    @JoinColumn({ name: "user_id" })
+    tokens!: Relation<Token>[];
+
+    @OneToMany(() => OTP, (otp) => otp.user)
+    @JoinColumn({ name: "user_id" })
+    otps!: Relation<OTP>[];
+
+    @OneToMany(() => UserVehicle, (userVehicle) => userVehicle.user)
+    vehicles: Relation<UserVehicle>[];
+
+    async getVehiclesTransformed(): Promise<
+        Array<{
+            id: string;
+            model: string;
+            availability: string;
+            range: string;
+            efficiency: string;
+            weight: string;
+            acceleration: string;
+            one_stop_range: string;
+            battery: string;
+            fastcharge: string;
+            towing: string;
+            cargo_volume: string;
+            connector_type: string;
+            actual_battery: string;
+            created_at: Date;
+        }>
+    > {
+        const userVehicles = await UserVehicle.find({
+            where: { user_id: this.id },
+            relations: ["vehicle"],
+        });
+
+        return userVehicles.map((uv) => {
+            const { vehicle, ...userVehicleData } = uv;
+            return {
+                ...vehicle,
+                ...userVehicleData,
+            };
+        });
+    }
 }
 
 /*
  * We used to have updated_at column in the table because Samy likes keeping track of stuff
  * but no body gives a shit about it hence it was nuked by me
  */
-
-User.init(
-  {
-    id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true,
-    },
-    first_name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    last_name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    email: {
-      type: DataTypes.STRING,
-      unique: true,
-      allowNull: false,
-    },
-    email_verified: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
-    phone_number: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    profile_picture: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-    },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-  },
-  {
-    tableName: "users",
-    sequelize,
-    timestamps: false,
-  }
-);
-
-User.hasMany(Token, {
-  sourceKey: "id",
-  foreignKey: "user_id",
-  as: "tokens",
-  onDelete: "CASCADE",
-});
-
-User.hasMany(OTP, {
-  sourceKey: "id",
-  foreignKey: "user_id",
-  as: "otps",
-  onDelete: "CASCADE",
-});
-
-export { User };

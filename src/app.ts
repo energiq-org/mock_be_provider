@@ -10,53 +10,60 @@ import { authRouter } from "./routers/auth.js";
 import { usersRouter } from "./routers/users.js";
 import { vehiclesRouter } from "./routers/vehicles.js";
 import { getThemeSync } from "@intelika/swagger-theme";
+import { AppDataSource } from "./config/dbConnection.js";
+import { FuzzySearcher } from "./utils/fuzzySearcher.js";
+import { VehiclesDBLoader } from "./utils/vehicleDBLoader.js";
 
 function createServer() {
-  const server = express();
+    const server = express();
 
-  server.use(cors());
+    server.locals.db = AppDataSource;
+    server.locals.vehicles = new VehiclesDBLoader();
+    server.locals.fuzzySearcher = new FuzzySearcher(server.locals.vehicles);
 
-  server.use(express.json());
-  server.use(express.urlencoded({ extended: true }));
+    server.use(cors());
 
-  if (config.HTTP_LOGGING) {
-    server.use(morgan("dev"));
-  }
+    server.use(express.json());
+    server.use(express.urlencoded({ extended: true }));
 
-  if (config.HTTP_BODY_LOGGING) {
-    morganBody(server);
-  }
+    if (config.HTTP_LOGGING) {
+        server.use(morgan("dev"));
+    }
 
-  server.use("/api/v1/auth", authRouter);
-  server.use("/api/v1/vehicles", vehiclesRouter);
-  server.use("/api/v1/users", usersRouter);
+    if (config.HTTP_BODY_LOGGING) {
+        morganBody(server);
+    }
 
-  const openAPIDocs = docs.generateDocument(docs.document, server._router, docs.options.basePath);
+    server.use("/api/v1/auth", authRouter);
+    server.use("/api/v1/vehicles", vehiclesRouter);
+    server.use("/api/v1/users", usersRouter);
 
-  // console.log(JSON.stringify(openAPIDocs, null, 2));
+    const openAPIDocs = docs.generateDocument(docs.document, server._router, docs.options.basePath);
 
-  server.use(docs);
+    // console.log(JSON.stringify(openAPIDocs, null, 2));
 
-  server.use(
-    "/docs/scalar",
-    apiReference({
-      spec: {
-        content: openAPIDocs,
-      },
-    })
-  );
-  server.use(
-    "/docs/swagger",
-    swaggerUi.serve,
-    swaggerUi.setup(openAPIDocs, {
-      customCss: `
+    server.use(docs);
+
+    server.use(
+        "/docs/scalar",
+        apiReference({
+            spec: {
+                content: openAPIDocs,
+            },
+        })
+    );
+    server.use(
+        "/docs/swagger",
+        swaggerUi.serve,
+        swaggerUi.setup(openAPIDocs, {
+            customCss: `
         ${getThemeSync().toString()}
         .swagger-ui .topbar { display: none !important; }
       `,
-    })
-  );
+        })
+    );
 
-  return server;
+    return server;
 }
 
 export { createServer };
