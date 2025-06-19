@@ -4,14 +4,12 @@ import { Token } from "../../models/token.js";
 import { User } from "../../models/user.js";
 import { generateAccessToken } from "../../utils/token.js";
 import { Static } from "@sinclair/typebox";
-import { AppDataSource } from "../../config/dbConnection.js";
 
 async function refreshTokenController(req: Request<unknown, unknown, Static<typeof refreshSchema>>, res: Response) {
     try {
         const { token } = req.body;
 
-        const tokenRepository = AppDataSource.getRepository(Token);
-        const storedToken = await tokenRepository.findOne({
+        const storedToken = await Token.findOne({
             where: { refresh_token: token },
         });
 
@@ -27,8 +25,7 @@ async function refreshTokenController(req: Request<unknown, unknown, Static<type
             return res.status(403).json({ error: "refresh token has been revoked" });
         }
 
-        const userRepository = AppDataSource.getRepository(User);
-        const user = await userRepository.findOne({
+        const user = await User.findOne({
             where: { id: storedToken.user_id },
         });
 

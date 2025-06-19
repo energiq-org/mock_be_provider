@@ -16,9 +16,7 @@ async function loginController(req: Request<unknown, unknown, Static<typeof logi
     try {
         const { email, password } = req.body;
 
-        const userRepository = AppDataSource.getRepository(User);
-        const user = await userRepository.findOne({ where: { email } });
-
+        const user = await User.findOne({ where: { email } });
         if (!user) {
             return res.status(401).json({ msg: "Invalid credentials" });
         }

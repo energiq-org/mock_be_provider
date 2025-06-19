@@ -1,8 +1,8 @@
 import { User } from "../../models/user.js";
 import {
-  forgetPasswordSchema,
-  resetPasswordSchema,
-  verifyPasswordResetOTPSchema,
+    forgetPasswordSchema,
+    resetPasswordSchema,
+    verifyPasswordResetOTPSchema,
 } from "../../schemas/controllers/auth/auth.js";
 import { resetPasswordTokenPayloadSchema } from "../../schemas/token.js";
 import { Request, Response } from "express";
@@ -16,7 +16,6 @@ import { generateResetPasswordToken, verifyToken } from "../../utils/token.js";
 import jwt from "jsonwebtoken";
 import { validateTypeboxSchema } from "../../utils/validation.js";
 import bcrypt from "bcrypt";
-import { AppDataSource } from "../../config/dbConnection.js";
 
 async function forgetPasswordController(
     req: Request<unknown, unknown, Static<typeof forgetPasswordSchema>>,
@@ -98,13 +97,12 @@ async function resetPasswordController(
         }
 
         const hashedPassword = await bcrypt.hash(new_password, 10);
-        const userRepository = AppDataSource.getRepository(User);
-        const user = await userRepository.findOne({ where: { email: decoded.email } });
+        const user = await User.findOne({ where: { email: decoded.email } });
         if (!user) {
             return res.status(404).json({ msg: "User not found" });
         }
         user.password = hashedPassword;
-        await userRepository.save(user);
+        await user.save();
 
         return res.status(200).json({ msg: "password reset successfully" });
     } catch (error) {
