@@ -11,7 +11,7 @@ const paymentRouter = Router();
 paymentRouter.post(
     "/webhook",
     docs.path({
-        summary: "Process Paymob webhook",
+        summary: "Process paymob webhook",
         description: "Endpoint to receive and process webhooks from Paymob payment gateway",
         tags: ["Payment"],
         requestBody: {

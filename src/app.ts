@@ -36,9 +36,10 @@ function createServer() {
     server.use("/api/v1/users", usersRouter);
     server.use("/api/v1/payment", paymentRouter);
 
-    const openAPIDocs = docs.generateDocument(docs.document, server._router, docs.options.basePath);
+    // Serve static files (including logo)
+    server.use("/static", express.static("public"));
 
-    // console.log(JSON.stringify(openAPIDocs, null, 2));
+    const openAPIDocs = docs.generateDocument(docs.document, server._router, docs.options.basePath);
 
     server.use(docs);
 
@@ -57,10 +58,19 @@ function createServer() {
             customCss: `
         ${getThemeSync().toString()}
         .swagger-ui .topbar { display: none !important; }
+        .swagger-ui .info::before {
+            content: '';
+            display: block;
+            background-image: url('/static/logo.png');
+            background-repeat: no-repeat;
+            background-size: contain;
+            width: 160px;
+            height: 60px;
+            margin-bottom: 20px;
+        }
       `,
         })
     );
-
     return server;
 }
 

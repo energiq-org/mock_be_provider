@@ -6,7 +6,7 @@ const docs = openapi({
     info: {
         title: "EnergiQ user APIs",
         version: "1.0.0",
-        description: "EnergiQ user APIs",
+        description: "Documentation for the EnergiQ user APIs",
     },
 });
 

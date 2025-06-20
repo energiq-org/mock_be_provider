@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Type } from "@sinclair/typebox";
 import { userSchema } from "./users.js";
 import { vehicleSchema } from "./vehicles.js";
