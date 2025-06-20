@@ -38,7 +38,7 @@ async function getPaymentIntentionController(req: Request, res: Response) {
         }
 
         const paymob = new Paymob();
-        const intention_url = await paymob.createPaymentIntention(numericAmount, user, "test");
+        const intention_url = await paymob.createPaymentIntention(numericAmount, user);
 
         return res.status(200).json({ intention_url });
     } catch (error: unknown) {

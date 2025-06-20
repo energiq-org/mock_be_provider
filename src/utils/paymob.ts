@@ -1,5 +1,6 @@
 import { User } from "@src/models/user.js";
 import config from "../config/env.js";
+import { randomUUID } from "crypto";
 
 class Paymob {
     private paymobBaseURL = "https://accept.paymob.com";
@@ -31,11 +32,12 @@ class Paymob {
      * // Returns: "https://accept.paymobsolutions.com/unifiedcheckout/?publicKey=..."
      * ```
      */
-    async createPaymentIntention(amount: number, user: User) {
+    async createPaymentIntention(amount: number, user: User, session_id?: string) {
         const paymobIntentionReq = JSON.stringify({
             amount: amount * 100,
             currency: "EGP",
             payment_methods: this.paymentMethods,
+            special_reference: randomUUID(),
             items: [
                 {
                     name: "charging session",
