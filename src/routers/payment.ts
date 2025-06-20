@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from "express";
 import { getPaymentIntentionController, processWebhookController } from "../controllers/payment/index.js";
-import { generateJSONResponse, getErrorResponses, getSecuritySchemes } from "../docs/helpers.js";
+import { generateJSONResponse, getErrorResponses, getSecuritySchemes, generateJSONRequestBody } from "../docs/helpers.js";
 import { docs } from "../docs/index.js";
 import { paymentIntentionResponseSchema } from "../schemas/payment.js";
+import { PaymobWebhookPayloadSchema } from "../schemas/webhook.js";
 import { authMiddleware } from "../middlewares/auth.js";
+import { ajvRequestValidator } from "../middlewares/validator.js";
 
 const paymentRouter = Router();
 
@@ -14,47 +16,7 @@ paymentRouter.post(
         summary: "Process paymob webhook",
         description: "Endpoint to receive and process webhooks from Paymob payment gateway",
         tags: ["Payment"],
-        requestBody: {
-            description: "Paymob webhook payload",
-            content: {
-                "application/json": {
-                    schema: {
-                        type: "object",
-                        properties: {
-                            type: { type: "string", example: "TRANSACTION" },
-                            obj: {
-                                type: "object",
-                                properties: {
-                                    id: { type: "number" },
-                                    success: { type: "boolean" },
-                                    amount_cents: { type: "number" },
-                                    currency: { type: "string" },
-                                    order: {
-                                        type: "object",
-                                        properties: {
-                                            id: { type: "number" },
-                                            payment_status: { type: "string" },
-                                        },
-                                    },
-                                    payment_key_claims: {
-                                        type: "object",
-                                        properties: {
-                                            user_id: { type: "number" },
-                                            billing_data: {
-                                                type: "object",
-                                                properties: {
-                                                    email: { type: "string" },
-                                                },
-                                            },
-                                        },
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        },
+        requestBody: generateJSONRequestBody(PaymobWebhookPayloadSchema, "Paymob webhook payload"),
         responses: {
             200: {
                 description: "Webhook processed successfully",
@@ -73,6 +35,7 @@ paymentRouter.post(
             },
         },
     }),
+    ajvRequestValidator(PaymobWebhookPayloadSchema, "body"),
     processWebhookController
 );
 
