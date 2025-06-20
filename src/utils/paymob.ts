@@ -31,12 +31,12 @@ class Paymob {
      * // Returns: "https://accept.paymobsolutions.com/unifiedcheckout/?publicKey=..."
      * ```
      */
-    async createPaymentIntention(amount: number, user: User, sessionId: string) {
+    async createPaymentIntention(amount: number, user: User) {
         const paymobIntentionReq = JSON.stringify({
             amount: amount * 100,
             currency: "EGP",
             payment_methods: this.paymentMethods,
-            special_reference: sessionId,
+            special_reference: "voila",
             items: [
                 {
                     name: "charging session",
