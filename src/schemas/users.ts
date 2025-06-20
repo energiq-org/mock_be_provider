@@ -12,9 +12,9 @@ const userSchema = Type.Object({
         description: "Email address",
     }),
     password: Type.String({
-        minLength: 8,
-        pattern: "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*?&]{8,}$",
-        description: "Password must be at least 8 characters long and contain at least one letter and one number",
+        pattern: "/^(?=.?[A-Z])(?=.?[a-z])(?=.?[0-9])(?=.?[#?!@$%^&*-]).{8,}$/",
+        description:
+            "Password must be at least 8 characters long and contain at least one letter and one number and one special character",
     }),
     email_verified: Type.Boolean(),
     phone_number: Type.String({

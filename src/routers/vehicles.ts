@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from "express";
 import { getVehicleController } from "../controllers/vehicles/index.js";
 import { docs } from "../docs/index.js";

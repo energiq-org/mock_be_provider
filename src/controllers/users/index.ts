@@ -143,7 +143,7 @@ async function getUserController(req: Request, res: Response) {
 
         const vehicles = await user.getVehiclesTransformed();
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unused-vars, no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
         const { password, ...userData } = user;
         return res.status(200).json({
             ...userData,
