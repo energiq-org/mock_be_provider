@@ -36,7 +36,6 @@ class Paymob {
             amount: amount * 100,
             currency: "EGP",
             payment_methods: this.paymentMethods,
-            special_reference: "voila",
             items: [
                 {
                     name: "charging session",
