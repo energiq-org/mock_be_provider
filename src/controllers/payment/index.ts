@@ -1,14 +1,16 @@
 import { Request, Response } from "express";
 import { UUID } from "crypto";
+import { Static } from "@sinclair/typebox";
 import localCache from "../../utils/cache/local.js";
 import { User } from "../../models/user.js";
 import { Paymob } from "../../utils/paymob.js";
 import logger from "../../utils/logging.js";
 import { Webhook } from "../../models/webhook.js";
-import { Transaction } from "../../models/transaction.js";
 import { Session } from "../../models/sessions.js";
-import { TransactionStatus } from "../../schemas/transction.js";
+import { PaymobWebhookPayloadSchema } from "../../schemas/webhook.js";
+import { createTransactionRecord } from "../../utils/payment.js";
 import { randomUUID } from "crypto";
+import { TransactionStatus } from "../../schemas/transction.js";
 
 async function getPaymentIntentionController(req: Request, res: Response) {
     try {
@@ -57,41 +59,9 @@ async function getPaymentIntentionController(req: Request, res: Response) {
     }
 }
 
-interface PaymobWebhookPayload {
-    type: string;
-    obj: {
-        id: number;
-        success: boolean;
-        amount_cents: number;
-        currency: string;
-        order: {
-            id: number;
-            merchant_order_id: string | null;
-            amount_cents: number;
-            paid_amount_cents: number;
-            payment_status: string;
-        };
-        payment_key_claims: {
-            user_id: number;
-            amount_cents: number;
-            currency: string;
-            order_id: number;
-            billing_data: {
-                first_name: string;
-                last_name: string;
-                email: string;
-                phone_number: string;
-            };
-            integration_id: number;
-        };
-        created_at: string;
-        is_live: boolean;
-    };
-}
-
 async function processWebhookController(req: Request, res: Response) {
     try {
-        const webhookPayload = req.body as PaymobWebhookPayload;
+        const webhookPayload = req.body as Static<typeof PaymobWebhookPayloadSchema>;
 
         // Log the webhook for debugging
         logger.info("Received Paymob webhook", {
@@ -177,27 +147,6 @@ async function processWebhookController(req: Request, res: Response) {
             msg: "Internal server error",
         });
     }
-}
-
-// Helper function to create transaction record
-async function createTransactionRecord(
-    transactionData: PaymobWebhookPayload["obj"],
-    sessionId: string,
-    userId: string,
-    vehicleId: string
-): Promise<string> {
-    const status = transactionData.success ? TransactionStatus.SUCCESS : TransactionStatus.FAILED;
-    const amountInCents = transactionData.amount_cents.toString();
-
-    const transaction = new Transaction();
-    transaction.status = status;
-    transaction.amount = amountInCents;
-    transaction.session_id = sessionId;
-    transaction.user_id = userId;
-    transaction.vehicle_id = vehicleId;
-
-    await transaction.save();
-    return transaction.id;
 }
 
 export { getPaymentIntentionController, processWebhookController };
