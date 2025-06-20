@@ -17,23 +17,6 @@ paymentRouter.post(
         description: "Endpoint to receive and process webhooks from Paymob payment gateway",
         tags: ["Payment"],
         requestBody: generateJSONRequestBody(PaymobWebhookPayloadSchema, "Paymob webhook payload"),
-        responses: {
-            200: {
-                description: "Webhook processed successfully",
-                content: {
-                    "application/json": {
-                        schema: {
-                            type: "object",
-                            properties: {
-                                msg: { type: "string" },
-                                webhook_id: { type: "string" },
-                                transaction_id: { type: "string", nullable: true },
-                            },
-                        },
-                    },
-                },
-            },
-        },
     }),
     ajvRequestValidator(PaymobWebhookPayloadSchema, "body"),
     processWebhookController
