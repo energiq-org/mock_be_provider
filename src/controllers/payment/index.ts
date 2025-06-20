@@ -10,7 +10,7 @@ import { Session } from "../../models/sessions.js";
 import { PaymobWebhookPayloadSchema } from "../../schemas/webhook.js";
 import { createTransactionRecord } from "../../utils/payment.js";
 import { randomUUID } from "crypto";
-import { TransactionStatus } from "@src/schemas/transction.js";
+import { TransactionStatus } from "../../schemas/transction.js";
 
 async function getPaymentIntentionController(req: Request, res: Response) {
     try {
