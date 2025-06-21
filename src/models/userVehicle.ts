@@ -37,7 +37,7 @@ export class UserVehicle extends BaseEntity {
     @CreateDateColumn({ type: "timestamptz" })
     created_at: Date;
 
-    @ManyToOne(() => User, (user) => user.vehicles)
+    @ManyToOne(() => User, (user) => user.vehicles, { onDelete: "CASCADE" })
     @JoinColumn({ name: "user_id" })
     user: Relation<User>;
 

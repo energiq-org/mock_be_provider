@@ -40,7 +40,7 @@ export class OTP extends BaseEntity {
     @CreateDateColumn({ type: "timestamptz" })
     created_at: Date;
 
-    @ManyToOne("User", "otps")
+    @ManyToOne("User", "otps", { onDelete: "CASCADE" })
     @JoinColumn({ name: "user_id" })
     user: Relation<User>;
 }

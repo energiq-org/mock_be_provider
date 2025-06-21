@@ -79,10 +79,6 @@ async function updateUserController(req: Request<unknown, unknown, Static<typeof
             return res.status(404).json({ msg: "user not found" });
         }
 
-        if (Object.keys(req.body).length === 0 && !req.file) {
-            return res.status(400).json({ msg: "no data to update" });
-        }
-
         const queryBody = {
             first_name: req.body.first_name,
             last_name: req.body.last_name,

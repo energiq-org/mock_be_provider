@@ -11,6 +11,8 @@ import {
 import { Token } from "./token.js";
 import { OTP } from "./OTP.js";
 import { UserVehicle } from "./userVehicle.js";
+import { Session } from "./sessions.js";
+import { Transaction } from "./transaction.js";
 
 @Entity("users")
 export class User extends BaseEntity {
@@ -41,16 +43,22 @@ export class User extends BaseEntity {
     @CreateDateColumn({ type: "timestamptz" })
     created_at: Date;
 
-    @OneToMany(() => Token, (token) => token.user)
+    @OneToMany(() => Token, (token) => token.user, { cascade: true, onDelete: "CASCADE" })
     @JoinColumn({ name: "user_id" })
     tokens!: Relation<Token>[];
 
-    @OneToMany(() => OTP, (otp) => otp.user)
+    @OneToMany(() => OTP, (otp) => otp.user, { cascade: true, onDelete: "CASCADE" })
     @JoinColumn({ name: "user_id" })
     otps!: Relation<OTP>[];
 
-    @OneToMany(() => UserVehicle, (userVehicle) => userVehicle.user)
+    @OneToMany(() => UserVehicle, (userVehicle) => userVehicle.user, { cascade: true, onDelete: "CASCADE" })
     vehicles: Relation<UserVehicle>[];
+
+    @OneToMany(() => Session, (session) => session.user, { cascade: true, onDelete: "CASCADE" })
+    sessions: Relation<Session>[];
+
+    @OneToMany(() => Transaction, (transaction) => transaction.user, { cascade: true, onDelete: "CASCADE" })
+    transactions: Relation<Transaction>[];
 
     async getVehiclesTransformed(): Promise<
         Array<{

@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, BaseEntity } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, BaseEntity, ManyToOne, type Relation, JoinColumn } from "typeorm";
 import { TransactionStatus } from "../schemas/transction.js";
+import { User } from "./user.js";
 
 @Entity("transactions")
 export class Transaction extends BaseEntity {
@@ -26,4 +27,8 @@ export class Transaction extends BaseEntity {
 
     @CreateDateColumn({ type: "timestamptz" })
     created_at: Date;
+
+    @ManyToOne(() => User, (user) => user.transactions, { onDelete: "CASCADE" })
+    @JoinColumn({ name: "user_id" })
+    user: Relation<User>;
 }
