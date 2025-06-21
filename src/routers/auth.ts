@@ -68,7 +68,7 @@ authRouter.post(
         requestBody: generateJSONRequestBody(logoutSchema, "Logout request body"),
         responses: {
             "200": generateJSONResponse(successResponseSchema, "Logout successful"),
-            ...getErrorResponses(["404", "500"]),
+            ...getErrorResponses(["400","401", "404", "500"]),
         },
     }),
     ajvRequestValidator(logoutSchema, "body"),
@@ -84,7 +84,7 @@ authRouter.post(
         requestBody: generateJSONRequestBody(forgetPasswordSchema, "Forget password request body"),
         responses: {
             "200": generateJSONResponse(successResponseSchema, "Forget password request successful"),
-            ...getErrorResponses(["400", "404", "500"]),
+            ...getErrorResponses(["400","401", "404", "500"]),
         },
     }),
     ajvRequestValidator(forgetPasswordSchema, "body"),
@@ -103,7 +103,7 @@ authRouter.post(
                 verifyPasswordResetOTPResponseSchema,
                 "Verify password reset OTP request successful"
             ),
-            ...getErrorResponses(["400", "404", "500"]),
+            ...getErrorResponses(["400","401", "404", "500"]),
         },
     }),
     ajvRequestValidator(verifyPasswordResetOTPSchema, "body"),

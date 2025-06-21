@@ -49,7 +49,6 @@ const ajvRequestValidator =
                 }) || [];
 
             return res.status(400).json({
-                msg: "Validation failed",
                 errors,
             });
         }

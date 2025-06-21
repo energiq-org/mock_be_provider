@@ -5,8 +5,12 @@ const successResponseSchema = Type.Object({
 });
 
 const badRequestErrorSchema = Type.Object({
-    msg: Type.String(),
-    error: Type.Literal("BAD_REQUEST_ERROR"),
+    errors: Type.Array(
+        Type.Object({
+            field: Type.String(),
+            message: Type.String(),
+        })
+    ),
 });
 
 const forbiddenErrorSchema = Type.Object({
