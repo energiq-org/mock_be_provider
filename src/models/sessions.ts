@@ -1,4 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, BaseEntity, JoinColumn, type Relation, ManyToOne } from "typeorm";
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    CreateDateColumn,
+    BaseEntity,
+    JoinColumn,
+    type Relation,
+    ManyToOne,
+} from "typeorm";
 import { User } from "./user.js";
 
 @Entity("sessions")
@@ -21,7 +30,7 @@ export class Session extends BaseEntity {
     @CreateDateColumn()
     created_at: Date;
 
-    @ManyToOne(() => User, (user) => user.sessions, { onDelete: "CASCADE" })    
+    @ManyToOne(() => User, (user) => user.sessions, { onDelete: "CASCADE" })
     @JoinColumn({ name: "user_id" })
     user: Relation<User>;
 }

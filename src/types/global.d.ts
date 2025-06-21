@@ -1,13 +1,13 @@
 import { DataSource } from "typeorm";
-import { VehiclesDBLoader } from "../utils/vehicleDBLoader.ts";
 import { FuzzySearcher } from "../utils/fuzzySearcher.ts";
+import { Paymob } from "@src/utils/paymob.ts";
 
 declare global {
     namespace Express {
         interface Locals {
             db: DataSource;
-            vehicles: VehiclesDBLoader;
             fuzzySearcher: FuzzySearcher;
+            paymob: Paymob;
         }
     }
 }

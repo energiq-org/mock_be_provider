@@ -1,83 +1,81 @@
-import { User } from "@src/models/user.js";
-import config from "../config/env.js";
 import { randomUUID } from "crypto";
+import logger from "./logging.js";
 
 class Paymob {
-    private paymobBaseURL = "https://accept.paymob.com";
+    private baseURL = "https://accept.paymob.com";
     private apiKey: string;
     private secretKey: string;
     private publicKey: string;
     private paymentMethods: number[];
 
-    constructor() {
-        this.apiKey = config.PAYMOB_API_KEY;
-        this.secretKey = config.PAYMOB_SECRET_KEY;
-        this.publicKey = config.PAYMOB_PUBLIC_KEY;
-        this.paymentMethods = [config.PAYMOB_PAYMENT_METHOD];
+    constructor(apiKey: string, secretKey: string, publicKey: string, paymentMethods: number[]) {
+        this.apiKey = apiKey;
+        this.secretKey = secretKey;
+        this.publicKey = publicKey;
+        this.paymentMethods = paymentMethods;
     }
 
-    /**
-     * Creates a payment intention with Paymob for a charging session
-     *
-     * @param amount - The payment amount in EGP (will be converted to piasters by multiplying by 100)
-     * @param user - The user object containing general information
-     * @returns Promise<string> - The payment intention URL that the user can use to complete payment
-     * @throws Error - Throws an error if the payment intention creation fails
-     *
-     * @example
-     * ```typescript
-     * const paymob = new Paymob();
-     * const user = await User.findOne({ where: { id: userId } });
-     * const intentionUrl = await paymob.createPaymentIntention(100, user);
-     * // Returns: "https://accept.paymobsolutions.com/unifiedcheckout/?publicKey=..."
-     * ```
-     */
-    async createPaymentIntention(amount: number, user: User, session_id?: string) {
-        const paymobIntentionReq = JSON.stringify({
-            amount: amount * 100,
+    async initiatePayment(
+        billingDate: {
+            firstName: string;
+            lastName: string;
+            email: string;
+            phoneNumber: string;
+        },
+        amountInCents: number,
+        internalReference: string = randomUUID()
+    ) {
+        const intentionRequestBody = JSON.stringify({
+            amount: amountInCents,
             currency: "EGP",
             payment_methods: this.paymentMethods,
-            special_reference: randomUUID(),
+            special_reference: internalReference,
             items: [
                 {
                     name: "charging session",
-                    amount: amount * 100,
+                    amount: amountInCents,
                     description: "successful charging session.",
                     quantity: 1,
                 },
             ],
             billing_data: {
-                first_name: user.first_name,
-                last_name: user.last_name,
-                email: user.email,
-                phone_number: user.phone_number ?? "null",
+                first_name: billingDate.firstName,
+                last_name: billingDate.lastName,
+                email: billingDate.email,
+                phone_number: billingDate.phoneNumber,
             },
             customer: {
-                first_name: user.first_name,
-                last_name: user.last_name,
-                email: user.email,
+                first_name: billingDate.firstName,
+                last_name: billingDate.lastName,
+                email: billingDate.email,
             },
         });
 
-        const response = await fetch(`${this.paymobBaseURL}/v1/intention/`, {
+        const response = await fetch(`${this.baseURL}/v1/intention/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Token ${this.secretKey}`,
             },
-            body: paymobIntentionReq,
+            body: intentionRequestBody,
         });
+
+        const data = await response.json() as { client_secret: string };
         if (!response.ok) {
-            const error = await response.json();
-            throw new Error("PAYMOB_ERROR", { cause: error });
+            logger.error(`Error while initiating payment: ${JSON.stringify(data)}`);
+            return null;
         }
-        const data = (await response.json()) as { client_secret: string };
+
+        if (!data.client_secret) {
+            logger.error(`Error while initiating payment: could not find client secret in response: ${JSON.stringify(data)}`);
+            return null;
+        }
 
         return this.buildIntentionUrl(data.client_secret);
     }
 
     private buildIntentionUrl(client_secret: string): string {
-        return `${this.paymobBaseURL}/unifiedcheckout/?publicKey=${this.publicKey}&clientSecret=${client_secret}`;
+        return `${this.baseURL}/unifiedcheckout/?publicKey=${this.publicKey}&clientSecret=${client_secret}`;
     }
 }
 

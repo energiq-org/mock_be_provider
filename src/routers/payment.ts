@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from "express";
-import { getPaymentIntentionController, processWebhookController } from "../controllers/payment/index.js";
-import { generateJSONResponse, getErrorResponses, getSecuritySchemes, generateJSONRequestBody } from "../docs/helpers.js";
+import { processWebhookController } from "../controllers/payment/index.js";
+import {
+    generateJSONRequestBody
+} from "../docs/helpers.js";
 import { docs } from "../docs/index.js";
-import { paymentIntentionResponseSchema } from "../schemas/payment.js";
 import { PaymobWebhookPayloadSchema } from "../schemas/webhook.js";
-import { authMiddleware } from "../middlewares/auth.js";
 import { ajvRequestValidator } from "../middlewares/validator.js";
 
 const paymentRouter = Router();
@@ -20,37 +20,6 @@ paymentRouter.post(
     }),
     ajvRequestValidator(PaymobWebhookPayloadSchema, "body"),
     processWebhookController
-);
-
-paymentRouter.get("/create", (req, res) => {
-    res.status(201).json({ msg: "Payment created successfully" });
-});
-
-paymentRouter.get(
-    "/intention",
-    docs.path({
-        summary: "Get payment intention",
-        description: "Retrieve the payment intention",
-        tags: ["Payment"],
-        security: getSecuritySchemes(),
-        parameters: [
-            {
-                name: "amount",
-                in: "query",
-                required: true,
-                schema: {
-                    type: "number",
-                },
-                description: "Payment amount (can be float)",
-            },
-        ],
-        responses: {
-            200: generateJSONResponse(paymentIntentionResponseSchema, "Payment intention created successfully"),
-            ...getErrorResponses(["400", "401", "404", "500"]),
-        },
-    }),
-    authMiddleware,
-    getPaymentIntentionController
 );
 
 export { paymentRouter };

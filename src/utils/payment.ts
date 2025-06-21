@@ -24,4 +24,4 @@ export async function createTransactionRecord(
 
     await transaction.save();
     return transaction.id;
-} 
+}

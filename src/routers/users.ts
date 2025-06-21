@@ -101,7 +101,7 @@ usersRouter.get(
         security: getSecuritySchemes(),
         responses: {
             200: generateJSONResponse(getUserSchema, "User data retrieved successfully"),
-            ...getErrorResponses(["400","401", "404", "500"]),
+            ...getErrorResponses(["400", "401", "404", "500"]),
         },
     }),
     authMiddleware,
@@ -117,7 +117,7 @@ usersRouter.delete(
         security: getSecuritySchemes(),
         responses: {
             200: generateJSONResponse(successResponseSchema, "User deleted successfully"),
-            ...getErrorResponses(["400","401", "404", "500"]),
+            ...getErrorResponses(["400", "401", "404", "500"]),
         },
     }),
     authMiddleware,
@@ -134,7 +134,7 @@ usersRouter.post(
         requestBody: generateJSONRequestBody(addUserVehicleSchema, "The vehicle to add"),
         responses: {
             201: generateJSONResponse(successResponseSchema, "The vehicle was added successfully"),
-            ...getErrorResponses(["400","401", "404", "500"]),
+            ...getErrorResponses(["400", "401", "404", "500"]),
         },
     }),
     authMiddleware,
@@ -152,7 +152,7 @@ usersRouter.delete(
         parameters: generateRequestParameters(vehicleIdSchema, "path", true),
         responses: {
             200: generateJSONResponse(successResponseSchema, "The vehicle was deleted successfully"),
-            ...getErrorResponses(["400","401", "404", "500"]),
+            ...getErrorResponses(["400", "401", "404", "500"]),
         },
     }),
     authMiddleware,
@@ -170,7 +170,7 @@ usersRouter.patch(
         requestBody: generateJSONRequestBody(updateUserVehicleSchema, "The vehicle to update"),
         responses: {
             200: generateJSONResponse(successResponseSchema, "The vehicle was updated successfully"),
-            ...getErrorResponses(["400","401", "404", "500"]),
+            ...getErrorResponses(["400", "401", "404", "500"]),
         },
     }),
     authMiddleware,
@@ -187,7 +187,7 @@ usersRouter.post(
         parameters: generateRequestParameters(verifyEmailSchema, "query", true),
         responses: {
             200: generateJSONResponse(successResponseSchema, "The email was verified successfully"),
-            ...getErrorResponses(["400","401", "410", "404", "500"]),
+            ...getErrorResponses(["400", "401", "410", "404", "500"]),
         },
     }),
     ajvRequestValidator(verifyEmailSchema, "query"),
@@ -203,7 +203,7 @@ usersRouter.post(
         requestBody: generateJSONRequestBody(sentVerificationEmailSchema, "The email to send verification email"),
         responses: {
             200: generateJSONResponse(successResponseSchema, "The verification email was sent successfully"),
-            ...getErrorResponses(["400","401", "404", "500"]),
+            ...getErrorResponses(["400", "401", "404", "500"]),
         },
     }),
     ajvRequestValidator(sentVerificationEmailSchema, "body"),
@@ -219,7 +219,7 @@ usersRouter.get(
         security: getSecuritySchemes(),
         responses: {
             200: generateJSONResponse(getUserVehiclesResponseSchema, "User vehicles retrieved successfully"),
-            ...getErrorResponses(["400","401", "404", "500"]),
+            ...getErrorResponses(["400", "401", "404", "500"]),
         },
     }),
     authMiddleware,

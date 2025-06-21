@@ -1,6 +1,5 @@
 import { Type } from "@sinclair/typebox";
 
-
 // Paymob webhook payload schema for validation
 const PaymobWebhookPayloadSchema = Type.Object({
     type: Type.String(),
