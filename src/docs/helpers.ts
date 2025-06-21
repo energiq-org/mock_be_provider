@@ -13,6 +13,7 @@ import {
     unauthorizedErrorSchema,
 } from "../schemas/common-responses.js";
 import { TSchema } from "@sinclair/typebox";
+import { updateUserSchema } from "../schemas/controllers/users/user.js";
 
 function generateJSONRequestBody<T extends TSchema>(schema: T, description?: string) {
     return {
@@ -58,10 +59,7 @@ function generateUpdateUserRequestBody() {
                 schema: {
                     type: "object",
                     properties: {
-                        first_name: { type: "string" },
-                        last_name: { type: "string" },
-                        email: { type: "string" },
-                        phone_number: { type: "string" },
+                        ...updateUserSchema.properties,
                         profile_picture: {
                             type: "string",
                             format: "binary",

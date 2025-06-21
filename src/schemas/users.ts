@@ -5,8 +5,8 @@ const userSchema = Type.Object({
         pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
         description: "UUID format (e.g., 123e4567-e89b-12d3-a456-426614174000)",
     }),
-    first_name: Type.String({ minLength: 3, maxLength: 255 }),
-    last_name: Type.String({ minLength: 3, maxLength: 255 }),
+    first_name: Type.String({ minLength: 3, maxLength: 255, description: "First name (required)" }),
+    last_name: Type.String({ minLength: 3, maxLength: 255, description: "Last name (required)" }),
     email: Type.String({
         pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
         description: "Email address",
