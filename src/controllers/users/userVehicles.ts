@@ -71,8 +71,7 @@ async function updateUserVehicleController(
             return res.status(404).json({ msg: "Vehicle not found" });
         }
 
-        Object.assign(userVehicle, updateData);
-        await userVehicle.save();
+        await UserVehicle.update(vehicleId, updateData);
 
         return res.status(200).json({ msg: "Vehicle updated successfully" });
     } catch (error) {

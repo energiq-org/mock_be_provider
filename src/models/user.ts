@@ -52,12 +52,15 @@ export class User extends BaseEntity {
     otps!: Relation<OTP>[];
 
     @OneToMany(() => UserVehicle, (userVehicle) => userVehicle.user, { cascade: true, onDelete: "CASCADE" })
+    @JoinColumn({ name: "user_id" })
     vehicles: Relation<UserVehicle>[];
 
     @OneToMany(() => Session, (session) => session.user, { cascade: true, onDelete: "CASCADE" })
+    @JoinColumn({ name: "user_id" })
     sessions: Relation<Session>[];
 
     @OneToMany(() => Transaction, (transaction) => transaction.user, { cascade: true, onDelete: "CASCADE" })
+    @JoinColumn({ name: "user_id" })
     transactions: Relation<Transaction>[];
 
     async getVehiclesTransformed(): Promise<
