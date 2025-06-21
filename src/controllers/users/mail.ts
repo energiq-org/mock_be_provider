@@ -41,7 +41,7 @@ async function verifyEmailController(
         }
         await OTP.update(userVerificationCode.id, { used: true });
 
-        await sendWelcomeEmail(email, user.first_name);
+        await sendWelcomeEmail(email);
 
         return res.status(200).json({ msg: "email verified successfully" });
     } catch (error) {
@@ -55,7 +55,6 @@ async function sendVerificationEmailController(
 ) {
     try {
         const { email } = req.body;
-
         const user = await User.findOne({ where: { email } });
 
         if (!user) {
@@ -77,7 +76,7 @@ async function sendVerificationEmailController(
             type: OTPType.VERIFICATION,
         });
 
-        await sendVerificationEmail(email, verificationCode);
+        await sendVerificationEmail(email, verificationCode, user.first_name);
 
         return res.status(200).json({ msg: "verification email sent successfully" });
     } catch (error) {

@@ -60,14 +60,16 @@ class Paymob {
             body: intentionRequestBody,
         });
 
-        const data = await response.json() as { client_secret: string };
+        const data = (await response.json()) as { client_secret: string };
         if (!response.ok) {
             logger.error(`Error while initiating payment: ${JSON.stringify(data)}`);
             return null;
         }
 
         if (!data.client_secret) {
-            logger.error(`Error while initiating payment: could not find client secret in response: ${JSON.stringify(data)}`);
+            logger.error(
+                `Error while initiating payment: could not find client secret in response: ${JSON.stringify(data)}`
+            );
             return null;
         }
 

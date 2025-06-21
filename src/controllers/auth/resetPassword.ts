@@ -29,6 +29,10 @@ async function forgetPasswordController(
             return res.status(404).json({ msg: "User not found" });
         }
 
+        if (!user.email_verified) {
+            return res.status(400).json({ msg: "user is not verified" });
+        }
+
         const resetPasswordCode = generateOTP();
         const expires_at = new Date(Date.now() + config.OTP_LIFETIME * 60 * 1000);
 
@@ -40,9 +44,9 @@ async function forgetPasswordController(
             type: OTPType.RESET_PASSWORD,
         });
 
-        await sendResetPasswordEmail(user.email, resetPasswordCode);
+        await sendResetPasswordEmail(user.email, resetPasswordCode, user.first_name);
 
-        return res.status(200).json({ msg: "Reset password email sent" });
+        return res.status(200).json({ msg: "Reset password email sent successfully" });
     } catch (error) {
         return res.status(500).json({ msg: (error as Error).message });
     }

@@ -57,7 +57,7 @@ async function signupController(req: Request<unknown, unknown, Static<typeof sig
             type: OTPType.VERIFICATION,
         });
 
-        await sendVerificationEmail(email, verificationCode);
+        await sendVerificationEmail(email, verificationCode, first_name);
         await queryRunner.commitTransaction();
 
         return res.status(201).json({ msg: "user created successfully" });

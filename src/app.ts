@@ -19,8 +19,10 @@ function createServer() {
     const server = express();
 
     server.locals.fuzzySearcher = new FuzzySearcher(new VehiclesDBLoader());
-    server.locals.paymob = new Paymob(config.PAYMOB_API_KEY, config.PAYMOB_SECRET_KEY, config.PAYMOB_PUBLIC_KEY, [config.PAYMOB_PAYMENT_METHOD]);
-    
+    server.locals.paymob = new Paymob(config.PAYMOB_API_KEY, config.PAYMOB_SECRET_KEY, config.PAYMOB_PUBLIC_KEY, [
+        config.PAYMOB_PAYMENT_METHOD,
+    ]);
+
     server.use(cors());
 
     server.use(express.json());

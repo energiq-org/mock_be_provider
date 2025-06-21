@@ -39,7 +39,7 @@ async function loginController(req: Request<unknown, unknown, Static<typeof logi
                 type: OTPType.VERIFICATION,
             });
             await otp.save();
-            await sendVerificationEmail(email, verificationCode);
+            await sendVerificationEmail(email, verificationCode, user.first_name);
 
             return res.status(401).json({ msg: "user is not verified and verification code has been sent" });
         }
