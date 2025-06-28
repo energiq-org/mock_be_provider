@@ -13,6 +13,7 @@ import {
     addUserVehicleController,
     deleteUserVehicleController,
     updateUserVehicleController,
+    getUserVehicleStatusController,
 } from "../controllers/users/userVehicles.js";
 import {
     generateJSONRequestBody,
@@ -28,7 +29,11 @@ import { profilePictureMiddleware } from "../middlewares/multer.js";
 import { ajvRequestValidator } from "../middlewares/validator.js";
 import { successResponseSchema } from "../schemas/common-responses.js";
 import { vehicleIdSchema } from "../schemas/userVehicles.js";
-import { addUserVehicleSchema, updateUserVehicleSchema } from "../schemas/controllers/users/userVehicles.js";
+import {
+    addUserVehicleSchema,
+    getUserVehicleStatusResponseSchema,
+    updateUserVehicleSchema,
+} from "../schemas/controllers/users/userVehicles.js";
 import {
     signupSchema,
     updateUserSchema,
@@ -176,6 +181,27 @@ usersRouter.patch(
     authMiddleware,
     ajvRequestValidator(updateUserVehicleSchema, "body"),
     updateUserVehicleController
+);
+
+usersRouter.get(
+    "/vehicles/:id/status",
+    docs.path({
+        summary: "Get vehicle status",
+        description: "Get the status of a vehicle",
+        tags: ["Users - Vehicles"],
+        security: getSecuritySchemes(),
+        parameters: generateRequestParameters(vehicleIdSchema, "path", true),
+        responses: {
+            200: generateJSONResponse(
+                getUserVehicleStatusResponseSchema,
+                "The vehicle status was retrieved successfully"
+            ),
+            ...getErrorResponses(["400", "401", "404", "500"]),
+        },
+    }),
+    authMiddleware,
+    ajvRequestValidator(vehicleIdSchema, "params"),
+    getUserVehicleStatusController
 );
 
 usersRouter.post(

@@ -14,4 +14,19 @@ const getUserVehiclesResponseSchema = Type.Array(
     ])
 );
 
-export { addUserVehicleSchema, updateUserVehicleSchema, getUserVehiclesResponseSchema };
+const getUserVehicleStatusResponseSchema = Type.Object({
+    last_soc: Type.Number(),
+    is_charging: Type.Boolean(),
+    last_expected_range: Type.Number(),
+    charging_info: Type.Object({
+        time_left: Type.Optional(Type.Number()),
+        charging_power: Type.Optional(Type.Number()),
+    }),
+});
+
+export {
+    addUserVehicleSchema,
+    updateUserVehicleSchema,
+    getUserVehiclesResponseSchema,
+    getUserVehicleStatusResponseSchema,
+};
