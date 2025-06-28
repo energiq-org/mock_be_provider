@@ -18,10 +18,12 @@ const getUserVehicleStatusResponseSchema = Type.Object({
     last_soc: Type.Number(),
     is_charging: Type.Boolean(),
     last_expected_range: Type.Number(),
-    charging_info: Type.Object({
-        time_left: Type.Optional(Type.Number()),
-        charging_power: Type.Optional(Type.Number()),
-    }),
+    charging_info: Type.Optional(
+        Type.Object({
+            time_left: Type.Number(),
+            charging_power: Type.Number(),
+        })
+    ),
 });
 
 export {
