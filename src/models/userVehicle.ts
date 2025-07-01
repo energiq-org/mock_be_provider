@@ -1,50 +1,47 @@
-import { UUID } from "crypto";
-import { CreationOptional, DataTypes, Model } from "sequelize";
-import { sequelize } from "../config/dbConnection.js";
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    CreateDateColumn,
+    ManyToOne,
+    JoinColumn,
+    BaseEntity,
+    Unique,
+} from "typeorm";
+import type { Relation } from "typeorm";
+import { User } from "./user.js";
+import { Vehicle } from "./vehicle.js";
+import { ConnectorTypeEnum } from "../schemas/userVehicles.js";
 
-class UserVehicle extends Model {
-  declare id: CreationOptional<UUID>;
-  declare vehicle_id: number;
-  declare user_id: UUID;
-  declare connector_type: string;
-  declare actual_battery: string;
-  declare created_at: CreationOptional<Date>;
+@Entity("user_vehicles")
+@Unique(["user_id", "vehicle_id"])
+export class UserVehicle extends BaseEntity {
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
+
+    @Column("uuid")
+    user_id: string;
+
+    @Column()
+    vehicle_id: number;
+
+    @Column({
+        type: "enum",
+        enum: ConnectorTypeEnum,
+    })
+    connector_type: string;
+
+    @Column()
+    actual_battery: string;
+
+    @CreateDateColumn({ type: "timestamptz" })
+    created_at: Date;
+
+    @ManyToOne(() => User, (user) => user.vehicles, { onDelete: "CASCADE" })
+    @JoinColumn({ name: "user_id" })
+    user: Relation<User>;
+
+    @ManyToOne(() => Vehicle, (vehicle) => vehicle.users)
+    @JoinColumn({ name: "vehicle_id" })
+    vehicle: Relation<Vehicle>;
 }
-
-UserVehicle.init(
-  {
-    id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true,
-    },
-    user_id: {
-      type: DataTypes.UUID,
-      allowNull: false,
-    },
-    vehicle_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    connector_type: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    actual_battery: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-  },
-  {
-    tableName: "user_vehicles",
-    sequelize,
-    timestamps: false,
-  }
-);
-
-export { UserVehicle };

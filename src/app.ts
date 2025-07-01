@@ -9,54 +9,74 @@ import { docs } from "./docs/index.js";
 import { authRouter } from "./routers/auth.js";
 import { usersRouter } from "./routers/users.js";
 import { vehiclesRouter } from "./routers/vehicles.js";
-import { getThemeSync } from '@intelika/swagger-theme';
+import { getThemeSync } from "@intelika/swagger-theme";
+import { paymentRouter } from "./routers/payment.js";
+import { FuzzySearcher } from "./utils/fuzzySearcher.js";
+import { VehiclesDBLoader } from "./utils/vehicleDBLoader.js";
+import { Paymob } from "./utils/paymob.js";
 
 function createServer() {
-  const server = express();
+    const server = express();
 
-  server.use(cors());
+    server.locals.fuzzySearcher = new FuzzySearcher(new VehiclesDBLoader());
+    server.locals.paymob = new Paymob(config.PAYMOB_API_KEY, config.PAYMOB_SECRET_KEY, config.PAYMOB_PUBLIC_KEY, [
+        config.PAYMOB_PAYMENT_METHOD,
+    ]);
 
-  server.use(express.json());
-  server.use(express.urlencoded({ extended: true }));
+    server.use(cors());
 
-  if (config.HTTP_LOGGING) {
-    server.use(morgan("dev"));
-  }
+    server.use(express.json());
+    server.use(express.urlencoded({ extended: true }));
 
-  if (config.HTTP_BODY_LOGGING) {
-    morganBody(server);
-  }
+    if (config.HTTP_LOGGING) {
+        server.use(morgan("dev"));
+    }
 
-  server.use("/api/v1/auth", authRouter);
-  server.use("/api/v1/vehicles", vehiclesRouter);
-  server.use("/api/v1/users", usersRouter);
+    if (config.HTTP_BODY_LOGGING) {
+        morganBody(server);
+    }
 
-  const openAPIDocs = docs.generateDocument(docs.document, server._router, docs.options.basePath);
+    server.use("/api/v1/auth", authRouter);
+    server.use("/api/v1/vehicles", vehiclesRouter);
+    server.use("/api/v1/users", usersRouter);
+    server.use("/api/v1/payment", paymentRouter);
 
-  // console.log(JSON.stringify(openAPIDocs, null, 2));
+    // Serve static files (including logo)
+    server.use("/static", express.static("public"));
 
-  server.use(docs);
+    const openAPIDocs = docs.generateDocument(docs.document, server._router, docs.options.basePath);
 
-  server.use(
-    "/docs/scalar",
-    apiReference({
-      spec: {
-        content: openAPIDocs,
-      },
-    })
-  );
-  server.use(
-    "/docs/swagger",
-    swaggerUi.serve,
-    swaggerUi.setup(openAPIDocs, {
-      customCss: `
+    server.use(docs);
+
+    server.use(
+        "/docs/scalar",
+        apiReference({
+            spec: {
+                content: openAPIDocs,
+            },
+        })
+    );
+    server.use(
+        "/docs/swagger",
+        swaggerUi.serve,
+        swaggerUi.setup(openAPIDocs, {
+            customCss: `
         ${getThemeSync().toString()}
         .swagger-ui .topbar { display: none !important; }
-      `
-    })
-  );
-
-  return server;
+        .swagger-ui .info::before {
+            content: '';
+            display: block;
+            background-image: url('/static/logo.png');
+            background-repeat: no-repeat;
+            background-size: contain;
+            width: 160px;
+            height: 60px;
+            margin-bottom: 20px;
+        }
+      `,
+        })
+    );
+    return server;
 }
 
 export { createServer };

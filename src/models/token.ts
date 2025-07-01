@@ -1,49 +1,36 @@
-import { UUID } from "crypto";
-import { CreationOptional, DataTypes, Model } from "sequelize";
-import { sequelize } from "../config/dbConnection.js";
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    CreateDateColumn,
+    ManyToOne,
+    JoinColumn,
+    BaseEntity,
+    type Relation,
+} from "typeorm";
+import { User } from "./user.js";
 
-class Token extends Model {
-  declare id: CreationOptional<UUID>;
-  declare user_id: UUID;
-  declare refresh_token: string;
-  declare expires_at: Date;
-  declare revoked_at: Date;
-  declare created_at: CreationOptional<Date>;
+@Entity("tokens")
+export class Token extends BaseEntity {
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
+
+    @Column()
+    user_id: string;
+
+    @Column()
+    refresh_token: string;
+
+    @Column({ type: "timestamptz" })
+    expires_at: Date;
+
+    @Column({ type: "timestamptz", nullable: true })
+    revoked_at: Date;
+
+    @CreateDateColumn({ type: "timestamptz" })
+    created_at: Date;
+
+    @ManyToOne(() => User, (user) => user.tokens, { onDelete: "CASCADE" })
+    @JoinColumn({ name: "user_id" })
+    user: Relation<User>;
 }
-
-Token.init(
-  {
-    id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true,
-    },
-    user_id: {
-      type: DataTypes.UUID,
-      allowNull: false,
-    },
-    refresh_token: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    expires_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-    revoked_at: {
-      type: DataTypes.DATE,
-    },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-  },
-  {
-    tableName: "tokens",
-    timestamps: false,
-    sequelize,
-  }
-);
-
-export { Token };

@@ -11,19 +11,19 @@ import { Type } from "@sinclair/typebox";
 const vehiclesRouter = Router();
 
 vehiclesRouter.get(
-  "/",
-  docs.path({
-    summary: "Get vehicle",
-    description: "Get vehicle",
-    tags: ["vehicles"],
-    parameters: generateRequestParameters(getVehiclesQueryParamsSchema, "query"),
-    responses: {
-      200: generateJSONResponse(Type.Array(vehicleSchema), "The vehicle was retrieved successfully"),
-      ...getErrorResponses(["500"]),
-    },
-  }),
-  ajvRequestValidator(getVehiclesQueryParamsSchema, "query"),
-  getVehicleController
+    "/",
+    docs.path({
+        summary: "Get vehicle",
+        description: "Get vehicle",
+        tags: ["Vehicles"],
+        parameters: generateRequestParameters(getVehiclesQueryParamsSchema, "query"),
+        responses: {
+            200: generateJSONResponse(Type.Array(vehicleSchema), "The vehicle was retrieved successfully"),
+            ...getErrorResponses(["400", "401", "404", "500"]),
+        },
+    }),
+    ajvRequestValidator(getVehiclesQueryParamsSchema, "query"),
+    getVehicleController
 );
 
 export { vehiclesRouter };
