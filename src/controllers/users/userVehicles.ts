@@ -79,4 +79,37 @@ async function updateUserVehicleController(
     }
 }
 
-export { addUserVehicleController, deleteUserVehicleController, updateUserVehicleController };
+async function getUserVehicleStatusController(req: Request<Static<typeof vehicleIdSchema>>, res: Response) {
+    try {
+        const vehicleId = req.params.id;
+        const userId = req["userId"] as UUID;
+
+        const userVehicle = await UserVehicle.findOne({ where: { id: vehicleId } });
+        if (!userVehicle) {
+            return res.status(404).json({ msg: "Vehicle not found" });
+        }
+
+        if (userVehicle.user_id !== userId) {
+            return res.status(401).json({ msg: "Unauthorized" });
+        }
+
+        return res.status(200).json({
+            last_soc: 78,
+            is_charging: true,
+            last_expected_range: 234,
+            charging_info: {
+                time_left: 23,
+                charging_power: 5000,
+            },
+        });
+    } catch (error) {
+        return res.status(500).json({ msg: (error as Error).message });
+    }
+}
+
+export {
+    addUserVehicleController,
+    deleteUserVehicleController,
+    updateUserVehicleController,
+    getUserVehicleStatusController,
+};
