@@ -76,6 +76,11 @@ function createServer() {
       `,
         })
     );
+
+    server.use("/", (req, res) => {
+        res.status(404).json({ msg: "Not Found" });
+    });
+
     return server;
 }
 
