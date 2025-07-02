@@ -2,12 +2,14 @@ import { NextFunction, Request, Response } from "express";
 import { TSchema } from "@sinclair/typebox";
 import { Ajv } from "ajv";
 import { Value } from "@sinclair/typebox/value";
+import formatsPlugin from "ajv-formats";
 
 const ajv = new Ajv({
     allErrors: true,
     coerceTypes: true,
 });
 
+formatsPlugin.default(ajv);
 const ajvRequestValidator =
     (schema: TSchema, source: "body" | "query" | "params") => (req: Request, res: Response, next: NextFunction) => {
         const validate = ajv.compile(schema);
