@@ -17,4 +17,4 @@ COPY package.json .
 COPY ./mock ./mock
 RUN npm install --omit=dev
 COPY --from=builder /app/dist /app/
-CMD ["node", "index.js"]
+CMD ["node", "src/index.js"]
