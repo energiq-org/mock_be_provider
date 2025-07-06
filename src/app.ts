@@ -6,7 +6,6 @@ import morganBody from "morgan-body";
 import swaggerUi from "swagger-ui-express";
 import config from "./config/env.js";
 import { docs } from "./docs/index.js";
-import { authRouter } from "./routers/auth.js";
 import { usersRouter } from "./routers/users.js";
 import { vehiclesRouter } from "./routers/vehicles.js";
 import { getThemeSync } from "@intelika/swagger-theme";
@@ -36,7 +35,6 @@ function createServer() {
         morganBody(server);
     }
 
-    server.use("/api/v1/auth", authRouter);
     server.use("/api/v1/vehicles", vehiclesRouter);
     server.use("/api/v1/users", usersRouter);
     server.use("/api/v1/payment", paymentRouter);

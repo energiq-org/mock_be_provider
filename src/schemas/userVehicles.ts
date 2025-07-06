@@ -29,7 +29,7 @@ const userVehicleSchema = Type.Object({
         description: "Battery capacity in kWh up to 300 kWh (e.g., '75.5 kWh', '100.8 KWh', '300 kWh')",
     }),
     vehicle_id: vehicleSchema.properties.id,
-    created_at: Type.String({ format: "date-time" }),
+    created_at: Type.String(),
 });
 
 const vehicleIdSchema = Type.Object({

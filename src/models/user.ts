@@ -8,8 +8,6 @@ import {
     JoinColumn,
     type Relation,
 } from "typeorm";
-import { Token } from "./token.js";
-import { OTP } from "./OTP.js";
 import { UserVehicle } from "./userVehicle.js";
 import { Session } from "./sessions.js";
 import { Transaction } from "./transaction.js";
@@ -19,37 +17,11 @@ export class User extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    @Column()
-    first_name: string;
-
-    @Column()
-    last_name: string;
-
-    @Column()
-    password: string;
-
-    @Column({ unique: true })
-    email: string;
-
-    @Column({ default: false })
-    email_verified: boolean;
-
-    @Column({ nullable: true })
-    phone_number: string;
-
     @Column({ type: "text", nullable: true })
     profile_picture: string;
 
     @CreateDateColumn({ type: "timestamptz" })
     created_at: Date;
-
-    @OneToMany(() => Token, (token) => token.user, { cascade: true, onDelete: "CASCADE" })
-    @JoinColumn({ name: "user_id" })
-    tokens!: Relation<Token>[];
-
-    @OneToMany(() => OTP, (otp) => otp.user, { cascade: true, onDelete: "CASCADE" })
-    @JoinColumn({ name: "user_id" })
-    otps!: Relation<OTP>[];
 
     @OneToMany(() => UserVehicle, (userVehicle) => userVehicle.user, { cascade: true, onDelete: "CASCADE" })
     @JoinColumn({ name: "user_id" })

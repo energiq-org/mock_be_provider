@@ -9,5 +9,10 @@ declare global {
             fuzzySearcher: FuzzySearcher;
             paymob: Paymob;
         }
+
+        interface Request {
+            user: Static<typeof accessTokenPayloadSchema>["user"];
+            userId: string;
+        }
     }
 }

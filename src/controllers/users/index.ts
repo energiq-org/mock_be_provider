@@ -1,17 +1,17 @@
-import bcrypt from "bcrypt";
 import { UUID } from "crypto";
 import { Request, Response } from "express";
 import config from "../../config/env.js";
 import { User } from "../../models/user.js";
-import { OTPType } from "../../schemas/OTP.js";
-import { sendVerificationEmail } from "../../utils/mail.js";
-import { generateOTP } from "../../utils/OTP.js";
-import { signupSchema, updateUserPasswordSchema, updateUserSchema } from "../../schemas/controllers/users/user.js";
+import { signupSchema, updateUserSchema } from "../../schemas/controllers/users/user.js";
 import * as jdenticon from "jdenticon";
 import { awsFolderNames, s3Handler } from "../../utils/s3.js";
 import { AppDataSource } from "../../config/dbConnection.js";
 import { Static } from "@sinclair/typebox";
-import { OTP } from "../../models/OTP.js";
+import { signup } from "../../utils/external/be_auth/requests/signup.js";
+import { updateUser, type UpdateUserResponse } from "../../utils/external/be_auth/requests/updateUser.js";
+import { SignupErrorCode } from "../../utils/external/be_auth/schemas/signup.js";
+import { UpdateUserErrorCode } from "../../utils/external/be_auth/schemas/updateUser.js";
+import logger from "../../utils/logging.js";
 
 async function signupController(req: Request<unknown, unknown, Static<typeof signupSchema>>, res: Response) {
     const queryRunner = AppDataSource.createQueryRunner();
@@ -21,14 +21,22 @@ async function signupController(req: Request<unknown, unknown, Static<typeof sig
     try {
         const { first_name, last_name, email, password } = req.body;
 
-        const user = await queryRunner.manager.findOne(User, { where: { email } });
-        if (user) {
-            res.status(409).json({ msg: "user with this email already exists" });
-            return;
+        const authResponse = await signup({
+            first_name,
+            last_name,
+            email,
+            password,
+        });
+
+        if (!authResponse.success) {
+            if (authResponse.error.code === SignupErrorCode.EMAIL_ALREADY_EXISTS) {
+                return res.status(409).json({ msg: "user with this email already exists" });
+            }
+            logger.error("Auth service signup failed:", authResponse.error);
+            return res.status(500).json({ msg: "Failed to create user account" });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const userId = crypto.randomUUID();
+        const userId = authResponse.data.userId;
 
         const profile_picture = jdenticon.toPng(userId, 400);
         const fileUrl = await s3Handler.uploadFile(
@@ -37,33 +45,16 @@ async function signupController(req: Request<unknown, unknown, Static<typeof sig
             profile_picture
         );
 
-        const newUser = await queryRunner.manager.save(User, {
+        await queryRunner.manager.save(User, {
             id: userId,
-            first_name,
-            last_name,
-            email,
-            password: hashedPassword,
             profile_picture: fileUrl,
         });
 
-        const verificationCode = generateOTP();
-        const expires_at = new Date(Date.now() + config.OTP_LIFETIME * 60 * 1000);
-
-        await queryRunner.manager.save(OTP, {
-            user_id: newUser.id,
-            email,
-            code: verificationCode,
-            expires_at,
-            type: OTPType.VERIFICATION,
-        });
-
-        await sendVerificationEmail(email, verificationCode, first_name);
         await queryRunner.commitTransaction();
 
         return res.status(201).json({ msg: "user created successfully" });
     } catch (error) {
-        console.log(error);
-
+        logger.error("Signup controller error:", error);
         await queryRunner.rollbackTransaction();
         return res.status(500).json({ msg: (error as Error).message });
     } finally {
@@ -79,116 +70,113 @@ async function updateUserController(req: Request<unknown, unknown, Static<typeof
             return res.status(404).json({ msg: "user not found" });
         }
 
-        const queryBody = {
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
-            email: req.body.email,
-            phone_number: req.body.phone_number,
-        };
+        const localUpdateData: Partial<User> = {};
+        const authUpdateData: { [key: string]: string | null } = {};
 
-        if (queryBody.email != null) {
-            if (queryBody.email != user.email) {
-                const existingUser = await User.findOne({ where: { email: queryBody.email } });
-                if (existingUser) {
-                    return res.status(409).json({ msg: "this email is already in use" });
-                }
-            } else {
-                return res.status(400).json({ msg: "new email cannot be the same as the current email" });
-            }
-        }
+        // Separate local updates from auth service updates
+        const { first_name, last_name, email, phone_number } = req.body;
 
-        if (queryBody.phone_number != null) {
-            if (queryBody.phone_number != user.phone_number) {
-                const existingUser = await User.findOne({ where: { phone_number: queryBody.phone_number } });
-                if (existingUser) {
-                    return res.status(409).json({ msg: "this phone number is already in use" });
-                }
-            }
-        }
+        if (first_name !== undefined) authUpdateData.first_name = first_name;
+        if (last_name !== undefined) authUpdateData.last_name = last_name;
+        if (email !== undefined) authUpdateData.email = email;
+        if (phone_number !== undefined) authUpdateData.phone_number = phone_number;
 
+        // Handle profile picture update (local)
         if (req.file) {
-            queryBody["profile_picture"] = await s3Handler.uploadFile(
+            localUpdateData.profile_picture = await s3Handler.uploadFile(
                 config.S3_BUCKET_NAME,
                 awsFolderNames.userProfile(userId),
                 req.file.buffer
             );
-        } else {
-            const allFieldsUndefined = Object.values(queryBody).every((value) => value === undefined);
-            if (allFieldsUndefined) {
-                return res.status(400).json({ msg: "no data to update" });
+        }
+
+        // Check if there's anything to update
+        const hasAuthUpdates = Object.keys(authUpdateData).length > 0;
+        const hasLocalUpdates = Object.keys(localUpdateData).length > 0;
+
+        if (!hasAuthUpdates && !hasLocalUpdates) {
+            return res.status(400).json({ msg: "no data to update" });
+        }
+
+        // Update auth service data if needed
+        if (hasAuthUpdates) {
+            const authResponse: UpdateUserResponse = await updateUser({
+                userId: userId,
+                ...authUpdateData,
+            });
+
+            if (!authResponse.success) {
+                if (authResponse.error.code === UpdateUserErrorCode.EMAIL_ALREADY_EXISTS) {
+                    return res.status(409).json({ msg: "this email is already in use" });
+                }
+                if (authResponse.error.code === UpdateUserErrorCode.PHONE_NUMBER_ALREADY_EXISTS) {
+                    return res.status(409).json({ msg: "this phone number is already in use" });
+                }
+                if (authResponse.error.code === UpdateUserErrorCode.SAME_EMAIL_PROVIDED) {
+                    return res.status(400).json({ msg: "new email cannot be the same as the current email" });
+                }
+                logger.error("Auth service update failed:", authResponse.error);
+                return res.status(500).json({ msg: "Failed to update user data" });
             }
         }
 
-        await User.update(userId, queryBody);
+        // Update local data if needed
+        if (hasLocalUpdates) {
+            await User.update(userId, localUpdateData);
+        }
 
         return res.status(200).json({ msg: "user updated successfully" });
     } catch (error) {
+        logger.error("Update user controller error:", error);
         return res.status(500).json({ msg: (error as Error).message });
     }
 }
 
 async function getUserController(req: Request, res: Response) {
     const userId = req["userId"] as UUID;
+    const userFromToken = req["user"]; // User data from the JWT token
+
     try {
-        const user = await User.findOne({
+        // Get local user data (profile picture, vehicles)
+        const localUser = await User.findOne({
             where: { id: userId },
         });
-        if (!user) {
-            return res.status(404).json({ msg: "user not found" });
+
+        if (!localUser) {
+            return res.status(404).json({ msg: "user not found in local database" });
         }
 
-        const vehicles = await user.getVehiclesTransformed();
+        const vehicles = await localUser.getVehiclesTransformed();
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-        const { password, ...userData } = user;
-        return res.status(200).json({
-            ...userData,
+        // Merge token user data with local user data - no need to call auth service
+        const userData = {
+            ...userFromToken, // User data from token (id, email, first_name, etc.)
+            profile_picture: localUser.profile_picture,
+            local_created_at: localUser.created_at,
             vehicles,
-        });
+        };
+
+        return res.status(200).json(userData);
     } catch (error) {
+        logger.error("Get user controller error:", error);
         return res.status(500).json({ msg: (error as Error).message });
     }
 }
 
-async function updateUserPasswordController(
-    req: Request<unknown, unknown, Static<typeof updateUserPasswordSchema>>,
-    res: Response
-) {
-    const userId = req["userId"] as UUID;
-    try {
-        const user = await User.findOne({ where: { id: userId } });
-        if (!user) {
-            return res.status(404).json({ msg: "user not found" });
-        }
-        const isPasswordValid = await bcrypt.compare(req.body.old_password, user.password);
-        if (!isPasswordValid) {
-            return res.status(401).json({ msg: "invalid password" });
-        }
-        // Check if new password is the same as old password
-        const isSamePassword = await bcrypt.compare(req.body.new_password, user.password);
-        if (isSamePassword) {
-            return res.status(400).json({ msg: "new password cannot be the same as the old password" });
-        }
+// async function deleteUserController(req: Request, res: Response) {
+//     const userId = req["userId"] as UUID;
+//     try {
+//         // Delete local user data
+//         await User.delete(userId);
 
-        const hashedNewPassword = await bcrypt.hash(req.body.new_password, 10);
+//         // TODO: Delete user from auth service
+//         // This would require implementing deleteUser in the auth service client
 
-        user.password = hashedNewPassword;
-        await user.save();
-        return res.status(200).json({ msg: "password updated successfully" });
-    } catch (error) {
-        return res.status(500).json({ msg: (error as Error).message });
-    }
-}
-
-async function deleteUserController(req: Request, res: Response) {
-    const userId = req["userId"] as UUID;
-    try {
-        await User.delete(userId);
-        return res.status(200).json({ msg: "user deleted successfully" });
-    } catch (error) {
-        return res.status(500).json({ msg: (error as Error).message });
-    }
-}
+//         return res.status(200).json({ msg: "user deleted successfully" });
+//     } catch (error) {
+//         return res.status(500).json({ msg: (error as Error).message });
+//     }
+// }
 
 async function getUserVehiclesController(req: Request, res: Response) {
     const userId = req["userId"] as UUID;
@@ -209,7 +197,5 @@ export {
     signupController,
     updateUserController,
     getUserController,
-    updateUserPasswordController,
-    deleteUserController,
-    getUserVehiclesController,
+    /*deleteUserController*/ getUserVehiclesController,
 };

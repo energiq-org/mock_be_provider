@@ -11,7 +11,7 @@ const SessionSchema = Type.Object({
     vehicle_id: userVehicleSchema.properties.id,
     duration: Type.Number(),
     kw_consumed: Type.Number(),
-    created_at: Type.String({ format: "date-time" }),
+    created_at: Type.String(),
 });
 
 export { SessionSchema };

@@ -19,7 +19,7 @@ const TransactionSchema = Type.Object({
     session_id: Type.String(),
     user_id: userSchema.properties.id,
     vehicle_id: vehicleSchema.properties.id,
-    created_at: Type.String({ format: "date-time" }),
+    created_at: Type.String(),
 });
 
 export { TransactionSchema, TransactionStatus };

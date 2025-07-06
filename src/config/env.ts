@@ -25,6 +25,7 @@ export default cleanEnv(process.env, {
     SENDGRID_API_KEY: str(),
     EMAIL_SENDER: str(),
     JWT_SECRET: str(),
+    AUTH_SERVICE_BASE_URL: str({ default: "http://localhost:3500" }),
     S3_ACCESS_KEY_ID: str(),
     S3_SECRET_ACCESS_KEY: str(),
     S3_REGION: str(),

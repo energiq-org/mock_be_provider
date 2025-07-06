@@ -4,11 +4,8 @@ import {
     signupController,
     updateUserController,
     getUserController,
-    deleteUserController,
-    updateUserPasswordController,
     getUserVehiclesController,
 } from "../controllers/users/index.js";
-import { sendVerificationEmailController, verifyEmailController } from "../controllers/users/mail.js";
 import {
     addUserVehicleController,
     deleteUserVehicleController,
@@ -34,13 +31,7 @@ import {
     getUserVehicleStatusResponseSchema,
     updateUserVehicleSchema,
 } from "../schemas/controllers/users/userVehicles.js";
-import {
-    signupSchema,
-    updateUserSchema,
-    updateUserPasswordSchema,
-    getUserSchema,
-} from "../schemas/controllers/users/user.js";
-import { verifyEmailSchema, sentVerificationEmailSchema } from "../schemas/controllers/users/mail.js";
+import { signupSchema, updateUserSchema, getUserSchema } from "../schemas/controllers/users/user.js";
 import { getUserVehiclesResponseSchema } from "../schemas/controllers/users/userVehicles.js";
 
 const usersRouter = Router();
@@ -80,23 +71,6 @@ usersRouter.patch(
     updateUserController
 );
 
-usersRouter.patch(
-    "/password",
-    docs.path({
-        summary: "Update user password",
-        description: "Update user password",
-        tags: ["Users"],
-        security: getSecuritySchemes(),
-        requestBody: generateJSONRequestBody(updateUserPasswordSchema, "The user's new password"),
-        responses: {
-            200: generateJSONResponse(successResponseSchema, "The user's password was updated successfully"),
-            ...getErrorResponses(["400", "401", "404", "500"]),
-        },
-    }),
-    authMiddleware,
-    ajvRequestValidator(updateUserPasswordSchema, "body"),
-    updateUserPasswordController
-);
 usersRouter.get(
     "",
     docs.path({
@@ -113,21 +87,21 @@ usersRouter.get(
     getUserController
 );
 
-usersRouter.delete(
-    "",
-    docs.path({
-        summary: "Delete user",
-        description: "Delete the authenticated user from the database",
-        tags: ["Users"],
-        security: getSecuritySchemes(),
-        responses: {
-            200: generateJSONResponse(successResponseSchema, "User deleted successfully"),
-            ...getErrorResponses(["400", "401", "404", "500"]),
-        },
-    }),
-    authMiddleware,
-    deleteUserController
-);
+// usersRouter.delete(
+//     "",
+//     docs.path({
+//         summary: "Delete user",
+//         description: "Delete the authenticated user from the database",
+//         tags: ["Users"],
+//         security: getSecuritySchemes(),
+//         responses: {
+//             200: generateJSONResponse(successResponseSchema, "User deleted successfully"),
+//             ...getErrorResponses(["400", "401", "404", "500"]),
+//         },
+//     }),
+//     authMiddleware,
+//     deleteUserController
+// );
 
 usersRouter.post(
     "/vehicles",
@@ -202,38 +176,6 @@ usersRouter.get(
     authMiddleware,
     ajvRequestValidator(vehicleIdSchema, "params"),
     getUserVehicleStatusController
-);
-
-usersRouter.post(
-    "/verify",
-    docs.path({
-        summary: "Verify email",
-        description: "Verify email",
-        tags: ["Users - Verification"],
-        parameters: generateRequestParameters(verifyEmailSchema, "query", true),
-        responses: {
-            200: generateJSONResponse(successResponseSchema, "The email was verified successfully"),
-            ...getErrorResponses(["400", "401", "410", "404", "500"]),
-        },
-    }),
-    ajvRequestValidator(verifyEmailSchema, "query"),
-    verifyEmailController
-);
-
-usersRouter.post(
-    "/send-verification-email",
-    docs.path({
-        summary: "Send verification email",
-        description: "Send verification email",
-        tags: ["Users - Verification"],
-        requestBody: generateJSONRequestBody(sentVerificationEmailSchema, "The email to send verification email"),
-        responses: {
-            200: generateJSONResponse(successResponseSchema, "The verification email was sent successfully"),
-            ...getErrorResponses(["400", "401", "404", "500"]),
-        },
-    }),
-    ajvRequestValidator(sentVerificationEmailSchema, "body"),
-    sendVerificationEmailController
 );
 
 usersRouter.get(

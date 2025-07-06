@@ -1,7 +1,5 @@
 import { DataSource } from "typeorm";
 import config from "./env.js";
-import { OTP } from "../models/OTP.js";
-import { Token } from "../models/token.js";
 import { User } from "../models/user.js";
 import { UserVehicle } from "../models/userVehicle.js";
 import { Vehicle } from "../models/vehicle.js";
@@ -18,7 +16,7 @@ export const AppDataSource = new DataSource({
     database: config.DB_NAME,
     synchronize: false,
     logging: config.DB_LOGGING,
-    entities: [User, OTP, Token, Vehicle, UserVehicle, Webhook, Transaction, Session],
+    entities: [User, Vehicle, UserVehicle, Webhook, Transaction, Session],
     migrations: ["src/migrations/*.ts"],
     migrationsTableName: "migrations",
 });

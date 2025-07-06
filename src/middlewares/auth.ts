@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { accessTokenPayloadSchema } from "../schemas/token.js";
+import { accessTokenPayloadSchema } from "../schemas/auth.js";
 import { validateTypeboxSchema } from "../utils/validation.js";
 import { Static } from "@sinclair/typebox";
 import { verifyToken } from "../utils/token.js";
@@ -21,7 +21,9 @@ function authMiddleware(req: Request, res: Response, next: NextFunction) {
         return res.status(401).json({ msg: "invalid token" });
     }
 
-    req["userId"] = tokenPayload.userId;
+    // Set the full user object and userId for backward compatibility
+    req["user"] = tokenPayload.user;
+    req["userId"] = tokenPayload.user.id;
     next();
 }
 

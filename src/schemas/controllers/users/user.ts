@@ -7,11 +7,6 @@ const signupSchema = Type.Pick(userSchema, ["first_name", "last_name", "email", 
 
 const updateUserSchema = Type.Partial(Type.Pick(userSchema, ["first_name", "last_name", "email", "phone_number"]));
 
-const updateUserPasswordSchema = Type.Object({
-    old_password: userSchema.properties.password,
-    new_password: userSchema.properties.password,
-});
-
 // Response schemas
 const getUserSchema = Type.Intersect([
     userSchema,
@@ -20,4 +15,4 @@ const getUserSchema = Type.Intersect([
     }),
 ]);
 
-export { signupSchema, updateUserSchema, updateUserPasswordSchema, getUserSchema };
+export { signupSchema, updateUserSchema, getUserSchema };
