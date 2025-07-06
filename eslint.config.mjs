@@ -22,10 +22,11 @@ export default [
   {
     rules: {
       eqeqeq: "off",
-      "no-unused-vars": "error",
       "prefer-const": "error",
       "@typescript-eslint/strict-boolean-expressions": "error",
       "@typescript-eslint/no-unsafe-assignment": "warn",
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "error"
     },
   },
   {
