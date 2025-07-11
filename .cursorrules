@@ -1,0 +1,211 @@
+# Backend Service Template Rules
+
+## Project Structure & Architecture
+
+This is a Node.js/TypeScript backend service template using:
+- **Express.js** for HTTP server
+- **TypeORM** for database ORM with PostgreSQL
+- **TypeBox** for schema validation and type safety
+- **OpenAPI/Swagger** for API documentation
+- **Winston** for logging
+
+## Key Principles
+
+### 1. Model-First Approach
+- Always start with defining the TypeORM entity in `src/models/`
+- Models should extend `BaseEntity` for convenience methods
+- Use appropriate TypeORM decorators (`@Entity`, `@Column`, `@PrimaryGeneratedColumn`, etc.)
+- Keep models simple and focused on data structure
+
+### 2. Schema-Driven Development
+- Create TypeBox schemas in `src/schemas/` for validation
+- Separate schemas for: base entity, create request, update request
+- Use `Type.Pick()`, `Type.Partial()`, `Type.Omit()` for schema composition
+- Controller-specific schemas go in `src/schemas/controllers/`
+
+### 3. Controller Organization
+- Controllers go in `src/controllers/`
+- Follow CRUD pattern: create, read, update, delete
+- Always handle errors with try-catch and return appropriate HTTP status codes
+- Use TypeBox schema validation for request/response
+
+### 4. Route Structure
+- Routes go in `src/routers/`
+- Include OpenAPI documentation for each endpoint
+- Use middleware for validation (`ajvRequestValidator`)
+- Follow RESTful conventions
+
+### 5. Configuration Management
+- Environment variables defined in `src/config/env.ts`
+- Use `envalid` for type-safe environment validation
+- Group related environment variables with comments
+
+## Code Patterns
+
+### Model Example
+```typescript
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, BaseEntity } from "typeorm";
+
+@Entity("entities")
+export class Entity extends BaseEntity {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column()
+    name: string;
+
+    @CreateDateColumn({ type: "timestamptz" })
+    created_at: Date;
+}
+```
+
+### Schema Example
+```typescript
+import { Type } from "@sinclair/typebox";
+
+export const entitySchema = Type.Object({
+    id: Type.Number(),
+    name: Type.String(),
+    created_at: Type.Date(),
+});
+
+export const createEntitySchema = Type.Pick(entitySchema, ["name"]);
+export const updateEntitySchema = Type.Partial(createEntitySchema);
+```
+
+### Controller Example
+```typescript
+import { Request, Response } from "express";
+import { Static } from "@sinclair/typebox";
+import { createEntitySchema } from "../schemas/entity.js";
+import { Entity } from "../models/entity.js";
+
+async function createEntityController(
+    req: Request<unknown, unknown, Static<typeof createEntitySchema>>,
+    res: Response
+) {
+    try {
+        const entity = new Entity();
+        Object.assign(entity, req.body);
+        await entity.save();
+        
+        return res.status(201).json({ 
+            msg: "Entity created successfully", 
+            data: entity 
+        });
+    } catch (error) {
+        return res.status(500).json({ 
+            msg: (error as Error).message 
+        });
+    }
+}
+```
+
+### Router Example
+```typescript
+import { Router } from "express";
+import { docs } from "../docs/index.js";
+import { generateJSONRequestBody, generateJSONResponse, getErrorResponses } from "../docs/helpers.js";
+import { ajvRequestValidator } from "../middlewares/validator.js";
+import { createEntityController } from "../controllers/entity/index.js";
+import { createEntitySchema, entitySchema } from "../schemas/entity.js";
+
+const entityRouter = Router();
+
+entityRouter.post(
+    "/",
+    docs.path({
+        summary: "Create entity",
+        description: "Create a new entity",
+        tags: ["Entities"],
+        requestBody: generateJSONRequestBody(createEntitySchema, "Entity data"),
+        responses: {
+            201: generateJSONResponse(entitySchema, "Entity created successfully"),
+            ...getErrorResponses(["400", "500"]),
+        },
+    }),
+    ajvRequestValidator(createEntitySchema, "body"),
+    createEntityController
+);
+
+export { entityRouter };
+```
+
+## File Naming Conventions
+
+- **Models**: PascalCase (e.g., `User.ts`, `UserProfile.ts`)
+- **Controllers**: camelCase with "Controller" suffix (e.g., `createUserController`)
+- **Routes**: camelCase with "Router" suffix (e.g., `userRouter`)
+- **Schemas**: camelCase with "Schema" suffix (e.g., `userSchema`, `createUserSchema`)
+- **Files**: camelCase (e.g., `userController.ts`, `userRoutes.ts`)
+
+## Database Best Practices
+
+- Use migrations for schema changes in production
+- Keep `synchronize: true` only for development
+- Use proper TypeORM relationships when needed
+- Add indexes for frequently queried columns
+- Use transactions for operations that modify multiple tables
+
+## API Documentation
+
+- Every endpoint must have OpenAPI documentation
+- Use meaningful summaries and descriptions
+- Include proper response codes and schemas
+- Group related endpoints with tags
+- Provide example responses where helpful
+
+## Error Handling
+
+- Always use try-catch in async controllers
+- Return consistent error response format: `{ msg: string }`
+- Use appropriate HTTP status codes:
+  - 200: Success
+  - 201: Created
+  - 400: Bad Request (validation errors)
+  - 404: Not Found
+  - 500: Internal Server Error
+
+## Validation
+
+- Use TypeBox schemas for request/response validation
+- Validate query parameters, path parameters, and request bodies
+- Use `ajvRequestValidator` middleware for automatic validation
+- Handle validation errors gracefully
+
+## Development Workflow
+
+1. **Plan the feature**: Define the data model and API endpoints
+2. **Create the model**: Add TypeORM entity
+3. **Define schemas**: Create TypeBox validation schemas
+4. **Implement controllers**: Add business logic with error handling
+5. **Create routes**: Add Express routes with OpenAPI docs
+6. **Test**: Verify functionality and documentation
+7. **Update database**: Update `dbConnection.ts` if new entities added
+
+## Common Commands
+
+```bash
+# Development
+npm run dev
+
+# Build
+npm run build
+
+# Database seed (if seed script exists)
+npm run seed
+
+# Linting
+npm run lint
+
+# Type checking
+npm run type-check
+```
+
+## Notes
+
+- This template is designed to be simple and extensible
+- Authentication has been removed for simplicity
+- External service integrations have been removed
+- Complex utilities have been removed to keep it minimal
+- Focus on core CRUD operations and clean architecture 

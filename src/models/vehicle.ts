@@ -1,5 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany, BaseEntity, Relation } from "typeorm";
-import { UserVehicle } from "./userVehicle.js";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, BaseEntity } from "typeorm";
 
 @Entity("vehicles")
 export class Vehicle extends BaseEntity {
@@ -41,7 +40,4 @@ export class Vehicle extends BaseEntity {
 
     @CreateDateColumn({ type: "timestamptz" })
     created_at: Date;
-
-    @OneToMany(() => UserVehicle, (userVehicle) => userVehicle.vehicle)
-    users: Relation<UserVehicle>[];
 }

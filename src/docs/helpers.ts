@@ -13,7 +13,6 @@ import {
     unauthorizedErrorSchema,
 } from "../schemas/common-responses.js";
 import { TSchema } from "@sinclair/typebox";
-import { updateUserSchema } from "../schemas/controllers/users/user.js";
 
 function generateJSONRequestBody<T extends TSchema>(schema: T, description?: string) {
     return {
@@ -48,28 +47,6 @@ function generateRequestParameters(schema: TSchema, source: "query" | "path", re
     }
 
     return parameters;
-}
-
-function generateUpdateUserRequestBody() {
-    return {
-        required: true,
-        description: "The user data to update",
-        content: {
-            "multipart/form-data": {
-                schema: {
-                    type: "object",
-                    properties: {
-                        ...updateUserSchema.properties,
-                        profile_picture: {
-                            type: "string",
-                            format: "binary",
-                            description: "Profile picture image file (png)",
-                        },
-                    },
-                },
-            },
-        },
-    };
 }
 
 function generateJSONResponse<T extends TSchema>(schema: T, description?: string) {
@@ -129,7 +106,6 @@ function getSecuritySchemes() {
 
 export {
     generateJSONRequestBody,
-    generateUpdateUserRequestBody,
     generateJSONResponse,
     getErrorResponses,
     getSecuritySchemes,

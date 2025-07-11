@@ -27,6 +27,4 @@ async function seedVehicles() {
     }
 }
 
-await seedVehicles();
-
 export { seedVehicles };

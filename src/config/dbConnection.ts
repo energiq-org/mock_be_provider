@@ -1,11 +1,10 @@
 import { DataSource } from "typeorm";
 import config from "./env.js";
-import { User } from "../models/user.js";
-import { UserVehicle } from "../models/userVehicle.js";
 import { Vehicle } from "../models/vehicle.js";
-import { Webhook } from "../models/webhook.js";
-import { Transaction } from "../models/transaction.js";
-import { Session } from "../models/sessions.js";
+import { Station } from "../models/station.js";
+import { Session } from "../models/session.js";
+import { Alert } from "../models/alert.js";
+import { Analytics } from "../models/analytics.js";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
@@ -14,9 +13,9 @@ export const AppDataSource = new DataSource({
     username: config.DB_USERNAME,
     password: config.DB_PASSWORD,
     database: config.DB_NAME,
-    synchronize: false,
+    synchronize: true,
     logging: config.DB_LOGGING,
-    entities: [User, Vehicle, UserVehicle, Webhook, Transaction, Session],
+    entities: [Vehicle, Station, Session, Alert, Analytics],
     migrations: ["src/migrations/*.ts"],
     migrationsTableName: "migrations",
 });
