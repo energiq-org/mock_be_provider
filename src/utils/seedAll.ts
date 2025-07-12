@@ -92,6 +92,10 @@ async function seedAll() {
         console.log("   GET /api/v1/charts/plug - Plug utilization gauge metrics");
         console.log("   GET /api/v1/charts/duration - Charging duration metrics");
         console.log("");
+        console.log("⚡ Sessions Management:");
+        console.log("   GET /api/v1/sessions - List all charging sessions with filtering support");
+        console.log("   GET /api/v1/sessions/:id - Get detailed session information");
+        console.log("");
         console.log("📚 Documentation:");
         console.log("   Swagger UI: /docs/swagger");
         console.log("   Scalar Docs: /docs/scalar");
@@ -99,8 +103,10 @@ async function seedAll() {
         console.log("🎨 Frontend Integration:");
         console.log("   • All endpoints are actively used by the frontend");
         console.log("   • Individual chart endpoints for granular data fetching");
+        console.log("   • Sessions page with real-time data and filtering");
         console.log("   • Metric cards populated with realistic values");
         console.log("   • Time period filtering (This Week/Last Week) supported");
+        console.log("   • Frontend-side filtering and pagination for sessions");
         console.log("   • Documentation shows only frontend-used endpoints for clarity");
         
     } catch (error) {

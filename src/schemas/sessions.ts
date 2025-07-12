@@ -4,9 +4,11 @@ export const sessionSchema = Type.Object({
     id: Type.Number(),
     station_id: Type.Number(),
     status: Type.Union([
+        Type.Literal("Paid"),
+        Type.Literal("In Progress"),
+        Type.Literal("Failed"),
         Type.Literal("Active"),
         Type.Literal("Completed"),
-        Type.Literal("Failed"),
         Type.Literal("Cancelled")
     ]),
     user_id: Type.Optional(Type.String()),
@@ -36,9 +38,11 @@ export const createSessionSchema = Type.Object({
 // Schema for updating a session
 export const updateSessionSchema = Type.Object({
     status: Type.Optional(Type.Union([
+        Type.Literal("Paid"),
+        Type.Literal("In Progress"),
+        Type.Literal("Failed"),
         Type.Literal("Active"),
         Type.Literal("Completed"),
-        Type.Literal("Failed"),
         Type.Literal("Cancelled")
     ])),
     energy_delivered: Type.Optional(Type.Number()),

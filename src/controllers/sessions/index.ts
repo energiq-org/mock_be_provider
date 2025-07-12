@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import { Session, SessionStatus, PaymentMethod } from "../../models/session.js";
-import { Like, FindOptionsWhere, Between } from "typeorm";
+import { Session } from "../../models/session.js";
 
 // Helper function to format session ID
 const formatSessionId = (id: number): string => {
@@ -30,43 +29,10 @@ const formatUserDisplay = (userId: string | null): string => {
 
 export const getAllSessions = async (req: Request, res: Response) => {
     try {
-        const { 
-            page = 1, 
-            limit = 10, 
-            status, 
-            station_id, 
-            user_id,
-            payment_method,
-            date_from,
-            date_to
-        } = req.query;
-
-        const where: FindOptionsWhere<Session> = {};
-
-        // Apply filters with explicit checks
-        if (status !== undefined && status !== null && status !== '') {
-            where.status = status as SessionStatus;
-        }
-        if (station_id !== undefined && station_id !== null && station_id !== '') {
-            where.station_id = Number(station_id);
-        }
-        if (user_id !== undefined && user_id !== null && user_id !== '') {
-            where.user_id = Like(`%${String(user_id)}%`);
-        }
-        if (payment_method !== undefined && payment_method !== null && payment_method !== '') {
-            where.payment_method = payment_method as PaymentMethod;
-        }
-        if (date_from !== undefined && date_from !== null && date_from !== '' && 
-            date_to !== undefined && date_to !== null && date_to !== '') {
-            where.start_time = Between(new Date(String(date_from)), new Date(String(date_to)));
-        }
-
-        const [sessions, total] = await Session.findAndCount({
-            where,
+        const sessions = await Session.find({
             relations: ["station"],
             order: { start_time: "DESC" },
-            skip: (Number(page) - 1) * Number(limit),
-            take: Number(limit)
+            take: 50
         });
 
         const formattedSessions = sessions.map(session => ({
@@ -77,8 +43,8 @@ export const getAllSessions = async (req: Request, res: Response) => {
             start_time: session.start_time,
             duration: formatDuration(session.duration_minutes),
             duration_minutes: session.duration_minutes,
-            energy_delivered: session.energy_delivered,
-            cost: session.cost,
+            energy_delivered: Number(session.energy_delivered),
+            cost: Number(session.cost),
             status: session.status,
             payment_method: session.payment_method,
             connector_id: session.connector_id,
@@ -91,12 +57,7 @@ export const getAllSessions = async (req: Request, res: Response) => {
         res.json({
             success: true,
             data: formattedSessions,
-            pagination: {
-                page: Number(page),
-                limit: Number(limit),
-                total,
-                totalPages: Math.ceil(total / Number(limit))
-            }
+            total: sessions.length
         });
     } catch (error) {
         console.error("Error fetching sessions:", error);
@@ -132,8 +93,8 @@ export const getSessionById = async (req: Request, res: Response) => {
             start_time: session.start_time,
             duration: formatDuration(session.duration_minutes),
             duration_minutes: session.duration_minutes,
-            energy_delivered: session.energy_delivered,
-            cost: session.cost,
+            energy_delivered: Number(session.energy_delivered),
+            cost: Number(session.cost),
             status: session.status,
             payment_method: session.payment_method,
             charger_id: session.charger_id,
@@ -162,7 +123,8 @@ export const createSession = async (req: Request, res: Response) => {
     try {
         const sessionData = req.body;
         
-        const session = Session.create(sessionData);
+        const session = new Session();
+        Object.assign(session, sessionData);
         await session.save();
 
         // Fetch the session with relations for response
@@ -185,8 +147,8 @@ export const createSession = async (req: Request, res: Response) => {
             station: createdSession.station?.name || 'Unknown Station',
             start_time: createdSession.start_time,
             duration: formatDuration(createdSession.duration_minutes),
-            energy_delivered: createdSession.energy_delivered,
-            cost: createdSession.cost,
+            energy_delivered: Number(createdSession.energy_delivered),
+            cost: Number(createdSession.cost),
             status: createdSession.status,
             payment_method: createdSession.payment_method,
             connector_id: createdSession.connector_id,
@@ -247,8 +209,8 @@ export const updateSession = async (req: Request, res: Response) => {
             station: updatedSession.station?.name || 'Unknown Station',
             start_time: updatedSession.start_time,
             duration: formatDuration(updatedSession.duration_minutes),
-            energy_delivered: updatedSession.energy_delivered,
-            cost: updatedSession.cost,
+            energy_delivered: Number(updatedSession.energy_delivered),
+            cost: Number(updatedSession.cost),
             status: updatedSession.status,
             payment_method: updatedSession.payment_method,
             created_at: updatedSession.created_at,
@@ -295,6 +257,61 @@ export const deleteSession = async (req: Request, res: Response) => {
         res.status(500).json({
             success: false,
             message: "Failed to delete session"
+        });
+    }
+}; 
+
+export const exportSessionsCSV = async (req: Request, res: Response) => {
+    try {
+        const sessions = await Session.find({
+            relations: ["station"],
+            order: { start_time: "DESC" },
+        });
+
+        const headers = [
+            'Session ID',
+            'User',
+            'Station',
+            'Start Time',
+            'Duration',
+            'Energy (kWh)',
+            'Cost (EGP)',
+            'Status',
+            'Payment Method',
+            'Connector ID',
+            'Charger ID',
+            'End Time'
+        ];
+
+        const csvRows = sessions.map(session => [
+            formatSessionId(session.id),
+            formatUserDisplay(session.user_id),
+            session.station?.name || 'Unknown Station',
+            session.start_time !== null ? session.start_time.toISOString() : '',
+            formatDuration(session.duration_minutes),
+            Number(session.energy_delivered).toFixed(2),
+            Number(session.cost).toFixed(2),
+            session.status,
+            session.payment_method,
+            session.connector_id || '',
+            session.charger_id || '',
+            session.end_time !== null ? session.end_time.toISOString() : ''
+        ]);
+
+        const csvContent = [
+            headers.join(','),
+            ...csvRows.map(row => row.map(field => `"${field}"`).join(','))
+        ].join('\n');
+
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', `attachment; filename="sessions_${new Date().toISOString().split('T')[0]}.csv"`);
+        
+        res.send(csvContent);
+    } catch (error) {
+        console.error("Error exporting sessions CSV:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to export sessions CSV"
         });
     }
 }; 

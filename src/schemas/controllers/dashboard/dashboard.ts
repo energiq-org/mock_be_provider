@@ -23,9 +23,11 @@ export const getStationsQueryParamsSchema = Type.Object({
 export const getSessionsQueryParamsSchema = Type.Object({
     station_id: Type.Optional(Type.Number()),
     status: Type.Optional(Type.Union([
+        Type.Literal("Paid"),
+        Type.Literal("In Progress"),
+        Type.Literal("Failed"),
         Type.Literal("Active"),
         Type.Literal("Completed"),
-        Type.Literal("Failed"),
         Type.Literal("Cancelled")
     ])),
     start_date: Type.Optional(Type.String({ format: "date" })),

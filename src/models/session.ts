@@ -2,12 +2,9 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import { Station } from "./station.js";
 
 export enum SessionStatus {
-    ACTIVE = "Active",
-    COMPLETED = "Completed", 
-    FAILED = "Failed",
-    CANCELLED = "Cancelled",
     PAID = "Paid",
-    IN_PROGRESS = "In Progress"
+    IN_PROGRESS = "In Progress",
+    FAILED = "Failed"
 }
 
 export enum PaymentMethod {
@@ -32,7 +29,7 @@ export class Session extends BaseEntity {
     @Column({
         type: "enum",
         enum: SessionStatus,
-        default: SessionStatus.ACTIVE
+        default: SessionStatus.IN_PROGRESS
     })
     status: SessionStatus;
 
