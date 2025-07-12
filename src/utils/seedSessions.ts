@@ -52,7 +52,7 @@ async function seedSessions() {
                 const totalCost = energyDelivered * costPerKwh;
                 
                 // Create realistic status distribution
-                const statuses = [SessionStatus.PAID, SessionStatus.PAID, SessionStatus.PAID, SessionStatus.COMPLETED, SessionStatus.IN_PROGRESS, SessionStatus.FAILED];
+                const statuses = [SessionStatus.PAID, SessionStatus.PAID, SessionStatus.PAID, SessionStatus.IN_PROGRESS, SessionStatus.FAILED];
                 const status = i < 3 && station.active_sessions > i ? SessionStatus.IN_PROGRESS : 
                             statuses[Math.floor(Math.random() * statuses.length)];
                 
