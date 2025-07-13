@@ -8,8 +8,10 @@ import config from "./config/env.js";
 import { docs } from "./docs/index.js";
 // import { vehiclesRouter } from "./routers/vehicles.js";
 import { dashboardRouter } from "./routers/dashboard.js";
-// import { stationsRouter } from "./routers/stations.js";
+import { stationsRouter } from "./routers/stations.js";
+import { chargersRouter } from "./routers/chargers.js";
 import { sessionsRouter } from "./routers/sessions.js";
+import { paymentRouter } from "./routers/payment.js";
 // import { alertsRouter } from "./routers/alerts.js";
 import chartsRouter from "./routers/charts.js";
 import { getThemeSync } from "@intelika/swagger-theme";
@@ -34,10 +36,12 @@ function createServer() {
     server.use("/api/v1/dashboard", dashboardRouter);
     server.use("/api/v1/charts", chartsRouter);
     server.use("/api/v1/sessions", sessionsRouter);
+    server.use("/api/v1/stations", stationsRouter);
+    server.use("/api/v1/chargers", chargersRouter);
+    server.use("/api/v1/payment", paymentRouter);
     
     // Unused routes (commented out to hide from documentation)
     // These endpoints exist but are not called by the frontend:
-    // server.use("/api/v1/stations", stationsRouter);     // Frontend uses external OpenChargeMap API
     // server.use("/api/v1/alerts", alertsRouter);         // Not implemented in frontend  
     // server.use("/api/v1/vehicles", vehiclesRouter);     // Not implemented in frontend
 

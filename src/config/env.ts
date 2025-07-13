@@ -20,8 +20,15 @@ export default cleanEnv(process.env, {
         choices: ["silent", "error", "warn", "info", "http", "verbose", "debug", "silly"],
         default: "info",
     }),
-    
+
+    // Paymob configuration
+    PAYMOB_API_KEY: str({ default: "egy_pk_test_5klNpoBmZXIFkcH7woOvDoGnlGr1qOtu" }),
+    PAYMOB_SECRET_KEY: str({ default: "egy_sk_test_cacacc93742895d816ccd0a3df63a44a" }),
+    PAYMOB_PUBLIC_KEY: str({ default: "egy_pk_test_5klNpoBmZXIFkcH7woOvDoGnlGr1qOtu" }),
+    PAYMOB_PAYMENT_METHOD: num({ default: 4564097 }),
+
     // API Documentation
     SPEC_REQUEST_VALIDATION: bool({ default: true }),
     SPEC_RESPONSE_VALIDATION: bool({ default: true }),
+
 });

@@ -5,6 +5,8 @@ import { Station } from "../models/station.js";
 import { Session } from "../models/session.js";
 import { Alert } from "../models/alert.js";
 import { Analytics } from "../models/analytics.js";
+import { Charger } from "../models/charger.js";
+import { Connector } from "../models/connector.js";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
@@ -15,7 +17,7 @@ export const AppDataSource = new DataSource({
     database: config.DB_NAME,
     synchronize: true,
     logging: config.DB_LOGGING,
-    entities: [Vehicle, Station, Session, Alert, Analytics],
+    entities: [Vehicle, Station, Session, Alert, Analytics, Charger, Connector],
     migrations: ["src/migrations/*.ts"],
     migrationsTableName: "migrations",
 });

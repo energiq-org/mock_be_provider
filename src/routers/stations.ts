@@ -5,7 +5,9 @@ import {
     getStationsController,
     createStationController,
     updateStationController,
-    deleteStationController
+    deleteStationController,
+    restartStationController,
+    rebootStationController
 } from "../controllers/stations/index.js";
 import { docs } from "../docs/index.js";
 import { generateRequestParameters, getErrorResponses, generateJSONRequestBody, generateJSONResponse } from "../docs/helpers.js";
@@ -26,12 +28,7 @@ stationsRouter.get(
         parameters: generateRequestParameters(getStationsQueryParamsSchema, "query"),
         responses: {
             200: generateJSONResponse(
-                Type.Object({
-                    data: Type.Array(stationSchema),
-                    total: Type.Number(),
-                    limit: Type.Number(),
-                    offset: Type.Number(),
-                }),
+                Type.Array(stationSchema),
                 "Stations retrieved successfully"
             ),
             ...getErrorResponses(["400", "500"]),
@@ -94,6 +91,66 @@ stationsRouter.put(
     }),
     ajvRequestValidator(updateStationSchema, "body"),
     updateStationController
+);
+
+// POST /stations/:id/restart - Restart station
+stationsRouter.post(
+    "/:id/restart",
+    docs.path({
+        summary: "Restart charging station",
+        description: "Restart an existing charging station",
+        tags: ["Stations"],
+        parameters: [
+            {
+                in: "path",
+                name: "id",
+                required: true,
+                schema: { type: "number" },
+                description: "Station ID"
+            }
+        ],
+        responses: {
+            200: generateJSONResponse(
+                Type.Object({
+                    msg: Type.String(),
+                    data: stationSchema,
+                }),
+                "Station restarted successfully"
+            ),
+            ...getErrorResponses(["404", "500"]),
+        },
+    }),
+    restartStationController
+);
+
+// POST /stations/:id/reboot - Reboot station
+stationsRouter.post(
+    "/:id/reboot",
+    docs.path({
+        summary: "Reboot charging station",
+        description: "Reboot an existing charging station",
+        tags: ["Stations"],
+        parameters: [
+            {
+                in: "path",
+                name: "id",
+                required: true,
+                schema: { type: "number" },
+                description: "Station ID"
+            }
+        ],
+        responses: {
+            200: generateJSONResponse(
+                Type.Object({
+                    msg: Type.String(),
+                    data: stationSchema,
+                }),
+                "Station rebooted successfully"
+            ),
+            ...getErrorResponses(["404", "500"]),
+        },
+    }),
+    rebootStationController
 );
 
 // DELETE /stations/:id - Delete station

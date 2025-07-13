@@ -1,5 +1,80 @@
 import { Type } from "@sinclair/typebox";
 
+// Operating hours schema
+export const operatingHoursSchema = Type.Object({
+    saturday: Type.Object({
+        enabled: Type.Boolean(),
+        from: Type.String(),
+        to: Type.String(),
+    }),
+    sunday: Type.Object({
+        enabled: Type.Boolean(),
+        from: Type.String(),
+        to: Type.String(),
+    }),
+    monday: Type.Object({
+        enabled: Type.Boolean(),
+        from: Type.String(),
+        to: Type.String(),
+    }),
+    tuesday: Type.Object({
+        enabled: Type.Boolean(),
+        from: Type.String(),
+        to: Type.String(),
+    }),
+    wednesday: Type.Object({
+        enabled: Type.Boolean(),
+        from: Type.String(),
+        to: Type.String(),
+    }),
+    thursday: Type.Object({
+        enabled: Type.Boolean(),
+        from: Type.String(),
+        to: Type.String(),
+    }),
+    friday: Type.Object({
+        enabled: Type.Boolean(),
+        from: Type.String(),
+        to: Type.String(),
+    }),
+});
+
+// Connector schema
+export const connectorSchema = Type.Object({
+    type: Type.Union([
+        Type.Literal("Type 1"),
+        Type.Literal("Type 2"),
+        Type.Literal("CHAdeMO"),
+        Type.Literal("CCS"),
+        Type.Literal("Tesla")
+    ]),
+    status: Type.Union([
+        Type.Literal("Available"),
+        Type.Literal("Occupied"),
+        Type.Literal("Faulted"),
+        Type.Literal("Offline"),
+        Type.Literal("Maintenance")
+    ]),
+    power: Type.Number(),
+});
+
+// Charger schema
+export const chargerSchema = Type.Object({
+    type: Type.Union([
+        Type.Literal("AC"),
+        Type.Literal("DC")
+    ]),
+    power: Type.Number(),
+    status: Type.Union([
+        Type.Literal("Available"),
+        Type.Literal("Occupied"),
+        Type.Literal("Faulted"),
+        Type.Literal("Offline"),
+        Type.Literal("Maintenance")
+    ]),
+    connectors: Type.Array(connectorSchema),
+});
+
 export const stationSchema = Type.Object({
     id: Type.Number(),
     name: Type.String(),
@@ -24,20 +99,19 @@ export const stationSchema = Type.Object({
     updated_at: Type.String({ format: "date-time" }),
 });
 
-// Schema for creating a station (without id, created_at, updated_at, and computed fields)
+// Schema for creating a station with full charger and connector details
 export const createStationSchema = Type.Object({
     name: Type.String(),
     location: Type.String(),
-    status: Type.Optional(Type.Union([
-        Type.Literal("Online"),
-        Type.Literal("Offline"), 
-        Type.Literal("Degraded")
-    ])),
-    power: Type.String(),
     latitude: Type.Number(),
     longitude: Type.Number(),
-    chargers_count: Type.Optional(Type.Number()),
-    connectors_count: Type.Optional(Type.Number()),
+    status: Type.Union([
+        Type.Literal("Active"),
+        Type.Literal("Under Maintenance"),
+        Type.Literal("Closed")
+    ]),
+    operatingHours: Type.Optional(Type.Union([operatingHoursSchema, Type.Null()])),
+    chargers: Type.Array(chargerSchema),
 });
 
 // Schema for updating a station (all fields optional)

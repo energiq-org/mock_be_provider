@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BaseEntity } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BaseEntity, OneToMany } from "typeorm";
 
 export enum StationStatus {
     ONLINE = "Online",
@@ -10,6 +10,9 @@ export enum StationStatus {
 export class Station extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
+
+    @OneToMany("Charger", "station", { cascade: true })
+    chargers: any[];
 
     @Column()
     name: string;
@@ -56,6 +59,9 @@ export class Station extends BaseEntity {
 
     @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
     total_revenue: number; // in currency
+
+    @Column({ type: "json", nullable: true })
+    operating_hours: Record<string, unknown>; // Operating hours data
 
     @CreateDateColumn({ type: "timestamptz" })
     created_at: Date;
